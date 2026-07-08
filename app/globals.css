@@ -1,26 +1,408 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@custom-variant dark (&:is(.dark *));
+
+/* ==========================================
+   Martius Font
+   ========================================== */
+@font-face {
+  font-family: "Martius";
+  src: url("/fonts/Martius-LV9L4.ttf") format("truetype");
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
 }
 
+/* ==========================================
+   Tradexa Design Tokens
+   ========================================== */
 @theme inline {
+  /* Typography */
+  --font-sans: "Martius", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-heading: "Martius", ui-sans-serif, system-ui, sans-serif;
+
+  /* Color tokens mapped to CSS variables */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Chart colors */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* Sidebar */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Radius */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ==========================================
+   Tradexa Dark Theme (Only Theme)
+   Color Palette:
+   - Primary Green:    #26FF5E
+   - Secondary Green:  #19B226
+   - Dark Green:       #264C47
+   - Dark Gray:        #232930
+   - Background:       #1C1A21
+   ========================================== */
+:root {
+  /* Core */
+  --background: #1C1A21;
+  --foreground: #F0F0F0;
+
+  /* Cards */
+  --card: #232930;
+  --card-foreground: #F0F0F0;
+
+  /* Popovers / Dropdowns */
+  --popover: #232930;
+  --popover-foreground: #F0F0F0;
+
+  /* Primary (Green) */
+  --primary: #26FF5E;
+  --primary-foreground: #0A0A0A;
+
+  /* Secondary */
+  --secondary: #264C47;
+  --secondary-foreground: #F0F0F0;
+
+  /* Muted */
+  --muted: #2A2832;
+  --muted-foreground: #9CA3AF;
+
+  /* Accent */
+  --accent: #19B226;
+  --accent-foreground: #F0F0F0;
+
+  /* Destructive */
+  --destructive: #EF4444;
+
+  /* Borders & Inputs */
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.1);
+  --ring: #26FF5E;
+
+  /* Charts */
+  --chart-1: #26FF5E;
+  --chart-2: #19B226;
+  --chart-3: #264C47;
+  --chart-4: #34D399;
+  --chart-5: #6EE7B7;
+
+  /* Sidebar */
+  --sidebar: #1A1820;
+  --sidebar-foreground: #F0F0F0;
+  --sidebar-primary: #26FF5E;
+  --sidebar-primary-foreground: #0A0A0A;
+  --sidebar-accent: #264C47;
+  --sidebar-accent-foreground: #F0F0F0;
+  --sidebar-border: rgba(255, 255, 255, 0.06);
+  --sidebar-ring: #26FF5E;
+
+  /* Border Radius */
+  --radius: 0.75rem;
+
+  /* ========================================
+     Custom Tradexa Design Tokens
+     ======================================== */
+  --tradexa-green: #26FF5E;
+  --tradexa-green-secondary: #19B226;
+  --tradexa-green-dark: #264C47;
+  --tradexa-gray: #232930;
+  --tradexa-bg: #1C1A21;
+  --tradexa-bg-elevated: #232930;
+  --tradexa-bg-surface: #2A2832;
+
+  /* Glow effects */
+  --glow-green: 0 0 20px rgba(38, 255, 94, 0.3), 0 0 60px rgba(38, 255, 94, 0.1);
+  --glow-green-strong: 0 0 30px rgba(38, 255, 94, 0.5), 0 0 80px rgba(38, 255, 94, 0.2);
+  --glow-green-subtle: 0 0 10px rgba(38, 255, 94, 0.15);
+
+  /* Glassmorphism */
+  --glass-bg: rgba(35, 41, 48, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-backdrop: saturate(180%) blur(20px);
+}
+
+/* ==========================================
+   Base Styles
+   ========================================== */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Selection color */
+  ::selection {
+    background-color: rgba(38, 255, 94, 0.25);
+    color: #ffffff;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--tradexa-bg);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--tradexa-green-dark);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--tradexa-green-secondary);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ==========================================
+   Utility Classes
+   ========================================== */
+@layer utilities {
+  /* Text Gradient */
+  .text-gradient-green {
+    background: linear-gradient(135deg, #26FF5E 0%, #19B226 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Background Gradients */
+  .bg-gradient-green {
+    background: linear-gradient(135deg, #26FF5E 0%, #19B226 100%);
+  }
+
+  .bg-gradient-dark {
+    background: linear-gradient(180deg, #1C1A21 0%, #232930 100%);
+  }
+
+  .bg-gradient-hero {
+    background: radial-gradient(ellipse at 50% 0%, rgba(38, 255, 94, 0.08) 0%, transparent 60%),
+                linear-gradient(180deg, #1C1A21 0%, #1A1820 100%);
+  }
+
+  .bg-gradient-section {
+    background: radial-gradient(ellipse at 50% 100%, rgba(38, 255, 94, 0.04) 0%, transparent 60%),
+                var(--tradexa-bg);
+  }
+
+  /* Glass Effect */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+  }
+
+  .glass-card {
+    background: rgba(35, 41, 48, 0.4);
+    backdrop-filter: saturate(180%) blur(12px);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* Glow Effects */
+  .glow {
+    box-shadow: var(--glow-green);
+  }
+
+  .glow-strong {
+    box-shadow: var(--glow-green-strong);
+  }
+
+  .glow-subtle {
+    box-shadow: var(--glow-green-subtle);
+  }
+
+  .glow-text {
+    text-shadow: 0 0 20px rgba(38, 255, 94, 0.5), 0 0 40px rgba(38, 255, 94, 0.2);
+  }
+
+  /* Border glow on hover */
+  .border-glow {
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .border-glow:hover {
+    border-color: rgba(38, 255, 94, 0.3);
+    box-shadow: 0 0 20px rgba(38, 255, 94, 0.1), inset 0 0 20px rgba(38, 255, 94, 0.03);
+  }
+
+  /* Grid pattern background */
+  .bg-grid {
+    background-image: 
+      linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* Dot pattern */
+  .bg-dots {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* Animated border gradient */
+  .animated-border {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .animated-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      var(--border-angle, 0deg),
+      #26FF5E,
+      transparent 40%,
+      transparent 60%,
+      #19B226
+    );
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    animation: border-rotate 4s linear infinite;
+  }
+
+  @keyframes border-rotate {
+    to {
+      --border-angle: 360deg;
+    }
+  }
+
+  /* Pulse animation */
+  .pulse-green {
+    animation: pulse-green 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse-green {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(38, 255, 94, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 12px rgba(38, 255, 94, 0);
+    }
+  }
+
+  /* Shimmer loading effect */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.04) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  /* Fade in up animation */
+  .animate-fade-in-up {
+    animation: fade-in-up 0.6s ease-out forwards;
+    opacity: 0;
+  }
+
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Counter number animation */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ==========================================
+   Component Overrides
+   ========================================== */
+
+/* Make all shadcn cards match Tradexa style */
+[data-slot="card"] {
+  background: var(--card);
+  border-color: var(--border);
+  border-radius: var(--radius);
+}
+
+/* Custom focus ring */
+:focus-visible {
+  outline: 2px solid rgba(38, 255, 94, 0.5);
+  outline-offset: 2px;
+}
+
+/* Sonner toast customization */
+[data-sonner-toaster] {
+  --normal-bg: var(--card) !important;
+  --normal-border: var(--border) !important;
+  --normal-text: var(--foreground) !important;
+  --success-bg: rgba(38, 255, 94, 0.1) !important;
+  --success-border: rgba(38, 255, 94, 0.2) !important;
+  --success-text: #26FF5E !important;
+  --error-bg: rgba(239, 68, 68, 0.1) !important;
+  --error-border: rgba(239, 68, 68, 0.2) !important;
+  --error-text: #EF4444 !important;
 }

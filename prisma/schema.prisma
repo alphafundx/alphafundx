@@ -1,0 +1,283 @@
+// Tradexa Database Schema
+// Prisma ORM with PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// Enums
+// ==========================================
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+enum PackageStatus {
+  ACTIVE
+  BREACHED
+  PASSED
+  COMPLETED
+}
+
+enum WithdrawalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  PAID
+}
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+  WITHDRAWAL
+  PACKAGE
+  SYSTEM
+}
+
+// ==========================================
+// Auth Models (NextAuth compatible)
+// ==========================================
+
+model User {
+  id              String    @id @default(cuid())
+  name            String?
+  email           String    @unique
+  emailVerified   DateTime?
+  phone           String?
+  password        String?
+  image           String?
+  role            UserRole  @default(USER)
+  status          UserStatus @default(ACTIVE)
+  telegramUsername String?
+
+  accounts      Account[]
+  sessions      Session[]
+  orders        Order[]
+  userPackages  UserPackage[]
+  withdrawals   Withdrawal[]
+  notifications Notification[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([role])
+  @@index([status])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ==========================================
+// Business Models
+// ==========================================
+
+model Package {
+  id                 String  @id @default(cuid())
+  name               String
+  accountSize        Float
+  description        String? @db.Text
+  features           Json    @default("[]")
+  rules              Json    @default("[]")
+  originalPrice      Float
+  discountedPrice    Float?
+  discountPercentage Float?  @default(0)
+  isActive           Boolean @default(true)
+  isPopular          Boolean @default(false)
+  displayOrder       Int     @default(0)
+  currency           String  @default("USD")
+
+  orders       Order[]
+  userPackages UserPackage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([displayOrder])
+}
+
+model Order {
+  id               String      @id @default(cuid())
+  userId           String
+  packageId        String
+  amount           Float
+  status           OrderStatus @default(PENDING)
+  paymentMethod    String?
+  paymentReference String?
+  stripeSessionId  String?     @unique
+  stripePaymentId  String?
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  package     Package      @relation(fields: [packageId], references: [id])
+  userPackage UserPackage?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([packageId])
+  @@index([status])
+  @@index([stripeSessionId])
+}
+
+model UserPackage {
+  id               String        @id @default(cuid())
+  userId           String
+  packageId        String
+  orderId          String        @unique
+  status           PackageStatus @default(ACTIVE)
+  currentBalance   Float         @default(0)
+  currentProfit    Float         @default(0)
+  profitPercentage Float         @default(0)
+  activatedAt      DateTime      @default(now())
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  package     Package      @relation(fields: [packageId], references: [id])
+  order       Order        @relation(fields: [orderId], references: [id])
+  withdrawals Withdrawal[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([packageId])
+  @@index([status])
+}
+
+model Withdrawal {
+  id             String           @id @default(cuid())
+  userId         String
+  userPackageId  String
+  amount         Float
+  paymentMethod  String
+  paymentDetails Json?
+  status         WithdrawalStatus @default(PENDING)
+  adminNote      String?          @db.Text
+  processedAt    DateTime?
+  processedBy    String?
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userPackage UserPackage @relation(fields: [userPackageId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([userPackageId])
+  @@index([status])
+}
+
+// ==========================================
+// CMS & Content Models
+// ==========================================
+
+model Testimonial {
+  id        String  @id @default(cuid())
+  userName  String
+  userImage String?
+  rating    Int     @default(5)
+  content   String  @db.Text
+  isActive  Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+}
+
+model CmsContent {
+  id       String  @id @default(cuid())
+  key      String  @unique
+  title    String?
+  content  Json    @default("{}")
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([key])
+}
+
+model SiteSettings {
+  id    String @id @default(cuid())
+  key   String @unique
+  value Json   @default("{}")
+
+  updatedAt DateTime @updatedAt
+
+  @@index([key])
+}
+
+model Notification {
+  id      String           @id @default(cuid())
+  userId  String
+  title   String
+  message String           @db.Text
+  isRead  Boolean          @default(false)
+  type    NotificationType @default(INFO)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([type])
+}
