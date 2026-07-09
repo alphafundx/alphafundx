@@ -18,8 +18,8 @@ export default function AdminSettingsPage() {
           <h3 className="text-lg font-semibold text-foreground">General</h3>
           <div className="space-y-4">
             {[
-              { label: "Site Name", value: "Tradexa", type: "text" },
-              { label: "Contact Email", value: "support@tradexa.com", type: "email" },
+              { label: "Site Name", value: "AlphaFundX", type: "text" },
+              { label: "Contact Email", value: "support@alphafundx.com", type: "email" },
               { label: "Support Phone", value: "+1 (555) 123-4567", type: "tel" },
             ].map((field) => (
               <div key={field.label} className="space-y-1">
@@ -43,7 +43,7 @@ export default function AdminSettingsPage() {
                 <label className="text-sm text-muted-foreground">{platform}</label>
                 <input
                   type="url"
-                  placeholder={`https://${platform.toLowerCase()}.com/tradexa`}
+                  placeholder={`https://${platform.toLowerCase()}.com/alphafundx`}
                   className="w-full h-10 px-3 rounded-lg bg-white/[0.04] border border-white/[0.08] text-foreground placeholder:text-muted-foreground/50 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                 />
               </div>

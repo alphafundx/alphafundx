@@ -1,12 +1,12 @@
 Phase 1 — Walkthrough
 What Was Built
-Phase 1 establishes the complete foundation for Tradexa: project architecture, design system, database schema, authentication, all route layouts, and every page in the application (with placeholder data where dynamic content will later come from the database).
+Phase 1 establishes the complete foundation for AlphaFundX: project architecture, design system, database schema, authentication, all route layouts, and every page in the application (with placeholder data where dynamic content will later come from the database).
 
 Files Created / Modified
 Design System & Config
 File	Purpose
 globals.css
-Dark-only Tradexa theme, Martius font, glow/glass utilities, custom scrollbar, animations
+Dark-only AlphaFundX theme, Martius font, glow/glass utilities, custom scrollbar, animations
 layout.tsx
 Root layout with Martius font, dark class, SEO metadata, Providers wrapper
 next.config.ts
@@ -97,10 +97,10 @@ Selection: Green-tinted text selection
 Seed Credentials
 Role	Email	Password
 Admin	
-admin@tradexa.com
+admin@alphafundx.com
 Admin@123
 User	
-user@tradexa.com
+user@alphafundx.com
 User@123
 Setup Commands
 bash

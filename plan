@@ -1,4 +1,4 @@
-# Tradexa – Funded Trading Challenge Platform
+# AlphaFundX – Funded Trading Challenge Platform
 
 A production-ready SaaS platform for funded trading challenges, built with Next.js 16, Prisma, PostgreSQL, and a premium dark-mode fintech UI.
 
@@ -33,21 +33,21 @@ Set up the architectural skeleton, design tokens, custom font, global styles, an
 
 ### Design System & Theme
 
-#### [MODIFY] [globals.css](file:///c:/Users/aetes/Documents/Projects/tradexa/app/globals.css)
-- Replace the default light/dark theme with **dark-mode-only** Tradexa palette:
+#### [MODIFY] [globals.css](file:///c:/Users/aetes/Documents/Projects/alphafundx/app/globals.css)
+- Replace the default light/dark theme with **dark-mode-only** AlphaFundX palette:
   - Primary Green `#26FF5E`, Secondary Green `#19B226`, Dark Green `#264C47`
   - Dark Gray `#232930`, Background `#1C1A21`
 - Add CSS custom properties for glow effects, glassmorphism, gradients
 - Configure the Martius font via `@font-face`
 - Set up typography scale (display, h1–h6, body, label, caption)
 
-#### [MODIFY] [layout.tsx](file:///c:/Users/aetes/Documents/Projects/tradexa/app/layout.tsx)
+#### [MODIFY] [layout.tsx](file:///c:/Users/aetes/Documents/Projects/alphafundx/app/layout.tsx)
 - Remove Google font imports, use local Martius font
 - Add `dark` class to `<html>` permanently (no light mode)
-- Add Metadata: title "Tradexa | Funded Trading Challenges", description, OG tags
+- Add Metadata: title "AlphaFundX | Funded Trading Challenges", description, OG tags
 - Wrap children with `Providers` component (TanStack Query, Toaster, etc.)
 
-#### [MODIFY] [next.config.ts](file:///c:/Users/aetes/Documents/Projects/tradexa/next.config.ts)
+#### [MODIFY] [next.config.ts](file:///c:/Users/aetes/Documents/Projects/alphafundx/next.config.ts)
 - Add image domains config for user avatars/testimonials
 - Configure `serverActions` settings
 
@@ -140,7 +140,7 @@ middleware.ts                 # Route protection middleware
 - `input`, `label`, `textarea`, `select`, `dialog`, `dropdown-menu`, `sheet`, `tabs`, `badge`, `avatar`, `separator`, `skeleton`, `tooltip`, `popover`, `command`, `table`, `card`, `switch`, `checkbox`, `radio-group`, `slider`, `progress`, `alert`, `toast` / `sonner`
 
 #### [NEW] `components/shared/`
-- **Logo** — SVG Tradexa brand mark + wordmark
+- **Logo** — SVG AlphaFundX brand mark + wordmark
 - **Navbar** — Glassmorphic sticky navbar with animated links, CTA button
 - **Footer** — Multi-column footer with branding
 - **Sidebar** — Collapsible dashboard/admin sidebar with Lucide icons
@@ -157,7 +157,7 @@ middleware.ts                 # Route protection middleware
 
 ### Prisma Schema
 
-#### [NEW] [schema.prisma](file:///c:/Users/aetes/Documents/Projects/tradexa/prisma/schema.prisma)
+#### [NEW] [schema.prisma](file:///c:/Users/aetes/Documents/Projects/alphafundx/prisma/schema.prisma)
 
 Models:
 | Model | Purpose |
@@ -177,16 +177,16 @@ Models:
 
 ### Authentication
 
-#### [NEW] [lib/auth-options.ts](file:///c:/Users/aetes/Documents/Projects/tradexa/lib/auth-options.ts)
+#### [NEW] [lib/auth-options.ts](file:///c:/Users/aetes/Documents/Projects/alphafundx/lib/auth-options.ts)
 - Credentials provider with bcrypt password verification
 - JWT strategy with role in token
 - Session callback exposing `user.id`, `user.role`, `user.status`
 - Sign-in callback blocking suspended users
 
-#### [NEW] [app/api/auth/[...nextauth]/route.ts](file:///c:/Users/aetes/Documents/Projects/tradexa/app/api/auth/%5B...nextauth%5D/route.ts)
+#### [NEW] [app/api/auth/[...nextauth]/route.ts](file:///c:/Users/aetes/Documents/Projects/alphafundx/app/api/auth/%5B...nextauth%5D/route.ts)
 - GET + POST handlers
 
-#### [NEW] [middleware.ts](file:///c:/Users/aetes/Documents/Projects/tradexa/middleware.ts)
+#### [NEW] [middleware.ts](file:///c:/Users/aetes/Documents/Projects/alphafundx/middleware.ts)
 - Protect `/dashboard/*` routes → redirect to `/login`
 - Protect `/admin/*` routes → redirect to `/login`, check `role === ADMIN`
 - Allow all `(marketing)` and `(auth)` routes
@@ -203,7 +203,7 @@ Models:
 
 Build the premium landing website with these sections:
 
-#### [MODIFY] [app/(marketing)/page.tsx](file:///c:/Users/aetes/Documents/Projects/tradexa/app/page.tsx)
+#### [MODIFY] [app/(marketing)/page.tsx](file:///c:/Users/aetes/Documents/Projects/alphafundx/app/page.tsx)
 A single-page marketing site with sections:
 
 1. **Hero** — Full-width gradient background, animated heading ("Trade Without Limits"), glowing CTA buttons, floating stats counters

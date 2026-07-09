@@ -21,7 +21,7 @@ export default function AuthLayout({
 
       {/* Footer text */}
       <p className="mt-8 text-xs text-muted-foreground/60">
-        © {new Date().getFullYear()} Tradexa. All rights reserved.
+        © {new Date().getFullYear()} AlphaFundX. All rights reserved.
       </p>
     </div>
   );

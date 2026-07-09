@@ -58,7 +58,7 @@ export default function RegisterPage() {
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-foreground">Create Account</h1>
           <p className="text-sm text-muted-foreground mt-2">
-            Start your funded trading journey with Tradexa
+            Start your funded trading journey with AlphaFundX
           </p>
         </div>
 

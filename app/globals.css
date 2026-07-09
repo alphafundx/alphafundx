@@ -5,24 +5,13 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ==========================================
-   Martius Font
-   ========================================== */
-@font-face {
-  font-family: "Martius";
-  src: url("/fonts/Martius-LV9L4.ttf") format("truetype");
-  font-weight: 100 900;
-  font-display: swap;
-  font-style: normal;
-}
-
-/* ==========================================
-   Tradexa Design Tokens
+   AlphaFundX Design Tokens
    ========================================== */
 @theme inline {
   /* Typography */
-  --font-sans: "Martius", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-google-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-  --font-heading: "Martius", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-google-sans), ui-sans-serif, system-ui, sans-serif;
 
   /* Color tokens mapped to CSS variables */
   --color-background: var(--background);
@@ -72,7 +61,7 @@
 }
 
 /* ==========================================
-   Tradexa Dark Theme (Only Theme)
+   AlphaFundX Dark Theme (Only Theme)
    Color Palette:
    - Primary Green:    #26FF5E
    - Secondary Green:  #19B226
@@ -138,15 +127,15 @@
   --radius: 0.75rem;
 
   /* ========================================
-     Custom Tradexa Design Tokens
+     Custom AlphaFundX Design Tokens
      ======================================== */
-  --tradexa-green: #26FF5E;
-  --tradexa-green-secondary: #19B226;
-  --tradexa-green-dark: #264C47;
-  --tradexa-gray: #232930;
-  --tradexa-bg: #1C1A21;
-  --tradexa-bg-elevated: #232930;
-  --tradexa-bg-surface: #2A2832;
+  --alphafundx-green: #26FF5E;
+  --alphafundx-green-secondary: #19B226;
+  --alphafundx-green-dark: #264C47;
+  --alphafundx-gray: #232930;
+  --alphafundx-bg: #1C1A21;
+  --alphafundx-bg-elevated: #232930;
+  --alphafundx-bg-surface: #2A2832;
 
   /* Glow effects */
   --glow-green: 0 0 20px rgba(38, 255, 94, 0.3), 0 0 60px rgba(38, 255, 94, 0.1);
@@ -191,16 +180,16 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: var(--tradexa-bg);
+    background: var(--alphafundx-bg);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: var(--tradexa-green-dark);
+    background: var(--alphafundx-green-dark);
     border-radius: 3px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--tradexa-green-secondary);
+    background: var(--alphafundx-green-secondary);
   }
 }
 
@@ -232,7 +221,7 @@
 
   .bg-gradient-section {
     background: radial-gradient(ellipse at 50% 100%, rgba(38, 255, 94, 0.04) 0%, transparent 60%),
-                var(--tradexa-bg);
+                var(--alphafundx-bg);
   }
 
   /* Glass Effect */
@@ -381,7 +370,7 @@
    Component Overrides
    ========================================== */
 
-/* Make all shadcn cards match Tradexa style */
+/* Make all shadcn cards match AlphaFundX style */
 [data-slot="card"] {
   background: var(--card);
   border-color: var(--border);

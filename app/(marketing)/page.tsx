@@ -164,7 +164,7 @@ const testimonials = [
   {
     name: "Alex Thompson",
     rating: 5,
-    content: "Tradexa changed my trading career. Got funded within 2 weeks and already withdrawn over $5,000 in profits!",
+    content: "AlphaFundX changed my trading career. Got funded within 2 weeks and already withdrawn over $5,000 in profits!",
     image: null,
   },
   {
@@ -317,7 +317,7 @@ export default function HomePage() {
             className="text-center mb-16"
           >
             <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">
-              Why Choose Tradexa
+              Why Choose AlphaFundX
             </p>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
               Everything You Need to{" "}
@@ -724,7 +724,7 @@ export default function HomePage() {
               Trading Journey?
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Join thousands of traders who are already earning with Tradexa.
+              Join thousands of traders who are already earning with AlphaFundX.
               Your trading career starts here.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">

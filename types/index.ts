@@ -1,5 +1,5 @@
 // ==========================================
-// Tradexa Shared TypeScript Types
+// AlphaFundX Shared TypeScript Types
 // ==========================================
 
 import type {

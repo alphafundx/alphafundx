@@ -49,7 +49,7 @@ export function TopBar({ className }: TopBarProps) {
               {session?.user?.name || "User"}
             </p>
             <p className="text-xs text-muted-foreground">
-              {session?.user?.email || "user@tradexa.com"}
+              {session?.user?.email || "user@alphafundx.com"}
             </p>
           </div>
           <div className="flex items-center justify-center size-10 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/20 text-primary font-semibold text-sm">

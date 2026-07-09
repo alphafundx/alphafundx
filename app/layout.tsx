@@ -4,19 +4,40 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Providers } from "@/components/providers";
 
-const martius = localFont({
-  src: "../fonts/Martius-LV9L4.ttf",
-  variable: "--font-sans",
+const googleSans = localFont({
+  src: [
+    {
+      path: "../fonts/Google_Sans/static/GoogleSans-Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../fonts/Google_Sans/static/GoogleSans-Medium.ttf",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../fonts/Google_Sans/static/GoogleSans-SemiBold.ttf",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../fonts/Google_Sans/static/GoogleSans-Bold.ttf",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  variable: "--font-google-sans",
   display: "swap",
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "Tradexa | Funded Trading Challenges",
-    template: "%s | Tradexa",
+    default: "AlphaFundX | Funded Trading Challenges",
+    template: "%s | AlphaFundX",
   },
   description:
-    "Get funded to trade with Tradexa. Pass our trading challenge and access up to $200,000 in funded capital. Up to 90% profit split, no time limits.",
+    "Get funded to trade with AlphaFundX. Pass our trading challenge and access up to $200,000 in funded capital. Up to 90% profit split, no time limits.",
   keywords: [
     "funded trading",
     "prop firm",
@@ -24,22 +45,22 @@ export const metadata: Metadata = {
     "forex funded account",
     "funded trader",
     "prop trading",
-    "Tradexa",
+    "AlphaFundX",
   ],
   openGraph: {
     type: "website",
     locale: "en_US",
     url: process.env.NEXT_PUBLIC_APP_URL,
-    siteName: "Tradexa",
-    title: "Tradexa | Funded Trading Challenges",
+    siteName: "AlphaFundX",
+    title: "AlphaFundX | Funded Trading Challenges",
     description:
-      "Get funded to trade with Tradexa. Pass our trading challenge and access up to $200,000 in funded capital.",
+      "Get funded to trade with AlphaFundX. Pass our trading challenge and access up to $200,000 in funded capital.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tradexa | Funded Trading Challenges",
+    title: "AlphaFundX | Funded Trading Challenges",
     description:
-      "Get funded to trade with Tradexa. Pass our trading challenge and access up to $200,000 in funded capital.",
+      "Get funded to trade with AlphaFundX. Pass our trading challenge and access up to $200,000 in funded capital.",
   },
   robots: {
     index: true,
@@ -53,7 +74,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("dark h-full antialiased", martius.variable)}>
+    <html lang="en" className={cn("dark h-full antialiased", googleSans.variable)}>
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
         <Providers>{children}</Providers>
       </body>

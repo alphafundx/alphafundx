@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { Logo } from "./logo";
 import {
-  Twitter,
-  Instagram,
   MessageCircle,
   Send,
   Mail,
   MapPin,
   Phone,
+  Globe,
+  AtSign,
 } from "lucide-react";
 
 const footerLinks = {
@@ -32,8 +32,8 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { icon: Twitter, href: "#", label: "Twitter" },
-  { icon: Instagram, href: "#", label: "Instagram" },
+  { icon: AtSign, href: "#", label: "Twitter" },
+  { icon: Globe, href: "#", label: "Instagram" },
   { icon: MessageCircle, href: "#", label: "Discord" },
   { icon: Send, href: "#", label: "Telegram" },
 ];
@@ -51,7 +51,7 @@ export function Footer() {
           <div className="lg:col-span-2 space-y-6">
             <Logo size="lg" />
             <p className="text-muted-foreground text-sm leading-relaxed max-w-sm">
-              Tradexa provides funded trading accounts for talented traders.
+              AlphaFundX provides funded trading accounts for talented traders.
               Pass our challenge and trade with up to $200,000 in capital with
               up to 90% profit split.
             </p>
@@ -60,7 +60,7 @@ export function Footer() {
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-sm text-muted-foreground">
                 <Mail className="size-4 text-primary/70" />
-                <span>support@tradexa.com</span>
+                <span>support@alphafundx.com</span>
               </div>
               <div className="flex items-center gap-3 text-sm text-muted-foreground">
                 <Phone className="size-4 text-primary/70" />
@@ -146,7 +146,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-white/[0.06] py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Tradexa. All rights reserved.
+            © {new Date().getFullYear()} AlphaFundX. All rights reserved.
           </p>
           <p className="text-xs text-muted-foreground/60">
             Trading involves risk. Past performance is not indicative of future results.

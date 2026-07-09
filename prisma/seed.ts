@@ -11,11 +11,11 @@ async function main() {
   // ==========================================
   const adminPassword = await bcrypt.hash("Admin@123", 12);
   const admin = await prisma.user.upsert({
-    where: { email: "admin@tradexa.com" },
+    where: { email: "admin@alphafundx.com" },
     update: {},
     create: {
       name: "Admin",
-      email: "admin@tradexa.com",
+      email: "admin@alphafundx.com",
       password: adminPassword,
       role: "ADMIN",
       status: "ACTIVE",
@@ -29,11 +29,11 @@ async function main() {
   // ==========================================
   const userPassword = await bcrypt.hash("User@123", 12);
   const user = await prisma.user.upsert({
-    where: { email: "user@tradexa.com" },
+    where: { email: "user@alphafundx.com" },
     update: {},
     create: {
       name: "John Trader",
-      email: "user@tradexa.com",
+      email: "user@alphafundx.com",
       password: userPassword,
       role: "USER",
       status: "ACTIVE",
@@ -125,7 +125,7 @@ async function main() {
     {
       userName: "Alex Thompson",
       rating: 5,
-      content: "Tradexa changed my trading career. Got funded within 2 weeks and already withdrawn over $5,000 in profits! The rules are fair and the support team is incredible.",
+      content: "AlphaFundX changed my trading career. Got funded within 2 weeks and already withdrawn over $5,000 in profits! The rules are fair and the support team is incredible.",
       isActive: true,
     },
     {
@@ -155,7 +155,7 @@ async function main() {
     {
       userName: "Lisa Johnson",
       rating: 5,
-      content: "The dashboard is so clean and easy to use. I can track my progress in real-time. Already recommended Tradexa to 5 of my trading friends.",
+      content: "The dashboard is so clean and easy to use. I can track my progress in real-time. Already recommended AlphaFundX to 5 of my trading friends.",
       isActive: true,
     },
   ];
@@ -194,7 +194,7 @@ async function main() {
       key: "contact",
       title: "Contact Info",
       content: {
-        email: "support@tradexa.com",
+        email: "support@alphafundx.com",
         phone: "+1 (555) 123-4567",
         address: "Dubai, UAE",
       },
@@ -214,7 +214,7 @@ async function main() {
   // 6. Create Site Settings
   // ==========================================
   const settings = [
-    { key: "general", value: { siteName: "Tradexa", tagline: "Funded Trading Challenges" } },
+    { key: "general", value: { siteName: "AlphaFundX", tagline: "Funded Trading Challenges" } },
     { key: "social", value: { twitter: "", instagram: "", discord: "", telegram: "" } },
   ];
 
@@ -261,7 +261,7 @@ async function main() {
     data: [
       {
         userId: user.id,
-        title: "Welcome to Tradexa!",
+        title: "Welcome to AlphaFundX!",
         message: "Your account has been created successfully. Start by choosing a funding package.",
         type: "SYSTEM",
       },
@@ -283,8 +283,8 @@ async function main() {
 
   console.log("\n🎉 Database seeded successfully!");
   console.log("\n📋 Login credentials:");
-  console.log("   Admin: admin@tradexa.com / Admin@123");
-  console.log("   User:  user@tradexa.com / User@123");
+  console.log("   Admin: admin@alphafundx.com / Admin@123");
+  console.log("   User:  user@alphafundx.com / User@123");
 }
 
 main()

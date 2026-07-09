@@ -57,7 +57,7 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-foreground">Welcome Back</h1>
           <p className="text-sm text-muted-foreground mt-2">
-            Sign in to your Tradexa account
+            Sign in to your AlphaFundX account
           </p>
         </div>
 
