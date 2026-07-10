@@ -11,11 +11,9 @@ import { Button } from "@/components/ui/button";
 
 const navLinks = [
   { title: "Home", href: "/" },
-  { title: "Features", href: "/#features" },
   { title: "Packages", href: "/#packages" },
-  { title: "How It Works", href: "/#how-it-works" },
-  { title: "Rules", href: "/#rules" },
-  { title: "FAQ", href: "/#faq" },
+  { title: "About", href: "/about" },
+  { title: "Contact", href: "/contact" },
 ];
 
 export function Navbar() {
@@ -39,10 +37,10 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 backdrop-blur-xs bg-background/60",
         isScrolled
-          ? "glass border-b border-white/[0.06] shadow-lg shadow-black/20"
-          : "bg-transparent"
+          ? "border-b border-white/[0.06] shadow-lg shadow-black/20"
+          : "border-b border-transparent"
       )}
     >
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

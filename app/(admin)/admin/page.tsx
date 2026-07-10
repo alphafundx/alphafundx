@@ -1,3 +1,5 @@
+"use client";
+
 import { PageHeader } from "@/components/shared/page-header";
 import { StatCard } from "@/components/shared/stat-card";
 import {
@@ -19,12 +21,12 @@ export default function AdminDashboardPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-        <StatCard title="Total Users" value={1250} icon={Users} trend={{ value: 15, isPositive: true }} />
-        <StatCard title="Active Users" value={890} icon={UserCheck} trend={{ value: 8, isPositive: true }} />
-        <StatCard title="Packages Sold" value={456} icon={Package} trend={{ value: 12, isPositive: true }} />
-        <StatCard title="Total Revenue" value={67500} prefix="$" icon={DollarSign} trend={{ value: 22, isPositive: true }} />
-        <StatCard title="Pending Withdrawals" value={23} icon={ArrowDownUp} />
-        <StatCard title="Approved Payouts" value={34200} prefix="$" icon={TrendingUp} trend={{ value: 5, isPositive: true }} />
+        <StatCard title="Total Users" value={0} icon={Users} />
+        <StatCard title="Active Users" value={0} icon={UserCheck} />
+        <StatCard title="Packages Sold" value={0} icon={Package} />
+        <StatCard title="Total Revenue" value={0} prefix="$" icon={DollarSign} />
+        <StatCard title="Pending Withdrawals" value={0} icon={ArrowDownUp} />
+        <StatCard title="Approved Payouts" value={0} prefix="$" icon={TrendingUp} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -32,14 +34,14 @@ export default function AdminDashboardPage() {
         <div className="rounded-xl border border-white/[0.06] bg-card p-6">
           <h3 className="text-lg font-semibold text-foreground mb-4">Monthly Registrations</h3>
           <div className="h-64 flex items-center justify-center text-muted-foreground text-sm">
-            Bar chart will render with real data
+            No registration data yet.
           </div>
         </div>
 
         <div className="rounded-xl border border-white/[0.06] bg-card p-6">
           <h3 className="text-lg font-semibold text-foreground mb-4">Revenue Trend</h3>
           <div className="h-64 flex items-center justify-center text-muted-foreground text-sm">
-            Line chart will render with real data
+            No revenue data yet.
           </div>
         </div>
       </div>
@@ -60,7 +62,7 @@ export default function AdminDashboardPage() {
             <tbody>
               <tr>
                 <td colSpan={4} className="px-4 py-8 text-center text-sm text-muted-foreground">
-                  No users yet. Data will populate once the database is connected.
+                  No users yet.
                 </td>
               </tr>
             </tbody>

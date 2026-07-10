@@ -1,5 +1,8 @@
+"use client";
+
 import { PageHeader } from "@/components/shared/page-header";
 import { StatCard } from "@/components/shared/stat-card";
+import { EmptyState } from "@/components/shared/empty-state";
 import { DollarSign, TrendingUp, Package, ArrowDownUp } from "lucide-react";
 
 export default function DashboardPage() {
@@ -14,59 +17,47 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
           title="Account Balance"
-          value={50000}
+          value={0}
           prefix="$"
           icon={DollarSign}
-          trend={{ value: 12.5, isPositive: true }}
         />
         <StatCard
           title="Current Profit"
-          value={3250}
+          value={0}
           prefix="$"
           icon={TrendingUp}
-          trend={{ value: 8.3, isPositive: true }}
         />
         <StatCard
           title="Profit Percentage"
-          value={6.5}
+          value={0}
           suffix="%"
           icon={TrendingUp}
           decimals={1}
         />
         <StatCard
           title="Active Packages"
-          value={1}
+          value={0}
           icon={Package}
         />
       </div>
 
-      {/* Placeholder content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Chart area */}
         <div className="lg:col-span-2 rounded-xl border border-white/[0.06] bg-card p-6">
           <h3 className="text-lg font-semibold text-foreground mb-4">Profit Overview</h3>
-          <div className="h-64 flex items-center justify-center text-muted-foreground text-sm">
-            Chart will be rendered here with real data
+          <div className="h-64 flex items-center justify-center">
+            <EmptyState
+              title="No Data Yet"
+              description="Purchase a package to start tracking your profits."
+            />
           </div>
         </div>
 
         {/* Recent activity */}
         <div className="rounded-xl border border-white/[0.06] bg-card p-6">
           <h3 className="text-lg font-semibold text-foreground mb-4">Recent Activity</h3>
-          <div className="space-y-4">
-            {[
-              { text: "Account activated", time: "2 hours ago" },
-              { text: "Package purchased", time: "1 day ago" },
-              { text: "Account created", time: "2 days ago" },
-            ].map((item) => (
-              <div
-                key={item.text}
-                className="flex items-center justify-between py-2 border-b border-white/[0.04] last:border-0"
-              >
-                <span className="text-sm text-foreground">{item.text}</span>
-                <span className="text-xs text-muted-foreground">{item.time}</span>
-              </div>
-            ))}
+          <div className="flex items-center justify-center py-8">
+            <p className="text-sm text-muted-foreground">No recent activity.</p>
           </div>
         </div>
       </div>

@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GlowCard } from "@/components/shared/glow-card";
+import { BorderGlow } from "@/components/ui/border-glow";
 
 // ==========================================
 // Animation Variants
@@ -233,16 +234,6 @@ export default function HomePage() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="space-y-8"
           >
-            {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-primary/5 text-sm text-primary"
-            >
-              <span className="size-2 rounded-full bg-primary pulse-green" />
-              Now Accepting Traders Worldwide
-            </motion.div>
 
             {/* Heading */}
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]">
@@ -388,14 +379,25 @@ export default function HomePage() {
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5"
           >
             {packages.map((pkg) => (
-              <motion.div key={pkg.name} variants={fadeInUp} transition={{ duration: 0.5 }}>
-                <div
-                  className={`relative rounded-xl border bg-card p-6 transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 h-full flex flex-col ${
-                    pkg.isPopular
-                      ? "border-primary/40 shadow-lg shadow-primary/10"
-                      : "border-white/[0.06]"
-                  }`}
+              <motion.div key={pkg.name} variants={fadeInUp} transition={{ duration: 0.5 }} className="h-full">
+                <BorderGlow
+                  edgeSensitivity={30}
+                  glowColor="135 100 57"
+                  backgroundColor="#232930"
+                  borderRadius={12}
+                  glowRadius={40}
+                  glowIntensity={1}
+                  coneSpread={25}
+                  animated={false}
+                  colors={['#26FF5E', '#19B226', '#34D399']}
+                  className="h-full"
                 >
+                  <div
+                    className={`relative p-6 transition-all duration-300 h-full flex flex-col ${pkg.isPopular
+                        ? "shadow-lg shadow-primary/10"
+                        : ""
+                      }`}
+                  >
                   {/* Popular badge */}
                   {pkg.isPopular && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-green text-xs font-bold text-primary-foreground uppercase">
@@ -442,16 +444,16 @@ export default function HomePage() {
 
                   <Link href="/register" className="mt-6 block">
                     <Button
-                      className={`w-full font-semibold ${
-                        pkg.isPopular
+                      className={`w-full font-semibold ${pkg.isPopular
                           ? "bg-primary text-primary-foreground hover:bg-primary/90 glow-subtle"
                           : "bg-white/[0.06] text-foreground hover:bg-white/10"
-                      }`}
+                        }`}
                     >
                       Get Started
                     </Button>
                   </Link>
-                </div>
+                  </div>
+                </BorderGlow>
               </motion.div>
             ))}
           </motion.div>
@@ -565,9 +567,8 @@ export default function HomePage() {
                   {tradingRules.map((item, i) => (
                     <tr
                       key={item.rule}
-                      className={`border-b border-white/[0.04] ${
-                        i % 2 === 0 ? "" : "bg-white/[0.01]"
-                      }`}
+                      className={`border-b border-white/[0.04] ${i % 2 === 0 ? "" : "bg-white/[0.01]"
+                        }`}
                     >
                       <td className="px-6 py-4 text-sm font-medium text-foreground">
                         {item.rule}
@@ -630,11 +631,10 @@ export default function HomePage() {
                       {Array.from({ length: 5 }).map((_, i) => (
                         <Star
                           key={i}
-                          className={`size-4 ${
-                            i < testimonial.rating
+                          className={`size-4 ${i < testimonial.rating
                               ? "text-yellow-400 fill-yellow-400"
                               : "text-muted-foreground/30"
-                          }`}
+                            }`}
                         />
                       ))}
                     </div>

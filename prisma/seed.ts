@@ -1,7 +1,17 @@
 import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 import bcrypt from "bcryptjs";
+import "dotenv/config";
 
-const prisma = new PrismaClient();
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  throw new Error("DATABASE_URL environment variable is not set");
+}
+
+const pool = new Pool({ connectionString });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
   console.log("🌱 Seeding database...");
@@ -25,26 +35,7 @@ async function main() {
   console.log(`✅ Admin user created: ${admin.email}`);
 
   // ==========================================
-  // 2. Create Demo User
-  // ==========================================
-  const userPassword = await bcrypt.hash("User@123", 12);
-  const user = await prisma.user.upsert({
-    where: { email: "user@alphafundx.com" },
-    update: {},
-    create: {
-      name: "John Trader",
-      email: "user@alphafundx.com",
-      password: userPassword,
-      role: "USER",
-      status: "ACTIVE",
-      phone: "+1987654321",
-      telegramUsername: "@johntrader",
-    },
-  });
-  console.log(`✅ Demo user created: ${user.email}`);
-
-  // ==========================================
-  // 3. Create Packages
+  // 2. Create Packages
   // ==========================================
   const packagesData = [
     {
@@ -119,54 +110,7 @@ async function main() {
   console.log(`✅ ${packagesData.length} packages created`);
 
   // ==========================================
-  // 4. Create Testimonials
-  // ==========================================
-  const testimonialsData = [
-    {
-      userName: "Alex Thompson",
-      rating: 5,
-      content: "AlphaFundX changed my trading career. Got funded within 2 weeks and already withdrawn over $5,000 in profits! The rules are fair and the support team is incredible.",
-      isActive: true,
-    },
-    {
-      userName: "Sarah Chen",
-      rating: 5,
-      content: "The most transparent prop firm I've worked with. No hidden rules, no surprises. I passed Phase 1 in 8 days and Phase 2 in 5 days. Highly recommended.",
-      isActive: true,
-    },
-    {
-      userName: "Michael Rivera",
-      rating: 5,
-      content: "Instant payouts, great support team, and fair rules. This is exactly what traders need. I've been funded for 3 months and have withdrawn $12,000 so far.",
-      isActive: true,
-    },
-    {
-      userName: "Emma Williams",
-      rating: 4,
-      content: "Started with the $25K account and scaled up to $100K through their scaling plan. The profit split is amazing and withdrawals are processed within 24 hours.",
-      isActive: true,
-    },
-    {
-      userName: "David Park",
-      rating: 5,
-      content: "Best prop firm in the industry. The no time limit policy took all the pressure off and I could trade comfortably. Got funded in 3 weeks at my own pace.",
-      isActive: true,
-    },
-    {
-      userName: "Lisa Johnson",
-      rating: 5,
-      content: "The dashboard is so clean and easy to use. I can track my progress in real-time. Already recommended AlphaFundX to 5 of my trading friends.",
-      isActive: true,
-    },
-  ];
-
-  for (const testimonial of testimonialsData) {
-    await prisma.testimonial.create({ data: testimonial });
-  }
-  console.log(`✅ ${testimonialsData.length} testimonials created`);
-
-  // ==========================================
-  // 5. Create CMS Content
+  // 3. Create CMS Content
   // ==========================================
   const cmsData = [
     {
@@ -211,7 +155,7 @@ async function main() {
   console.log(`✅ ${cmsData.length} CMS content blocks created`);
 
   // ==========================================
-  // 6. Create Site Settings
+  // 4. Create Site Settings
   // ==========================================
   const settings = [
     { key: "general", value: { siteName: "AlphaFundX", tagline: "Funded Trading Challenges" } },
@@ -227,64 +171,10 @@ async function main() {
   }
   console.log(`✅ Site settings created`);
 
-  // ==========================================
-  // 7. Create Demo Order + UserPackage for demo user
-  // ==========================================
-  const order = await prisma.order.create({
-    data: {
-      userId: user.id,
-      packageId: "professional",
-      amount: 199,
-      status: "COMPLETED",
-      paymentMethod: "stripe",
-      paymentReference: "demo_payment_123",
-    },
-  });
-
-  await prisma.userPackage.create({
-    data: {
-      userId: user.id,
-      packageId: "professional",
-      orderId: order.id,
-      status: "ACTIVE",
-      currentBalance: 50000,
-      currentProfit: 3250,
-      profitPercentage: 6.5,
-    },
-  });
-  console.log(`✅ Demo order and user package created`);
-
-  // ==========================================
-  // 8. Create Demo Notifications
-  // ==========================================
-  await prisma.notification.createMany({
-    data: [
-      {
-        userId: user.id,
-        title: "Welcome to AlphaFundX!",
-        message: "Your account has been created successfully. Start by choosing a funding package.",
-        type: "SYSTEM",
-      },
-      {
-        userId: user.id,
-        title: "Package Activated",
-        message: "Your Professional $50,000 package has been activated. Good luck trading!",
-        type: "PACKAGE",
-      },
-      {
-        userId: user.id,
-        title: "Profit Milestone",
-        message: "Congratulations! You've reached 5% profit on your funded account.",
-        type: "SUCCESS",
-      },
-    ],
-  });
-  console.log(`✅ Demo notifications created`);
-
   console.log("\n🎉 Database seeded successfully!");
-  console.log("\n📋 Login credentials:");
-  console.log("   Admin: admin@alphafundx.com / Admin@123");
-  console.log("   User:  user@alphafundx.com / User@123");
+  console.log("\n📋 Admin login credentials:");
+  console.log("   Email:    admin@alphafundx.com");
+  console.log("   Password: Admin@123");
 }
 
 main()
