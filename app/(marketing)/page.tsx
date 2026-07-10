@@ -21,7 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { GlowCard } from "@/components/shared/glow-card";
 import { BorderGlow } from "@/components/ui/border-glow";
-import Lightfall from "@/components/Lightfall";
+import Threads from "@/components/Threads";
 
 // ==========================================
 // Animation Variants
@@ -223,23 +223,12 @@ export default function HomePage() {
   return (
     <div className="relative">
       {/* ========== FIXED ANIMATED BACKGROUND ========== */}
-      <div className="fixed inset-0 z-[-1]">
-        <Lightfall
-          colors={['#26FF5E', '#19B226', '#34D399']}
-          backgroundColor="#1C1A21"
-          speed={0.5}
-          streakCount={2}
-          streakWidth={1}
-          streakLength={1}
-          glow={1}
-          density={0.6}
-          twinkle={1}
-          zoom={3}
-          backgroundGlow={0.5}
-          opacity={1}
-          mouseInteraction
-          mouseStrength={0.5}
-          mouseRadius={1}
+      <div className="fixed inset-0 z-[-1] bg-[#1C1A21]">
+        <Threads
+          amplitude={1}
+          distance={0}
+          enableMouseInteraction={true}
+          color={[0.15, 1.0, 0.37]}
         />
       </div>
 
