@@ -21,6 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { GlowCard } from "@/components/shared/glow-card";
 import { BorderGlow } from "@/components/ui/border-glow";
+import Lightfall from "@/components/Lightfall";
 
 // ==========================================
 // Animation Variants
@@ -221,8 +222,29 @@ const faqs = [
 export default function HomePage() {
   return (
     <div className="relative">
+      {/* ========== FIXED ANIMATED BACKGROUND ========== */}
+      <div className="fixed inset-0 z-[-1]">
+        <Lightfall
+          colors={['#26FF5E', '#19B226', '#34D399']}
+          backgroundColor="#1C1A21"
+          speed={0.5}
+          streakCount={2}
+          streakWidth={1}
+          streakLength={1}
+          glow={1}
+          density={0.6}
+          twinkle={1}
+          zoom={3}
+          backgroundGlow={0.5}
+          opacity={1}
+          mouseInteraction
+          mouseStrength={0.5}
+          mouseRadius={1}
+        />
+      </div>
+
       {/* ========== HERO SECTION ========== */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-hero bg-grid">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Decorative blurs */}
         <div className="absolute top-20 left-1/4 w-96 h-96 rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
         <div className="absolute bottom-20 right-1/4 w-72 h-72 rounded-full bg-accent/5 blur-[100px] pointer-events-none" />
@@ -705,8 +727,8 @@ export default function HomePage() {
       </section>
 
       {/* ========== FINAL CTA ========== */}
-      <section className="py-24 lg:py-32 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-primary/5 to-background" />
+      <section className="py-24 lg:py-32 relative overflow-hidden bg-transparent">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-[150px] pointer-events-none" />
 
         <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
