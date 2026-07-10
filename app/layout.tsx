@@ -74,7 +74,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("dark h-full antialiased", googleSans.variable)}>
+    <html lang="en" data-scroll-behavior="smooth" className={cn("dark h-full antialiased", googleSans.variable)}>
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
         <Providers>{children}</Providers>
       </body>
