@@ -405,64 +405,64 @@ export default function HomePage() {
                 >
                   <div
                     className={`relative p-6 transition-all duration-300 h-full flex flex-col ${pkg.isPopular
-                        ? "shadow-lg shadow-primary/10"
-                        : ""
+                      ? "shadow-lg shadow-primary/10"
+                      : ""
                       }`}
                   >
-                  {/* Popular badge */}
-                  {pkg.isPopular && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-green text-xs font-bold text-primary-foreground uppercase">
-                      Most Popular
-                    </div>
-                  )}
+                    {/* Popular badge */}
+                    {pkg.isPopular && (
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-green text-xs font-bold text-primary-foreground uppercase">
+                        Most Popular
+                      </div>
+                    )}
 
-                  <div className="space-y-4 flex-1">
-                    <div>
-                      <h3 className="text-lg font-bold text-foreground">{pkg.name}</h3>
-                      <p className="text-2xl font-bold text-primary mt-1">
-                        ${pkg.accountSize.toLocaleString()}
-                      </p>
-                    </div>
+                    <div className="space-y-4 flex-1">
+                      <div>
+                        <h3 className="text-lg font-bold text-foreground">{pkg.name}</h3>
+                        <p className="text-2xl font-bold text-primary mt-1">
+                          ${pkg.accountSize.toLocaleString()}
+                        </p>
+                      </div>
 
-                    {/* Price */}
-                    <div className="space-y-1">
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-bold text-foreground">
-                          ${pkg.discountedPrice}
-                        </span>
-                        <span className="text-sm text-muted-foreground line-through">
-                          ${pkg.originalPrice}
+                      {/* Price */}
+                      <div className="space-y-1">
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-3xl font-bold text-foreground">
+                            ${pkg.discountedPrice}
+                          </span>
+                          <span className="text-sm text-muted-foreground line-through">
+                            ${pkg.originalPrice}
+                          </span>
+                        </div>
+                        <span className="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-primary/10 text-primary">
+                          {pkg.discountPercentage}% OFF
                         </span>
                       </div>
-                      <span className="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-primary/10 text-primary">
-                        {pkg.discountPercentage}% OFF
-                      </span>
+
+                      {/* Features */}
+                      <ul className="space-y-2.5 pt-2">
+                        {pkg.features.map((feature) => (
+                          <li
+                            key={feature}
+                            className="flex items-center gap-2 text-sm text-muted-foreground"
+                          >
+                            <Check className="size-4 text-primary shrink-0" />
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
 
-                    {/* Features */}
-                    <ul className="space-y-2.5 pt-2">
-                      {pkg.features.map((feature) => (
-                        <li
-                          key={feature}
-                          className="flex items-center gap-2 text-sm text-muted-foreground"
-                        >
-                          <Check className="size-4 text-primary shrink-0" />
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <Link href="/register" className="mt-6 block">
-                    <Button
-                      className={`w-full font-semibold ${pkg.isPopular
+                    <Link href="/register" className="mt-6 block">
+                      <Button
+                        className={`w-full font-semibold ${pkg.isPopular
                           ? "bg-primary text-primary-foreground hover:bg-primary/90 glow-subtle"
                           : "bg-white/[0.06] text-foreground hover:bg-white/10"
-                        }`}
-                    >
-                      Get Started
-                    </Button>
-                  </Link>
+                          }`}
+                      >
+                        Get Started
+                      </Button>
+                    </Link>
                   </div>
                 </BorderGlow>
               </motion.div>
@@ -643,8 +643,8 @@ export default function HomePage() {
                         <Star
                           key={i}
                           className={`size-4 ${i < testimonial.rating
-                              ? "text-yellow-400 fill-yellow-400"
-                              : "text-muted-foreground/30"
+                            ? "text-yellow-400 fill-yellow-400"
+                            : "text-muted-foreground/30"
                             }`}
                         />
                       ))}
