@@ -30,7 +30,7 @@ uniform vec2 uMouse;
 
 #define PI 3.1415926538
 
-const int u_line_count = 40;
+const int u_line_count = 20;
 const float u_line_width = 7.0;
 const float u_line_blur = 10.0;
 
@@ -176,7 +176,7 @@ const Threads: React.FC<ThreadsProps> = ({
     const MAX_RENDER_DIM = 1920;
     function resize() {
       const { clientWidth, clientHeight } = container;
-      const baseDpr = Math.min(window.devicePixelRatio || 1, 2);
+      const baseDpr = Math.min(window.devicePixelRatio || 1, 1);
       const longestSide = Math.max(clientWidth, clientHeight) * baseDpr;
       const dpr = longestSide > MAX_RENDER_DIM ? (baseDpr * MAX_RENDER_DIM) / longestSide : baseDpr;
       renderer.dpr = dpr;
