@@ -17,10 +17,23 @@ import {
   Users,
   Award,
   Globe,
+  Wallet,
+  HeadphonesIcon,
+  Scale,
+  Repeat,
+  BadgePercent,
+  ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GlowCard } from "@/components/shared/glow-card";
 import { BorderGlow } from "@/components/ui/border-glow";
+import { TestimonialCarousel } from "@/components/marketing/testimonial-carousel";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
 import Threads from "@/components/Threads";
 
 // ==========================================
@@ -162,6 +175,49 @@ const tradingRules = [
   { rule: "Profit Split", phase1: "—", phase2: "—", funded: "Up to 90%" },
 ];
 
+const benefits = [
+  {
+    icon: BadgePercent,
+    title: "Up to 90% Profit Split",
+    description: "Industry-leading payout ratios that reward your skill.",
+  },
+  {
+    icon: Clock,
+    title: "No Time Limits",
+    description: "Trade at your own pace — no pressure, no deadlines.",
+  },
+  {
+    icon: Wallet,
+    title: "24-Hour Payouts",
+    description: "Request withdrawals anytime and get paid within a day.",
+  },
+  {
+    icon: Scale,
+    title: "Fair & Transparent",
+    description: "Clear rules with no hidden conditions or fine print.",
+  },
+  {
+    icon: Repeat,
+    title: "Free Retakes",
+    description: "Hit the profit target? Get a free retry if you breach.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Real Capital",
+    description: "Trade real funds — not simulated demo environments.",
+  },
+  {
+    icon: HeadphonesIcon,
+    title: "24/7 Support",
+    description: "Dedicated support team available around the clock.",
+  },
+  {
+    icon: TrendingUp,
+    title: "Scaling Plan",
+    description: "Grow your account size as you prove consistency.",
+  },
+];
+
 const testimonials = [
   {
     name: "Alex Thompson",
@@ -185,6 +241,18 @@ const testimonials = [
     name: "Emma Williams",
     rating: 4,
     content: "Started with the $25K account and scaled up to $100K. The profit split is amazing!",
+    image: null,
+  },
+  {
+    name: "David Park",
+    rating: 5,
+    content: "The scaling plan is incredible. Went from $50K to $200K in under 3 months. Best decision I ever made.",
+    image: null,
+  },
+  {
+    name: "Fatima Al-Rashid",
+    rating: 5,
+    content: "As a forex trader from Dubai, finding a trustworthy prop firm was crucial. AlphaFundX exceeded all my expectations.",
     image: null,
   },
 ];
@@ -213,6 +281,14 @@ const faqs = [
   {
     question: "Is there a refund policy?",
     answer: "Yes, we offer a full refund if you pass the challenge. The challenge fee is returned to you along with your first profit split payment.",
+  },
+  {
+    question: "Can I hold trades overnight or over the weekend?",
+    answer: "Yes, you can hold trades overnight. Weekend holding is also allowed but be mindful of gaps. There are no restrictions on holding duration.",
+  },
+  {
+    question: "What happens if I breach a rule?",
+    answer: "If you breach the daily drawdown or max drawdown limits, your account will be closed. However, depending on your plan, you may be eligible for a free retake so you can try again without additional cost.",
   },
 ];
 
@@ -556,7 +632,7 @@ export default function HomePage() {
             whileInView="animate"
             initial="initial"
           >
-            <div className="rounded-xl border border-white/[0.06] overflow-hidden">
+            <div className="rounded-xl border border-white/[0.06] bg-card shadow-2xl relative z-10 overflow-hidden">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-white/[0.06] bg-white/[0.02]">
@@ -602,8 +678,67 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ========== BENEFITS SECTION ========== */}
+      <section id="benefits" className="py-24 lg:py-32 bg-gradient-section">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div
+            {...fadeInUp}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            whileInView="animate"
+            initial="initial"
+            className="text-center mb-16"
+          >
+            <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">
+              Benefits
+            </p>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
+              Why Traders{" "}
+              <span className="text-gradient-green">Choose Us</span>
+            </h2>
+            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+              We&apos;ve built the most trader-friendly funded program in the industry.
+            </p>
+          </motion.div>
+
+          <motion.div
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5"
+          >
+            {benefits.map((benefit) => (
+              <motion.div
+                key={benefit.title}
+                variants={fadeInUp}
+                transition={{ duration: 0.5 }}
+                className="group"
+              >
+                <div className="relative p-5 lg:p-6 rounded-xl border border-white/[0.06] bg-card hover:border-primary/20 transition-all duration-300 h-full">
+                  {/* Hover glow */}
+                  <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-20 h-20 rounded-full bg-primary/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                  <div className="relative space-y-3">
+                    <div className="flex items-center justify-center size-11 rounded-lg bg-primary/10 group-hover:bg-primary/15 transition-colors duration-300">
+                      <benefit.icon className="size-5 text-primary" />
+                    </div>
+                    <h3 className="text-sm font-semibold text-foreground">
+                      {benefit.title}
+                    </h3>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {benefit.description}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
       {/* ========== TESTIMONIALS ========== */}
-      <section className="py-24 lg:py-32 bg-gradient-section">
+      <section className="py-24 lg:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
             {...fadeInUp}
@@ -620,63 +755,25 @@ export default function HomePage() {
               Real Results From{" "}
               <span className="text-gradient-green">Real Traders</span>
             </h2>
+            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+              Don&apos;t just take our word for it — hear from traders who&apos;ve been funded.
+            </p>
           </motion.div>
 
           <motion.div
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="animate"
+            {...fadeInUp}
+            transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+            whileInView="animate"
+            initial="initial"
           >
-            {testimonials.map((testimonial) => (
-              <motion.div
-                key={testimonial.name}
-                variants={fadeInUp}
-                transition={{ duration: 0.5 }}
-              >
-                <GlowCard className="h-full">
-                  <div className="p-6 space-y-4">
-                    {/* Stars */}
-                    <div className="flex gap-1">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`size-4 ${i < testimonial.rating
-                            ? "text-yellow-400 fill-yellow-400"
-                            : "text-muted-foreground/30"
-                            }`}
-                        />
-                      ))}
-                    </div>
-
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      &ldquo;{testimonial.content}&rdquo;
-                    </p>
-
-                    <div className="flex items-center gap-3 pt-2">
-                      <div className="flex items-center justify-center size-10 rounded-full bg-gradient-green text-primary-foreground font-semibold text-sm">
-                        {testimonial.name.charAt(0)}
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-foreground">
-                          {testimonial.name}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          Funded Trader
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </GlowCard>
-              </motion.div>
-            ))}
+            <TestimonialCarousel testimonials={testimonials} />
           </motion.div>
         </div>
       </section>
 
       {/* ========== FAQ ========== */}
-      <section id="faq" className="py-24 lg:py-32">
+      <section id="faq" className="py-24 lg:py-32 bg-gradient-section">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <motion.div
             {...fadeInUp}
@@ -693,24 +790,34 @@ export default function HomePage() {
               Frequently Asked{" "}
               <span className="text-gradient-green">Questions</span>
             </h2>
+            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+              Everything you need to know before getting started.
+            </p>
           </motion.div>
 
           <motion.div
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="animate"
+            {...fadeInUp}
+            transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
-            className="space-y-4"
+            whileInView="animate"
+            initial="initial"
           >
-            {faqs.map((faq) => (
-              <motion.div
-                key={faq.question}
-                variants={fadeInUp}
-                transition={{ duration: 0.5 }}
-              >
-                <FaqItem question={faq.question} answer={faq.answer} />
-              </motion.div>
-            ))}
+            <Accordion className="space-y-3">
+              {faqs.map((faq, index) => (
+                <AccordionItem
+                  key={faq.question}
+                  value={index}
+                  className="rounded-xl border border-white/[0.06] bg-card overflow-hidden px-6 hover:border-primary/15 transition-colors duration-300"
+                >
+                  <AccordionTrigger className="text-foreground font-medium hover:text-primary hover:no-underline transition-colors py-5">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground leading-relaxed">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
           </motion.div>
         </div>
       </section>
@@ -748,27 +855,19 @@ export default function HomePage() {
                   <ArrowRight className="ml-2 size-5" />
                 </Button>
               </Link>
+              <Link href="/contact">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="h-14 px-8 text-lg border-white/10 hover:bg-white/5"
+                >
+                  Contact Us
+                </Button>
+              </Link>
             </div>
           </motion.div>
         </div>
       </section>
     </div>
-  );
-}
-
-// ==========================================
-// FAQ Item Component
-// ==========================================
-function FaqItem({ question, answer }: { question: string; answer: string }) {
-  return (
-    <details className="group rounded-xl border border-white/[0.06] bg-card overflow-hidden">
-      <summary className="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none text-foreground font-medium hover:text-primary transition-colors">
-        {question}
-        <ChevronRight className="size-5 text-muted-foreground shrink-0 transition-transform duration-200 group-open:rotate-90" />
-      </summary>
-      <div className="px-6 pb-5 text-sm text-muted-foreground leading-relaxed">
-        {answer}
-      </div>
-    </details>
   );
 }
