@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 export interface PackageItem {
   id: string;
@@ -82,34 +83,37 @@ interface PackageStore {
   updatePackage: (id: string, data: Partial<PackageItem>) => void;
   deletePackage: (id: string) => void;
   toggleActive: (id: string) => void;
-  /** Returns only active packages for the marketing page */
-  getActivePackages: () => PackageItem[];
 }
 
-export const usePackageStore = create<PackageStore>((set, get) => ({
-  packages: defaultPackages,
+export const usePackageStore = create<PackageStore>()(
+  persist(
+    (set) => ({
+      packages: defaultPackages,
 
-  addPackage: (pkg) =>
-    set((state) => ({
-      packages: [...state.packages, { ...pkg, id: Date.now().toString() }],
-    })),
+      addPackage: (pkg) =>
+        set((state) => ({
+          packages: [...state.packages, { ...pkg, id: Date.now().toString() }],
+        })),
 
-  updatePackage: (id, data) =>
-    set((state) => ({
-      packages: state.packages.map((p) => (p.id === id ? { ...p, ...data } : p)),
-    })),
+      updatePackage: (id, data) =>
+        set((state) => ({
+          packages: state.packages.map((p) => (p.id === id ? { ...p, ...data } : p)),
+        })),
 
-  deletePackage: (id) =>
-    set((state) => ({
-      packages: state.packages.filter((p) => p.id !== id),
-    })),
+      deletePackage: (id) =>
+        set((state) => ({
+          packages: state.packages.filter((p) => p.id !== id),
+        })),
 
-  toggleActive: (id) =>
-    set((state) => ({
-      packages: state.packages.map((p) =>
-        p.id === id ? { ...p, isActive: !p.isActive } : p
-      ),
-    })),
-
-  getActivePackages: () => get().packages.filter((p) => p.isActive),
-}));
+      toggleActive: (id) =>
+        set((state) => ({
+          packages: state.packages.map((p) =>
+            p.id === id ? { ...p, isActive: !p.isActive } : p
+          ),
+        })),
+    }),
+    {
+      name: "alphafundx-packages",
+    }
+  )
+);

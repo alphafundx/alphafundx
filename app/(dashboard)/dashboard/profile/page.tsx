@@ -48,7 +48,7 @@ export default function ProfilePage() {
               {session?.user?.email || "trader@example.com"}
             </p>
             <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wider">
-              {session?.user?.role === "ADMIN" ? "Administrator" : "Funded Trader"}
+              {(session?.user as { role?: string })?.role === "ADMIN" ? "Administrator" : "Funded Trader"}
             </span>
           </div>
 

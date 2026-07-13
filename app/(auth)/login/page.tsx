@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
@@ -37,7 +37,10 @@ export default function LoginPage() {
         toast.error(result.error);
       } else {
         toast.success("Welcome back!");
-        router.push("/dashboard");
+        // Check role to redirect to proper dashboard
+        const session = await getSession();
+        const role = (session?.user as { role?: string })?.role;
+        router.push(role === "ADMIN" ? "/admin" : "/dashboard");
         router.refresh();
       }
     } catch {

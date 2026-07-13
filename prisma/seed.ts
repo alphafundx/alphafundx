@@ -1,24 +1,14 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { Pool } from "pg";
 import bcrypt from "bcryptjs";
-import "dotenv/config";
 
-const connectionString = process.env.DATABASE_URL;
-if (!connectionString) {
-  throw new Error("DATABASE_URL environment variable is not set");
-}
-
-const pool = new Pool({ connectionString });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient();
 
 async function main() {
-  console.log("🌱 Seeding database...");
+  console.log("🌱 Seeding database...\n");
 
-  // ==========================================
-  // 1. Create Admin User
-  // ==========================================
+  // ================================
+  // 1. Admin User
+  // ================================
   const adminPassword = await bcrypt.hash("Admin@123", 12);
   const admin = await prisma.user.upsert({
     where: { email: "admin@alphafundx.com" },
@@ -29,21 +19,40 @@ async function main() {
       password: adminPassword,
       role: "ADMIN",
       status: "ACTIVE",
-      phone: "+1234567890",
+      phone: "+1 (555) 000-0001",
     },
   });
-  console.log(`✅ Admin user created: ${admin.email}`);
+  console.log("✅ Admin user created:", admin.email);
 
-  // ==========================================
-  // 2. Create Packages
-  // ==========================================
+  // ================================
+  // 2. Demo User
+  // ================================
+  const userPassword = await bcrypt.hash("User@123", 12);
+  const demoUser = await prisma.user.upsert({
+    where: { email: "trader@alphafundx.com" },
+    update: {},
+    create: {
+      name: "Alex Thompson",
+      email: "trader@alphafundx.com",
+      password: userPassword,
+      role: "USER",
+      status: "ACTIVE",
+      phone: "+1 (555) 000-0002",
+      telegramUsername: "@alextrader",
+    },
+  });
+  console.log("✅ Demo user created:", demoUser.email);
+
+  // ================================
+  // 3. Packages
+  // ================================
   const packagesData = [
     {
       name: "Starter",
       accountSize: 10000,
-      description: "Perfect for beginner traders looking to prove their skills.",
-      features: ["$10,000 Account", "80% Profit Split", "No Time Limit", "Daily Drawdown: 5%", "Max Drawdown: 10%", "Free Retake on Profit Target"],
-      rules: ["Profit Target: 8% (Phase 1), 5% (Phase 2)", "Daily Drawdown: 5%", "Max Drawdown: 10%", "Minimum 5 Trading Days", "No Time Limit"],
+      description: "Perfect for beginners looking to prove their skills.",
+      features: ["$10,000 Account", "80% Profit Split", "No Time Limit", "Daily Drawdown: 5%", "Max Drawdown: 10%"],
+      rules: ["Minimum 5 trading days", "Daily drawdown limit: 5%", "Maximum drawdown: 10%", "No news trading restrictions"],
       originalPrice: 99,
       discountedPrice: 49,
       discountPercentage: 50,
@@ -53,9 +62,9 @@ async function main() {
     {
       name: "Standard",
       accountSize: 25000,
-      description: "For traders ready to scale their trading career.",
-      features: ["$25,000 Account", "80% Profit Split", "No Time Limit", "Daily Drawdown: 5%", "Max Drawdown: 10%", "Free Retake on Profit Target"],
-      rules: ["Profit Target: 8% (Phase 1), 5% (Phase 2)", "Daily Drawdown: 5%", "Max Drawdown: 10%", "Minimum 5 Trading Days", "No Time Limit"],
+      description: "Great value for intermediate traders.",
+      features: ["$25,000 Account", "80% Profit Split", "No Time Limit", "Daily Drawdown: 5%", "Max Drawdown: 10%"],
+      rules: ["Minimum 5 trading days", "Daily drawdown limit: 5%", "Maximum drawdown: 10%", "No news trading restrictions"],
       originalPrice: 199,
       discountedPrice: 149,
       discountPercentage: 25,
@@ -65,9 +74,9 @@ async function main() {
     {
       name: "Professional",
       accountSize: 50000,
-      description: "Our most popular plan. Ideal balance of size and affordability.",
-      features: ["$50,000 Account", "85% Profit Split", "No Time Limit", "Daily Drawdown: 5%", "Max Drawdown: 10%", "Free Retake on Profit Target", "Priority Support"],
-      rules: ["Profit Target: 8% (Phase 1), 5% (Phase 2)", "Daily Drawdown: 5%", "Max Drawdown: 10%", "Minimum 5 Trading Days", "No Time Limit"],
+      description: "Our most popular choice for serious traders.",
+      features: ["$50,000 Account", "85% Profit Split", "No Time Limit", "Daily Drawdown: 5%", "Max Drawdown: 10%"],
+      rules: ["Minimum 5 trading days", "Daily drawdown limit: 5%", "Maximum drawdown: 10%", "No news trading restrictions"],
       originalPrice: 299,
       discountedPrice: 199,
       discountPercentage: 33,
@@ -77,9 +86,9 @@ async function main() {
     {
       name: "Elite",
       accountSize: 100000,
-      description: "For experienced traders seeking significant capital.",
-      features: ["$100,000 Account", "90% Profit Split", "No Time Limit", "Daily Drawdown: 5%", "Max Drawdown: 10%", "Free Retake on Profit Target", "Priority Support", "1-on-1 Consultation"],
-      rules: ["Profit Target: 8% (Phase 1), 5% (Phase 2)", "Daily Drawdown: 5%", "Max Drawdown: 10%", "Minimum 5 Trading Days", "No Time Limit"],
+      description: "For experienced traders who want more capital.",
+      features: ["$100,000 Account", "90% Profit Split", "No Time Limit", "Daily Drawdown: 5%", "Max Drawdown: 10%"],
+      rules: ["Minimum 5 trading days", "Daily drawdown limit: 5%", "Maximum drawdown: 10%", "No news trading restrictions"],
       originalPrice: 499,
       discountedPrice: 349,
       discountPercentage: 30,
@@ -89,9 +98,9 @@ async function main() {
     {
       name: "Master",
       accountSize: 200000,
-      description: "Maximum funding for top-tier traders.",
-      features: ["$200,000 Account", "90% Profit Split", "No Time Limit", "Daily Drawdown: 5%", "Max Drawdown: 10%", "Free Retake on Profit Target", "Priority Support", "1-on-1 Consultation", "Scaling Plan Access"],
-      rules: ["Profit Target: 8% (Phase 1), 5% (Phase 2)", "Daily Drawdown: 5%", "Max Drawdown: 10%", "Minimum 5 Trading Days", "No Time Limit"],
+      description: "Maximum capital for top-tier traders.",
+      features: ["$200,000 Account", "90% Profit Split", "No Time Limit", "Daily Drawdown: 5%", "Max Drawdown: 10%"],
+      rules: ["Minimum 5 trading days", "Daily drawdown limit: 5%", "Maximum drawdown: 10%", "No news trading restrictions"],
       originalPrice: 899,
       discountedPrice: 599,
       discountPercentage: 33,
@@ -102,16 +111,35 @@ async function main() {
 
   for (const pkg of packagesData) {
     await prisma.package.upsert({
-      where: { id: pkg.name.toLowerCase() },
-      update: pkg,
-      create: { id: pkg.name.toLowerCase(), ...pkg },
+      where: { id: `pkg-${pkg.name.toLowerCase()}` },
+      update: { ...pkg },
+      create: { id: `pkg-${pkg.name.toLowerCase()}`, ...pkg },
     });
   }
-  console.log(`✅ ${packagesData.length} packages created`);
+  console.log("✅ 5 packages created");
 
-  // ==========================================
-  // 3. Create CMS Content
-  // ==========================================
+  // ================================
+  // 4. Testimonials
+  // ================================
+  const testimonialsData = [
+    { userName: "Alex Thompson", rating: 5, content: "AlphaFundX changed my trading career. Got funded within 2 weeks and already withdrawn over $5,000 in profits!" },
+    { userName: "Sarah Chen", rating: 5, content: "The most transparent prop firm I've worked with. No hidden rules, no surprises. Highly recommended." },
+    { userName: "Michael Rivera", rating: 5, content: "Instant payouts, great support team, and fair rules. This is exactly what traders need." },
+    { userName: "Emma Williams", rating: 4, content: "Started with the $25K account and scaled up to $100K. The profit split is amazing!" },
+    { userName: "David Park", rating: 5, content: "The scaling plan is incredible. Went from $50K to $200K in under 3 months." },
+    { userName: "Fatima Al-Rashid", rating: 5, content: "As a forex trader from Dubai, finding a trustworthy prop firm was crucial. AlphaFundX exceeded all my expectations." },
+  ];
+
+  // Clear existing and re-seed
+  await prisma.testimonial.deleteMany();
+  for (const t of testimonialsData) {
+    await prisma.testimonial.create({ data: { ...t, isActive: true } });
+  }
+  console.log("✅ 6 testimonials created");
+
+  // ================================
+  // 5. CMS Content
+  // ================================
   const cmsData = [
     {
       key: "hero",
@@ -120,27 +148,45 @@ async function main() {
         heading: "Trade Without Limits",
         subheading: "Get Funded Today",
         description: "Prove your trading skills and get funded with up to $200,000 in capital. Keep up to 90% profit split with no time limits.",
-        ctaPrimary: "Get Started Now",
-        ctaSecondary: "How It Works",
+        cta_primary: "Get Started Now",
+        cta_secondary: "How It Works",
+      },
+    },
+    {
+      key: "about",
+      title: "About Section",
+      content: {
+        title: "Built by Traders, For Traders",
+        description: "AlphaFundX was founded with a simple belief: lack of capital shouldn't stop skilled traders from building a career.",
       },
     },
     {
       key: "stats",
-      title: "Statistics",
+      title: "Statistics Bar",
       content: {
-        traders: "10,000+",
-        funded: "$5M+",
-        profitSplit: "Up to 90%",
+        funded_traders: "10,000+",
+        capital_funded: "$5M+",
+        profit_split: "Up to 90%",
         countries: "150+",
       },
     },
     {
       key: "contact",
-      title: "Contact Info",
+      title: "Contact Information",
       content: {
         email: "support@alphafundx.com",
         phone: "+1 (555) 123-4567",
         address: "Dubai, UAE",
+      },
+    },
+    {
+      key: "footer",
+      title: "Footer",
+      content: {
+        copyright: "© 2024 AlphaFundX. All rights reserved.",
+        twitter: "https://twitter.com/alphafundx",
+        discord: "https://discord.gg/alphafundx",
+        telegram: "https://t.me/alphafundx",
       },
     },
   ];
@@ -148,38 +194,79 @@ async function main() {
   for (const cms of cmsData) {
     await prisma.cmsContent.upsert({
       where: { key: cms.key },
-      update: cms,
-      create: cms,
+      update: { title: cms.title, content: cms.content },
+      create: { key: cms.key, title: cms.title, content: cms.content, isActive: true },
     });
   }
-  console.log(`✅ ${cmsData.length} CMS content blocks created`);
+  console.log("✅ 5 CMS content blocks created");
 
-  // ==========================================
-  // 4. Create Site Settings
-  // ==========================================
-  const settings = [
-    { key: "general", value: { siteName: "AlphaFundX", tagline: "Funded Trading Challenges" } },
-    { key: "social", value: { twitter: "", instagram: "", discord: "", telegram: "" } },
+  // ================================
+  // 6. Site Settings
+  // ================================
+  const settingsData = [
+    { key: "general", value: { siteName: "AlphaFundX", tagline: "Trade Without Limits — Get Funded Today" } },
+    { key: "contact", value: { email: "support@alphafundx.com", phone: "+1 (555) 123-4567" } },
+    { key: "social", value: { twitter: "https://twitter.com/alphafundx", discord: "https://discord.gg/alphafundx", telegram: "https://t.me/alphafundx", instagram: "https://instagram.com/alphafundx" } },
+    { key: "platform", value: { maintenanceMode: false, registrationEnabled: true, withdrawalsEnabled: true, minWithdrawal: 100, maxWithdrawal: 50000, defaultProfitSplit: 80 } },
+    { key: "appearance", value: { primaryColor: "#26FF5E", secondaryColor: "#19B226" } },
   ];
 
-  for (const setting of settings) {
+  for (const s of settingsData) {
     await prisma.siteSettings.upsert({
-      where: { key: setting.key },
-      update: setting,
-      create: setting,
+      where: { key: s.key },
+      update: { value: s.value },
+      create: { key: s.key, value: s.value },
     });
   }
-  console.log(`✅ Site settings created`);
+  console.log("✅ 5 site settings configured");
 
-  console.log("\n🎉 Database seeded successfully!");
-  console.log("\n📋 Admin login credentials:");
-  console.log("   Email:    admin@alphafundx.com");
-  console.log("   Password: Admin@123");
+  // ================================
+  // 7. Demo Order + UserPackage (for demo user)
+  // ================================
+  const professionalPkg = await prisma.package.findFirst({ where: { name: "Professional" } });
+
+  if (professionalPkg) {
+    const existingOrder = await prisma.order.findFirst({
+      where: { userId: demoUser.id, packageId: professionalPkg.id },
+    });
+
+    if (!existingOrder) {
+      const order = await prisma.order.create({
+        data: {
+          userId: demoUser.id,
+          packageId: professionalPkg.id,
+          amount: professionalPkg.discountedPrice ?? professionalPkg.originalPrice,
+          status: "COMPLETED",
+          paymentMethod: "CRYPTO",
+          paymentReference: "demo-payment-ref-001",
+        },
+      });
+
+      await prisma.userPackage.create({
+        data: {
+          userId: demoUser.id,
+          packageId: professionalPkg.id,
+          orderId: order.id,
+          status: "ACTIVE",
+          currentBalance: 54150,
+          currentProfit: 4150,
+          profitPercentage: 8.3,
+        },
+      });
+
+      console.log("✅ Demo order + active package created for demo user");
+    }
+  }
+
+  console.log("\n🎉 Seed completed successfully!\n");
+  console.log("=== Login Credentials ===");
+  console.log("Admin: admin@alphafundx.com / Admin@123");
+  console.log("User:  trader@alphafundx.com / User@123");
 }
 
 main()
   .catch((e) => {
-    console.error("❌ Seed error:", e);
+    console.error("❌ Seed failed:", e);
     process.exit(1);
   })
   .finally(async () => {

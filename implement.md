@@ -249,6 +249,7 @@ Edit sections: Hero, About, Features, FAQ, Trading Rules, Stats, Contact, Footer
 Rich text / JSON editor for content blocks
 [NEW] Site Settings (/admin/settings)
 Site name, logo, contact email, social links, default settings
+
 Phase 6 — API Routes & Server Actions
 API Routes (app/api/)
 All routes use proper error handling, Zod validation, auth checks, and role guards.
