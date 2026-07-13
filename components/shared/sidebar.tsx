@@ -36,7 +36,7 @@ const userSidebarItems: SidebarItem[] = [
 const adminSidebarItems: SidebarItem[] = [
   { title: "Dashboard", href: "/admin", icon: BarChart3 },
   { title: "Users", href: "/admin/users", icon: Users },
-  { title: "Packages", href: "/admin/packages", icon: Package },
+  { title: "Manage Packages", href: "/admin/packages", icon: Package },
   { title: "Orders", href: "/admin/orders", icon: ShoppingCart },
   { title: "Withdrawals", href: "/admin/withdrawals", icon: ArrowDownUp },
   { title: "Testimonials", href: "/admin/testimonials", icon: MessageSquareQuote },

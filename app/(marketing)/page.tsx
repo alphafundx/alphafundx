@@ -35,6 +35,7 @@ import {
   AccordionContent,
 } from "@/components/ui/accordion";
 import Threads from "@/components/Threads";
+import { usePackageStore } from "@/lib/stores/package-store";
 
 // ==========================================
 // Animation Variants
@@ -95,53 +96,7 @@ const features = [
   },
 ];
 
-const packages = [
-  {
-    name: "Starter",
-    accountSize: 10000,
-    originalPrice: 99,
-    discountedPrice: 49,
-    discountPercentage: 50,
-    isPopular: false,
-    features: ["$10,000 Account", "80% Profit Split", "No Time Limit", "Daily Drawdown: 5%", "Max Drawdown: 10%"],
-  },
-  {
-    name: "Standard",
-    accountSize: 25000,
-    originalPrice: 199,
-    discountedPrice: 149,
-    discountPercentage: 25,
-    isPopular: false,
-    features: ["$25,000 Account", "80% Profit Split", "No Time Limit", "Daily Drawdown: 5%", "Max Drawdown: 10%"],
-  },
-  {
-    name: "Professional",
-    accountSize: 50000,
-    originalPrice: 299,
-    discountedPrice: 199,
-    discountPercentage: 33,
-    isPopular: true,
-    features: ["$50,000 Account", "85% Profit Split", "No Time Limit", "Daily Drawdown: 5%", "Max Drawdown: 10%"],
-  },
-  {
-    name: "Elite",
-    accountSize: 100000,
-    originalPrice: 499,
-    discountedPrice: 349,
-    discountPercentage: 30,
-    isPopular: false,
-    features: ["$100,000 Account", "90% Profit Split", "No Time Limit", "Daily Drawdown: 5%", "Max Drawdown: 10%"],
-  },
-  {
-    name: "Master",
-    accountSize: 200000,
-    originalPrice: 899,
-    discountedPrice: 599,
-    discountPercentage: 33,
-    isPopular: false,
-    features: ["$200,000 Account", "90% Profit Split", "No Time Limit", "Daily Drawdown: 5%", "Max Drawdown: 10%"],
-  },
-];
+
 
 const howItWorks = [
   {
@@ -296,6 +251,16 @@ const faqs = [
 // Page Component
 // ==========================================
 export default function HomePage() {
+  const packages = usePackageStore((s) => s.packages).filter((p) => p.isActive);
+
+  // Dynamically compute the grid columns based on number of packages
+  const gridCols =
+    packages.length <= 3
+      ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+      : packages.length === 4
+      ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+      : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5";
+
   return (
     <div className="relative">
       {/* ========== FIXED ANIMATED BACKGROUND ========== */}
@@ -463,7 +428,7 @@ export default function HomePage() {
             initial="initial"
             whileInView="animate"
             viewport={{ once: true }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5"
+            className={`grid ${gridCols} gap-5`}
           >
             {packages.map((pkg) => (
               <motion.div key={pkg.name} variants={fadeInUp} transition={{ duration: 0.5 }} className="h-full">

@@ -216,6 +216,8 @@ Account info (registration date, status)
 New Withdrawal Form — Amount, payment method (crypto/bank), payment details
 Withdrawal History Table — TanStack Table with status badges, date, amount
 Status: color-coded badges (Pending=yellow, Approved=blue, Rejected=red, Paid=green)
+
+
 Phase 5 — Admin Dashboard
 [NEW] Admin Layout
 Extended sidebar: Dashboard, Users, Packages, Withdrawals, Orders, Testimonials, CMS, Settings

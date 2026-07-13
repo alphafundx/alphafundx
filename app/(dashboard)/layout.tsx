@@ -25,6 +25,10 @@ export default function DashboardLayout({
     redirect("/login");
   }
 
+  if ((session.user as { role?: string })?.role === "ADMIN") {
+    redirect("/admin");
+  }
+
   return (
     <div className="flex min-h-screen bg-background">
       {/* Desktop Sidebar */}
