@@ -27,6 +27,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { GlowCard } from "@/components/shared/glow-card";
 import { BorderGlow } from "@/components/ui/border-glow";
+import { ProcessTimeline } from "@/components/marketing/process-timeline";
+import { BenefitsSection } from "@/components/marketing/benefits-section";
 import { TestimonialCarousel } from "@/components/marketing/testimonial-carousel";
 import {
   Accordion,
@@ -96,31 +98,6 @@ const features = [
   },
 ];
 
-
-
-const howItWorks = [
-  {
-    step: 1,
-    title: "Choose Your Plan",
-    description: "Select a funding package that matches your trading goals and risk appetite.",
-  },
-  {
-    step: 2,
-    title: "Pass the Challenge",
-    description: "Demonstrate your trading skills by hitting the profit target while following the rules.",
-  },
-  {
-    step: 3,
-    title: "Get Funded",
-    description: "Once you pass, receive your funded account and start trading real capital.",
-  },
-  {
-    step: 4,
-    title: "Earn & Withdraw",
-    description: "Keep up to 90% of your profits. Request withdrawals anytime — paid within 24 hours.",
-  },
-];
-
 const tradingRules = [
   { rule: "Profit Target", phase1: "8%", phase2: "5%", funded: "—" },
   { rule: "Daily Drawdown", phase1: "5%", phase2: "5%", funded: "5%" },
@@ -130,48 +107,7 @@ const tradingRules = [
   { rule: "Profit Split", phase1: "—", phase2: "—", funded: "Up to 90%" },
 ];
 
-const benefits = [
-  {
-    icon: BadgePercent,
-    title: "Up to 90% Profit Split",
-    description: "Industry-leading payout ratios that reward your skill.",
-  },
-  {
-    icon: Clock,
-    title: "No Time Limits",
-    description: "Trade at your own pace — no pressure, no deadlines.",
-  },
-  {
-    icon: Wallet,
-    title: "24-Hour Payouts",
-    description: "Request withdrawals anytime and get paid within a day.",
-  },
-  {
-    icon: Scale,
-    title: "Fair & Transparent",
-    description: "Clear rules with no hidden conditions or fine print.",
-  },
-  {
-    icon: Repeat,
-    title: "Free Retakes",
-    description: "Hit the profit target? Get a free retry if you breach.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Real Capital",
-    description: "Trade real funds — not simulated demo environments.",
-  },
-  {
-    icon: HeadphonesIcon,
-    title: "24/7 Support",
-    description: "Dedicated support team available around the clock.",
-  },
-  {
-    icon: TrendingUp,
-    title: "Scaling Plan",
-    description: "Grow your account size as you prove consistency.",
-  },
-];
+// Old benefits array removed
 
 const testimonials = [
   {
@@ -258,8 +194,8 @@ export default function HomePage() {
     packages.length <= 3
       ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
       : packages.length === 4
-      ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
-      : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5";
+        ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+        : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5";
 
   return (
     <div className="relative">
@@ -513,60 +449,7 @@ export default function HomePage() {
       </section>
 
       {/* ========== HOW IT WORKS ========== */}
-      <section id="how-it-works" className="py-24 lg:py-32 bg-gradient-section">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
-            {...fadeInUp}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            whileInView="animate"
-            initial="initial"
-            className="text-center mb-16"
-          >
-            <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">
-              How It Works
-            </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
-              Start Trading in{" "}
-              <span className="text-gradient-green">4 Simple Steps</span>
-            </h2>
-          </motion.div>
-
-          <motion.div
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
-          >
-            {howItWorks.map((step, index) => (
-              <motion.div
-                key={step.step}
-                variants={fadeInUp}
-                transition={{ duration: 0.5 }}
-                className="relative"
-              >
-                {/* Connector line */}
-                {index < howItWorks.length - 1 && (
-                  <div className="hidden lg:block absolute top-8 left-[60%] w-[calc(100%-20%)] h-px bg-gradient-to-r from-primary/30 to-transparent" />
-                )}
-
-                <div className="text-center lg:text-left space-y-4">
-                  <div className="inline-flex items-center justify-center size-16 rounded-2xl bg-primary/10 border border-primary/20 text-primary font-bold text-xl">
-                    {step.step}
-                  </div>
-                  <h3 className="text-lg font-semibold text-foreground">
-                    {step.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {step.description}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
+      <ProcessTimeline />
 
       {/* ========== TRADING RULES ========== */}
       <section id="rules" className="py-24 lg:py-32">
@@ -644,63 +527,7 @@ export default function HomePage() {
       </section>
 
       {/* ========== BENEFITS SECTION ========== */}
-      <section id="benefits" className="py-24 lg:py-32 bg-gradient-section">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
-            {...fadeInUp}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            whileInView="animate"
-            initial="initial"
-            className="text-center mb-16"
-          >
-            <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">
-              Benefits
-            </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
-              Why Traders{" "}
-              <span className="text-gradient-green">Choose Us</span>
-            </h2>
-            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              We&apos;ve built the most trader-friendly funded program in the industry.
-            </p>
-          </motion.div>
-
-          <motion.div
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5"
-          >
-            {benefits.map((benefit) => (
-              <motion.div
-                key={benefit.title}
-                variants={fadeInUp}
-                transition={{ duration: 0.5 }}
-                className="group"
-              >
-                <div className="relative p-5 lg:p-6 rounded-xl border border-white/[0.06] bg-card hover:border-primary/20 transition-all duration-300 h-full">
-                  {/* Hover glow */}
-                  <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-20 h-20 rounded-full bg-primary/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                  <div className="relative space-y-3">
-                    <div className="flex items-center justify-center size-11 rounded-lg bg-primary/10 group-hover:bg-primary/15 transition-colors duration-300">
-                      <benefit.icon className="size-5 text-primary" />
-                    </div>
-                    <h3 className="text-sm font-semibold text-foreground">
-                      {benefit.title}
-                    </h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      {benefit.description}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
+      <BenefitsSection />
 
       {/* ========== TESTIMONIALS ========== */}
       <section className="py-24 lg:py-32">
