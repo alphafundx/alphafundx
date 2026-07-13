@@ -5,6 +5,7 @@ import { TopBar } from "@/components/shared/top-bar";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { PageLoading } from "@/components/shared/loading-spinner";
+import { PageTransition } from "@/components/shared/page-transition";
 
 export default function DashboardLayout({
   children,
@@ -39,7 +40,9 @@ export default function DashboardLayout({
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
         <TopBar />
-        <main className="flex-1 p-6 lg:p-8">{children}</main>
+        <main className="flex-1 p-6 lg:p-8">
+          <PageTransition>{children}</PageTransition>
+        </main>
       </div>
     </div>
   );

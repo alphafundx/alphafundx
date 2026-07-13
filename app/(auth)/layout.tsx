@@ -1,4 +1,13 @@
+import type { Metadata } from "next";
 import { Logo } from "@/components/shared/logo";
+
+export const metadata: Metadata = {
+  title: {
+    template: "%s | AlphaFundX",
+    default: "Sign In | AlphaFundX",
+  },
+  robots: { index: false, follow: false },
+};
 
 export default function AuthLayout({
   children,
