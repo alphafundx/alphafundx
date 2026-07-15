@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard,
@@ -143,6 +144,7 @@ export function Sidebar({ variant = "user", className }: SidebarProps) {
       {/* Footer */}
       <div className="border-t border-white/[0.06] p-3">
         <button
+          onClick={() => signOut({ callbackUrl: "/" })}
           className={cn(
             "flex items-center gap-3 w-full rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/5 transition-all duration-200",
             isCollapsed && "justify-center px-0"

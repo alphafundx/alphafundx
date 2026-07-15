@@ -24,9 +24,9 @@ const footerLinks = {
     { title: "FAQ", href: "/#faq" },
   ],
   legal: [
-    { title: "Terms of Service", href: "#" },
-    { title: "Privacy Policy", href: "#" },
-    { title: "Refund Policy", href: "#" },
+    { title: "Terms & Conditions", href: "/terms" },
+    { title: "Privacy Policy", href: "/privacy" },
+    { title: "Refund Policy", href: "/refund" },
     { title: "Risk Disclosure", href: "#" },
   ],
 };

@@ -26,10 +26,12 @@ export default function RegisterPage() {
   const onSubmit = async (data: RegisterInput) => {
     setIsLoading(true);
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { agreeTerms, ...payload } = data;
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
 
       const result = await res.json();
@@ -162,6 +164,30 @@ export default function RegisterPage() {
               <p className="text-xs text-destructive">
                 {errors.confirmPassword.message}
               </p>
+            )}
+          </div>
+
+          {/* Terms & Conditions Checkbox */}
+          <div className="space-y-2 pt-1">
+            <label className="flex items-start gap-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                className="mt-1 size-4 rounded border-white/20 bg-white/[0.04] text-primary focus:ring-primary/50 focus:ring-offset-0 accent-[#26FF5E] cursor-pointer"
+                {...register("agreeTerms")}
+              />
+              <span className="text-sm text-muted-foreground leading-relaxed group-hover:text-foreground/80 transition-colors">
+                I agree to the{" "}
+                <Link href="/terms" target="_blank" className="text-primary hover:underline font-medium">
+                  Terms &amp; Conditions
+                </Link>{" "}
+                and{" "}
+                <Link href="/privacy" target="_blank" className="text-primary hover:underline font-medium">
+                  Privacy Policy
+                </Link>
+              </span>
+            </label>
+            {errors.agreeTerms && (
+              <p className="text-xs text-destructive">{errors.agreeTerms.message}</p>
             )}
           </div>
 

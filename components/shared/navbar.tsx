@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User, LogOut, LayoutDashboard, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,12 @@ const navLinks = [
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const pathname = usePathname();
+  const { data: session, status } = useSession();
+
+  const isAuthenticated = status === "authenticated" && !!session?.user;
+  const userRole = (session?.user as { role?: string })?.role;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,7 +38,17 @@ export function Navbar() {
   // Close mobile menu on route change
   useEffect(() => {
     setIsMobileOpen(false);
+    setIsUserMenuOpen(false);
   }, [pathname]);
+
+  // Close user menu on click outside
+  useEffect(() => {
+    const handleClickOutside = () => setIsUserMenuOpen(false);
+    if (isUserMenuOpen) {
+      document.addEventListener("click", handleClickOutside);
+      return () => document.removeEventListener("click", handleClickOutside);
+    }
+  }, [isUserMenuOpen]);
 
   return (
     <header
@@ -74,19 +90,84 @@ export function Navbar() {
 
           {/* Desktop CTA */}
           <div className="hidden lg:flex lg:items-center lg:gap-3">
-            <Link href="/login">
-              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-                Login
-              </Button>
-            </Link>
-            <Link href="/register">
-              <Button
-                size="sm"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 glow-subtle font-semibold px-6"
-              >
-                Get Started
-              </Button>
-            </Link>
+            {isAuthenticated ? (
+              <div className="relative">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsUserMenuOpen(!isUserMenuOpen);
+                  }}
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/[0.04] transition-colors"
+                >
+                  <div className="flex items-center justify-center size-8 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/20 text-primary font-semibold text-sm">
+                    {(session.user?.name || "U").charAt(0).toUpperCase()}
+                  </div>
+                  <span className="text-sm font-medium text-foreground max-w-[120px] truncate">
+                    {session.user?.name || "User"}
+                  </span>
+                  <ChevronDown className={cn("size-4 text-muted-foreground transition-transform", isUserMenuOpen && "rotate-180")} />
+                </button>
+
+                {/* User dropdown */}
+                <AnimatePresence>
+                  {isUserMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 mt-2 w-52 rounded-xl border border-white/[0.08] bg-card shadow-2xl shadow-black/40 overflow-hidden"
+                    >
+                      <div className="px-4 py-3 border-b border-white/[0.06]">
+                        <p className="text-sm font-medium text-foreground truncate">{session.user?.name}</p>
+                        <p className="text-xs text-muted-foreground truncate">{session.user?.email}</p>
+                      </div>
+                      <div className="py-1">
+                        <Link
+                          href={userRole === "ADMIN" ? "/admin" : "/dashboard"}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-white/[0.04] transition-colors"
+                        >
+                          <LayoutDashboard className="size-4" />
+                          {userRole === "ADMIN" ? "Admin Panel" : "Dashboard"}
+                        </Link>
+                        <Link
+                          href="/dashboard/profile"
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-white/[0.04] transition-colors"
+                        >
+                          <User className="size-4" />
+                          Profile
+                        </Link>
+                      </div>
+                      <div className="border-t border-white/[0.06] py-1">
+                        <button
+                          onClick={() => signOut({ callbackUrl: "/" })}
+                          className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-muted-foreground hover:text-destructive hover:bg-destructive/5 transition-colors"
+                        >
+                          <LogOut className="size-4" />
+                          Sign Out
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                    Login
+                  </Button>
+                </Link>
+                <Link href="/register">
+                  <Button
+                    size="sm"
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 glow-subtle font-semibold px-6"
+                  >
+                    Get Started
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -132,16 +213,37 @@ export function Navbar() {
               ))}
 
               <div className="pt-4 space-y-3 border-t border-white/[0.06]">
-                <Link href="/login" className="block">
-                  <Button variant="outline" className="w-full">
-                    Login
-                  </Button>
-                </Link>
-                <Link href="/register" className="block">
-                  <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 glow-subtle font-semibold">
-                    Get Started
-                  </Button>
-                </Link>
+                {isAuthenticated ? (
+                  <>
+                    <Link href={userRole === "ADMIN" ? "/admin" : "/dashboard"} className="block">
+                      <Button variant="outline" className="w-full">
+                        <LayoutDashboard className="size-4 mr-2" />
+                        {userRole === "ADMIN" ? "Admin Panel" : "Dashboard"}
+                      </Button>
+                    </Link>
+                    <Button
+                      variant="ghost"
+                      className="w-full text-muted-foreground hover:text-destructive"
+                      onClick={() => signOut({ callbackUrl: "/" })}
+                    >
+                      <LogOut className="size-4 mr-2" />
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/login" className="block">
+                      <Button variant="outline" className="w-full">
+                        Login
+                      </Button>
+                    </Link>
+                    <Link href="/register" className="block">
+                      <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 glow-subtle font-semibold">
+                        Get Started
+                      </Button>
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
@@ -58,18 +59,18 @@ const staggerContainer = {
 // ==========================================
 // Section Data
 // ==========================================
-const stats = [
-  { label: "Funded Traders", value: "10,000+", icon: Users },
-  { label: "Capital Funded", value: "$5M+", icon: DollarSign },
-  { label: "Profit Split", value: "Up to 90%", icon: TrendingUp },
+const defaultStats = [
+  { label: "Funded Traders", value: "—", icon: Users },
+  { label: "Capital Funded", value: "—", icon: DollarSign },
+  { label: "Profit Split", value: "Up to 80%", icon: TrendingUp },
   { label: "Countries", value: "150+", icon: Globe },
 ];
 
 const features = [
   {
     icon: TrendingUp,
-    title: "Up to 90% Profit Split",
-    description: "Keep up to 90% of the profits you generate. One of the highest splits in the industry.",
+    title: "Up to 80% Profit Split",
+    description: "Keep up to 80% of the profits you generate. One of the highest splits in the industry.",
   },
   {
     icon: Clock,
@@ -104,49 +105,10 @@ const tradingRules = [
   { rule: "Max Drawdown", phase1: "10%", phase2: "10%", funded: "10%" },
   { rule: "Minimum Trading Days", phase1: "5 days", phase2: "5 days", funded: "—" },
   { rule: "Time Limit", phase1: "Unlimited", phase2: "Unlimited", funded: "Unlimited" },
-  { rule: "Profit Split", phase1: "—", phase2: "—", funded: "Up to 90%" },
+  { rule: "Profit Split", phase1: "—", phase2: "—", funded: "Up to 80%" },
 ];
 
 // Old benefits array removed
-
-const testimonials = [
-  {
-    name: "Alex Thompson",
-    rating: 5,
-    content: "AlphaFundX changed my trading career. Got funded within 2 weeks and already withdrawn over $5,000 in profits!",
-    image: null,
-  },
-  {
-    name: "Sarah Chen",
-    rating: 5,
-    content: "The most transparent prop firm I've worked with. No hidden rules, no surprises. Highly recommended.",
-    image: null,
-  },
-  {
-    name: "Michael Rivera",
-    rating: 5,
-    content: "Instant payouts, great support team, and fair rules. This is exactly what traders need.",
-    image: null,
-  },
-  {
-    name: "Emma Williams",
-    rating: 4,
-    content: "Started with the $25K account and scaled up to $100K. The profit split is amazing!",
-    image: null,
-  },
-  {
-    name: "David Park",
-    rating: 5,
-    content: "The scaling plan is incredible. Went from $50K to $200K in under 3 months. Best decision I ever made.",
-    image: null,
-  },
-  {
-    name: "Fatima Al-Rashid",
-    rating: 5,
-    content: "As a forex trader from Dubai, finding a trustworthy prop firm was crucial. AlphaFundX exceeded all my expectations.",
-    image: null,
-  },
-];
 
 const faqs = [
   {
@@ -159,7 +121,7 @@ const faqs = [
   },
   {
     question: "What is the profit split?",
-    answer: "Our profit split ranges from 80% to 90% depending on your account size. Larger accounts receive higher profit splits, with our Elite and Master plans offering up to 90%.",
+    answer: "Our profit split ranges from 70% to 80% depending on your account size. Larger accounts receive higher profit splits, with our Elite and Master plans offering up to 80%.",
   },
   {
     question: "How do withdrawals work?",
@@ -187,7 +149,62 @@ const faqs = [
 // Page Component
 // ==========================================
 export default function HomePage() {
-  const packages = usePackageStore((s) => s.packages).filter((p) => p.isActive);
+  const storePackages = usePackageStore((s) => s.packages).filter((p) => p.isActive);
+  const [stats, setStats] = useState(defaultStats);
+  const [testimonials, setTestimonials] = useState<{ name: string; rating: number; content: string; image: string | null }[]>([]);
+  const [apiPackages, setApiPackages] = useState<typeof storePackages | null>(null);
+
+  useEffect(() => {
+    // Fetch stats and testimonials from API
+    fetch("/api/stats")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.stats) {
+          setStats([
+            { label: "Funded Traders", value: data.stats.fundedTraders, icon: Users },
+            { label: "Capital Funded", value: data.stats.capitalFunded, icon: DollarSign },
+            { label: "Profit Split", value: data.stats.profitSplit, icon: TrendingUp },
+            { label: "Countries", value: data.stats.countries, icon: Globe },
+          ]);
+        }
+        if (data.testimonials) {
+          setTestimonials(
+            data.testimonials.map((t: { userName: string; rating: number; content: string; userImage: string | null }) => ({
+              name: t.userName,
+              rating: t.rating,
+              content: t.content,
+              image: t.userImage,
+            }))
+          );
+        }
+      })
+      .catch(() => {});
+
+    // Fetch packages from API
+    fetch("/api/packages")
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setApiPackages(
+            data.map((p: { id: string; name: string; accountSize: number; originalPrice: number; discountedPrice: number | null; discountPercentage: number | null; features: string[]; isPopular: boolean }) => ({
+              id: p.id,
+              name: p.name,
+              accountSize: p.accountSize,
+              originalPrice: p.originalPrice,
+              discountedPrice: p.discountedPrice || p.originalPrice,
+              discountPercentage: p.discountPercentage || 0,
+              profitSplit: "",
+              features: Array.isArray(p.features) ? p.features : [],
+              isPopular: p.isPopular,
+              isActive: true,
+            }))
+          );
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const packages = apiPackages || storePackages;
 
   // Dynamically compute the grid columns based on number of packages
   const gridCols =
@@ -236,7 +253,7 @@ export default function HomePage() {
               Prove your trading skills and get funded with up to{" "}
               <span className="text-foreground font-semibold">$200,000</span> in
               capital. Keep up to{" "}
-              <span className="text-primary font-semibold">90% profit split</span>{" "}
+              <span className="text-primary font-semibold">80% profit split</span>{" "}
               with no time limits.
             </p>
 
@@ -273,11 +290,20 @@ export default function HomePage() {
             {stats.map((stat) => (
               <div
                 key={stat.label}
-                className="flex flex-col items-center gap-2 p-4 rounded-xl border border-white/[0.06] bg-white/[0.02]"
+                className="flex flex-col items-center gap-3 p-4"
               >
-                <stat.icon className="size-5 text-primary" />
-                <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-                <p className="text-xs text-muted-foreground">{stat.label}</p>
+                <stat.icon className="size-6 md:size-8 text-primary" />
+                <p className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground leading-tight text-center">
+                  {typeof stat.value === "string" && stat.value.toLowerCase().startsWith("up to ") ? (
+                    <span className="flex flex-col items-center">
+                      <span className="text-xl md:text-2xl text-muted-foreground font-semibold tracking-tight mb-[-4px]">Up to</span>
+                      <span>{stat.value.replace(/up to /i, "")}</span>
+                    </span>
+                  ) : (
+                    stat.value
+                  )}
+                </p>
+                <p className="text-sm md:text-base text-muted-foreground font-medium">{stat.label}</p>
               </div>
             ))}
           </motion.div>
@@ -480,21 +506,30 @@ export default function HomePage() {
             whileInView="animate"
             initial="initial"
           >
-            <div className="rounded-xl border border-white/[0.06] bg-card shadow-2xl relative z-10 overflow-hidden">
+            <div className="rounded-2xl border border-white/[0.08] bg-card/80 backdrop-blur-sm shadow-2xl shadow-black/20 relative z-10 overflow-hidden">
+              {/* Gradient top border accent */}
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+              
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-white/[0.06] bg-white/[0.02]">
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                  <tr className="border-b border-white/[0.08] bg-gradient-to-r from-primary/[0.04] via-primary/[0.06] to-primary/[0.04]">
+                    <th className="px-6 lg:px-8 py-5 text-left text-sm font-bold text-foreground tracking-wide">
                       Rule
                     </th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold text-primary">
-                      Phase 1
+                    <th className="px-6 lg:px-8 py-5 text-center">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
+                        Phase 1
+                      </span>
                     </th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold text-primary">
-                      Phase 2
+                    <th className="px-6 lg:px-8 py-5 text-center">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
+                        Phase 2
+                      </span>
                     </th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold text-primary">
-                      Funded
+                    <th className="px-6 lg:px-8 py-5 text-center">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/15 text-primary text-xs font-bold uppercase tracking-wider border border-primary/20">
+                        ✦ Funded
+                      </span>
                     </th>
                   </tr>
                 </thead>
@@ -502,25 +537,52 @@ export default function HomePage() {
                   {tradingRules.map((item, i) => (
                     <tr
                       key={item.rule}
-                      className={`border-b border-white/[0.04] ${i % 2 === 0 ? "" : "bg-white/[0.01]"
-                        }`}
+                      className={`border-b border-white/[0.04] transition-colors duration-200 hover:bg-primary/[0.02] ${
+                        i % 2 === 0 ? "" : "bg-white/[0.015]"
+                      }`}
                     >
-                      <td className="px-6 py-4 text-sm font-medium text-foreground">
-                        {item.rule}
+                      <td className="px-6 lg:px-8 py-5 text-sm font-semibold text-foreground">
+                        <div className="flex items-center gap-2">
+                          <div className="size-1.5 rounded-full bg-primary/60" />
+                          {item.rule}
+                        </div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-center text-muted-foreground">
-                        {item.phase1}
+                      <td className="px-6 lg:px-8 py-5 text-center">
+                        <span className={`text-sm font-medium ${
+                          item.phase1 === "—" ? "text-muted-foreground/50" : "text-foreground"
+                        }`}>
+                          {item.phase1}
+                        </span>
                       </td>
-                      <td className="px-6 py-4 text-sm text-center text-muted-foreground">
-                        {item.phase2}
+                      <td className="px-6 lg:px-8 py-5 text-center">
+                        <span className={`text-sm font-medium ${
+                          item.phase2 === "—" ? "text-muted-foreground/50" : "text-foreground"
+                        }`}>
+                          {item.phase2}
+                        </span>
                       </td>
-                      <td className="px-6 py-4 text-sm text-center text-muted-foreground">
-                        {item.funded}
+                      <td className="px-6 lg:px-8 py-5 text-center">
+                        <span className={`text-sm font-medium ${
+                          item.funded === "—"
+                            ? "text-muted-foreground/50"
+                            : item.funded.includes("90%")
+                            ? "text-primary font-bold"
+                            : "text-foreground"
+                        }`}>
+                          {item.funded}
+                        </span>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+
+              {/* Bottom gradient accent */}
+              <div className="px-6 lg:px-8 py-4 bg-gradient-to-r from-primary/[0.02] to-transparent border-t border-white/[0.04]">
+                <p className="text-xs text-muted-foreground/70">
+                  ✦ All rules are applied to your account equity, not balance. No hidden conditions.
+                </p>
+              </div>
             </div>
           </motion.div>
         </div>
@@ -559,7 +621,11 @@ export default function HomePage() {
             whileInView="animate"
             initial="initial"
           >
-            <TestimonialCarousel testimonials={testimonials} />
+            {testimonials.length > 0 ? (
+              <TestimonialCarousel testimonials={testimonials} />
+            ) : (
+              <div className="text-center py-12 text-muted-foreground text-sm">Loading testimonials...</div>
+            )}
           </motion.div>
         </div>
       </section>
