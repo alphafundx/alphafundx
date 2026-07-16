@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence, PanInfo } from "framer-motion";
-import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
+import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Testimonial {
@@ -21,7 +21,6 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
   const [direction, setDirection] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
-  // How many cards to show at once per breakpoint
   const getVisibleCount = useCallback(() => {
     if (typeof window === "undefined") return 3;
     if (window.innerWidth >= 1024) return 3;
@@ -40,7 +39,6 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
 
   const maxIndex = Math.max(0, testimonials.length - visibleCount);
 
-  // Auto-play
   useEffect(() => {
     if (isPaused || testimonials.length <= visibleCount) return;
     const timer = setInterval(() => {
@@ -58,7 +56,10 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
     });
   };
 
-  const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+  const handleDragEnd = (
+    _: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo
+  ) => {
     if (info.offset.x < -50) paginate(1);
     else if (info.offset.x > 50) paginate(-1);
   };
@@ -68,7 +69,6 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
     currentIndex + visibleCount
   );
 
-  // If we're near the end, wrap around
   if (visibleTestimonials.length < visibleCount) {
     const remaining = visibleCount - visibleTestimonials.length;
     visibleTestimonials.push(...testimonials.slice(0, remaining));
@@ -80,7 +80,6 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Cards container */}
       <motion.div
         className="overflow-hidden"
         drag="x"
@@ -92,19 +91,23 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
           <motion.div
             key={currentIndex}
             custom={direction}
-            initial={{ opacity: 0, x: direction * 100 }}
+            initial={{ opacity: 0, x: direction * 80 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: direction * -100 }}
-            transition={{ duration: 0.4, ease: "easeInOut" }}
+            exit={{ opacity: 0, x: direction * -80 }}
+            transition={{ duration: 0.35, ease: "easeInOut" }}
             className={cn(
-              "grid gap-6",
+              "grid gap-4",
               visibleCount === 1 && "grid-cols-1",
               visibleCount === 2 && "grid-cols-2",
               visibleCount === 3 && "grid-cols-3"
             )}
           >
             {visibleTestimonials.map((testimonial, i) => (
-              <TestimonialCard key={`${currentIndex}-${i}`} testimonial={testimonial} index={i} />
+              <TestimonialCard
+                key={`${currentIndex}-${i}`}
+                testimonial={testimonial}
+                index={i}
+              />
             ))}
           </motion.div>
         </AnimatePresence>
@@ -112,17 +115,16 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
 
       {/* Navigation */}
       {testimonials.length > visibleCount && (
-        <div className="flex items-center justify-center gap-4 mt-10">
+        <div className="flex items-center justify-center gap-3 mt-8">
           <button
             onClick={() => paginate(-1)}
-            className="flex items-center justify-center size-10 rounded-full border border-white/[0.08] bg-white/[0.03] text-muted-foreground hover:text-primary hover:border-primary/30 transition-all duration-200"
+            className="flex items-center justify-center size-8 rounded-lg border border-white/[0.06] bg-white/[0.02] text-white/40 hover:text-white hover:border-white/[0.12] transition-all duration-200"
             aria-label="Previous testimonial"
           >
-            <ChevronLeft className="size-5" />
+            <ChevronLeft className="size-4" />
           </button>
 
-          {/* Dots */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             {Array.from({ length: maxIndex + 1 }).map((_, i) => (
               <button
                 key={i}
@@ -131,10 +133,10 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
                   setCurrentIndex(i);
                 }}
                 className={cn(
-                  "rounded-full transition-all duration-300",
+                  "rounded-full transition-all duration-200",
                   i === currentIndex
-                    ? "w-8 h-2 bg-primary"
-                    : "w-2 h-2 bg-white/20 hover:bg-white/40"
+                    ? "w-5 h-1.5 bg-[#26FF5E]"
+                    : "w-1.5 h-1.5 bg-white/15 hover:bg-white/30"
                 )}
                 aria-label={`Go to slide ${i + 1}`}
               />
@@ -143,10 +145,10 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
 
           <button
             onClick={() => paginate(1)}
-            className="flex items-center justify-center size-10 rounded-full border border-white/[0.08] bg-white/[0.03] text-muted-foreground hover:text-primary hover:border-primary/30 transition-all duration-200"
+            className="flex items-center justify-center size-8 rounded-lg border border-white/[0.06] bg-white/[0.02] text-white/40 hover:text-white hover:border-white/[0.12] transition-all duration-200"
             aria-label="Next testimonial"
           >
-            <ChevronRight className="size-5" />
+            <ChevronRight className="size-4" />
           </button>
         </div>
       )}
@@ -163,49 +165,41 @@ function TestimonialCard({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.1 }}
-      className="relative rounded-xl border border-white/[0.06] bg-card overflow-hidden group hover:border-primary/20 transition-all duration-300"
+      transition={{ duration: 0.3, delay: index * 0.06 }}
+      className="rounded-xl border border-white/[0.05] bg-[#232930] p-5 lg:p-6 hover:border-white/[0.08] transition-colors duration-200"
     >
-      {/* Top glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+      {/* Stars */}
+      <div className="flex gap-0.5 mb-4">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Star
+            key={i}
+            className={cn(
+              "size-3.5",
+              i < testimonial.rating
+                ? "text-amber-400 fill-amber-400"
+                : "text-white/10"
+            )}
+          />
+        ))}
+      </div>
 
-      <div className="p-6 lg:p-8 space-y-5">
-        {/* Quote icon */}
-        <Quote className="size-8 text-primary/20" />
+      {/* Content */}
+      <p className="text-sm text-white/50 leading-relaxed mb-5 min-h-[60px]">
+        &ldquo;{testimonial.content}&rdquo;
+      </p>
 
-        {/* Stars */}
-        <div className="flex gap-1">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Star
-              key={i}
-              className={cn(
-                "size-4",
-                i < testimonial.rating
-                  ? "text-yellow-400 fill-yellow-400"
-                  : "text-muted-foreground/30"
-              )}
-            />
-          ))}
+      {/* Author */}
+      <div className="flex items-center gap-3 pt-4 border-t border-white/[0.04]">
+        <div className="flex items-center justify-center size-9 rounded-full bg-[#26FF5E]/10 text-[#26FF5E] font-semibold text-xs shrink-0">
+          {testimonial.name.charAt(0)}
         </div>
-
-        {/* Content */}
-        <p className="text-sm text-muted-foreground leading-relaxed min-h-[80px]">
-          &ldquo;{testimonial.content}&rdquo;
-        </p>
-
-        {/* Author */}
-        <div className="flex items-center gap-3 pt-3 border-t border-white/[0.04]">
-          <div className="flex items-center justify-center size-11 rounded-full bg-gradient-green text-primary-foreground font-semibold text-sm shrink-0">
-            {testimonial.name.charAt(0)}
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-foreground">
-              {testimonial.name}
-            </p>
-            <p className="text-xs text-muted-foreground">Funded Trader</p>
-          </div>
+        <div>
+          <p className="text-sm font-medium text-white/80">
+            {testimonial.name}
+          </p>
+          <p className="text-[11px] text-white/30">Funded Trader</p>
         </div>
       </div>
     </motion.div>

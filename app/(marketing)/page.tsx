@@ -24,12 +24,12 @@ import {
   Repeat,
   BadgePercent,
   ShieldCheck,
+  Eye,
+  FileText,
+  Activity,
+  ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { GlowCard } from "@/components/shared/glow-card";
-import { BorderGlow } from "@/components/ui/border-glow";
-import { ProcessTimeline } from "@/components/marketing/process-timeline";
-import { BenefitsSection } from "@/components/marketing/benefits-section";
 import { TestimonialCarousel } from "@/components/marketing/testimonial-carousel";
 import {
   Accordion,
@@ -37,21 +37,20 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
-import Threads from "@/components/Threads";
 import { usePackageStore } from "@/lib/stores/package-store";
 
 // ==========================================
-// Animation Variants
+// Animation Variants (subtle, professional)
 // ==========================================
-const fadeInUp = {
-  initial: { opacity: 0, y: 30 },
+const fadeIn = {
+  initial: { opacity: 0, y: 16 },
   animate: { opacity: 1, y: 0 },
 };
 
 const staggerContainer = {
   animate: {
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.08,
     },
   },
 };
@@ -68,34 +67,40 @@ const defaultStats = [
 
 const features = [
   {
-    icon: TrendingUp,
-    title: "Up to 80% Profit Split",
-    description: "Keep up to 80% of the profits you generate. One of the highest splits in the industry.",
+    icon: Eye,
+    title: "Full Account Visibility",
+    description:
+      "Track your challenge progress, balance, and profit targets in real time through your personal dashboard. No guesswork.",
   },
   {
-    icon: Clock,
-    title: "No Time Limits",
-    description: "Trade at your own pace. No rush to pass the challenge — take the time you need.",
+    icon: Scale,
+    title: "Transparent Trading Rules",
+    description:
+      "Every rule is published upfront — drawdown limits, profit targets, and trading restrictions. No hidden conditions or surprises.",
   },
   {
     icon: Shield,
-    title: "Secure & Transparent",
-    description: "Real-time tracking, transparent rules, and instant notifications on your progress.",
+    title: "Manual Review Process",
+    description:
+      "Every account transition is reviewed by our team. No automated disqualifications. Fair, human-driven evaluation at every stage.",
   },
   {
-    icon: Zap,
-    title: "Instant Payouts",
-    description: "Request withdrawals anytime. Get paid within 24 hours via crypto or bank transfer.",
+    icon: Wallet,
+    title: "Structured Withdrawal Process",
+    description:
+      "Request payouts directly from your dashboard. All withdrawals are reviewed and processed within 24 hours.",
   },
   {
-    icon: Target,
-    title: "Simple Rules",
-    description: "Clear and fair trading rules. No hidden conditions or surprise disqualifications.",
+    icon: HeadphonesIcon,
+    title: "Direct Support Channel",
+    description:
+      "Reach our team via Telegram or email. Account delivery, challenge questions, and withdrawal support — we respond within hours.",
   },
   {
-    icon: DollarSign,
-    title: "Affordable Entry",
-    description: "Start your funded trading journey with plans as low as $49. Discounts available.",
+    icon: BarChart3,
+    title: "Package Tracking & Status",
+    description:
+      "From purchase to funded account — every stage of your journey is tracked and visible. Know exactly where you stand.",
   },
 ];
 
@@ -108,40 +113,69 @@ const tradingRules = [
   { rule: "Profit Split", phase1: "—", phase2: "—", funded: "Up to 80%" },
 ];
 
-// Old benefits array removed
+const steps = [
+  {
+    number: "01",
+    title: "Choose a Plan",
+    description: "Select a funding package based on your preferred account size and trading goals.",
+  },
+  {
+    number: "02",
+    title: "Complete the Challenge",
+    description: "Trade on a demo account. Meet the profit target while staying within drawdown limits.",
+  },
+  {
+    number: "03",
+    title: "Get Funded",
+    description: "Pass the evaluation and receive access to a real funded trading account.",
+  },
+  {
+    number: "04",
+    title: "Request Payouts",
+    description: "Earn real profits and request withdrawals directly through your dashboard.",
+  },
+];
 
 const faqs = [
   {
     question: "What is a funded trading challenge?",
-    answer: "A funded trading challenge is a program where you demonstrate your trading skills on a simulated account. Once you pass the challenge by meeting the profit target while staying within risk limits, you receive access to a real funded account to trade with.",
+    answer:
+      "A funded trading challenge is a structured evaluation program. You trade on a demo account with specific rules — if you meet the profit target while respecting drawdown limits, you qualify for a real funded account with actual capital.",
   },
   {
-    question: "How long do I have to pass the challenge?",
-    answer: "There is no time limit on any of our challenges. You can take as long as you need to reach the profit target. Trade at your own pace without pressure.",
+    question: "How long do I have to complete the challenge?",
+    answer:
+      "There is no time limit. You can trade at your own pace and take as long as you need to reach the profit target. The only requirement is a minimum of 5 trading days per phase.",
   },
   {
     question: "What is the profit split?",
-    answer: "Our profit split ranges from 70% to 80% depending on your account size. Larger accounts receive higher profit splits, with our Elite and Master plans offering up to 80%.",
+    answer:
+      "Funded traders keep up to 80% of the profits they generate. The exact split depends on your account size and plan tier.",
   },
   {
     question: "How do withdrawals work?",
-    answer: "Once you're funded, you can request a withdrawal at any time through your dashboard. We process withdrawals within 24 hours via cryptocurrency (BTC, USDT) or bank transfer.",
+    answer:
+      "Once funded, you can submit a withdrawal request through your dashboard at any time. Requests are reviewed by our team and processed within 24 hours via crypto (BTC, USDT) or bank transfer.",
   },
   {
-    question: "What trading instruments can I trade?",
-    answer: "You can trade Forex pairs, Indices, Commodities, and Crypto CFDs. We support a wide range of instruments across multiple markets.",
+    question: "What instruments can I trade?",
+    answer:
+      "You can trade Forex pairs, Indices, Commodities, and Crypto CFDs on MetaTrader 5. A wide range of instruments across multiple markets.",
   },
   {
     question: "Is there a refund policy?",
-    answer: "Yes, we offer a full refund if you pass the challenge. The challenge fee is returned to you along with your first profit split payment.",
-  },
-  {
-    question: "Can I hold trades overnight or over the weekend?",
-    answer: "Yes, you can hold trades overnight. Weekend holding is also allowed but be mindful of gaps. There are no restrictions on holding duration.",
+    answer:
+      "If you pass the challenge and receive a funded account, your challenge fee is refunded with your first profit split payment. See our Refund Policy page for full details.",
   },
   {
     question: "What happens if I breach a rule?",
-    answer: "If you breach the daily drawdown or max drawdown limits, your account will be closed. However, depending on your plan, you may be eligible for a free retake so you can try again without additional cost.",
+    answer:
+      "If you exceed the daily or maximum drawdown limit, your account is closed. Depending on your plan, you may be eligible for a free retry to attempt the challenge again.",
+  },
+  {
+    question: "Can I hold trades overnight or over the weekend?",
+    answer:
+      "Yes. There are no restrictions on holding duration. Overnight and weekend holds are permitted, but be mindful of market gaps.",
   },
 ];
 
@@ -151,11 +185,33 @@ const faqs = [
 export default function HomePage() {
   const storePackages = usePackageStore((s) => s.packages).filter((p) => p.isActive);
   const [stats, setStats] = useState(defaultStats);
-  const [testimonials, setTestimonials] = useState<{ name: string; rating: number; content: string; image: string | null }[]>([]);
+  const defaultTestimonials = [
+    {
+      name: "Marcus T.",
+      rating: 5,
+      content: "AlphaFundX provided the capital I needed to scale my trading strategy. The dashboard is intuitive, and payouts are always processed within 24 hours without fail.",
+      image: null,
+    },
+    {
+      name: "Sarah L.",
+      rating: 5,
+      content: "The transparency is what sets them apart. No hidden rules or gotchas. You hit the target, respect the drawdown, and you get funded. It's that simple.",
+      image: null,
+    },
+    {
+      name: "David K.",
+      rating: 4,
+      content: "I've tried multiple prop firms, but the structured evaluation here feels the most professional. Support is highly responsive when you need them.",
+      image: null,
+    },
+  ];
+
+  const [testimonials, setTestimonials] = useState<
+    { name: string; rating: number; content: string; image: string | null }[]
+  >(defaultTestimonials);
   const [apiPackages, setApiPackages] = useState<typeof storePackages | null>(null);
 
   useEffect(() => {
-    // Fetch stats and testimonials from API
     fetch("/api/stats")
       .then((r) => r.json())
       .then((data) => {
@@ -167,46 +223,64 @@ export default function HomePage() {
             { label: "Countries", value: data.stats.countries, icon: Globe },
           ]);
         }
-        if (data.testimonials) {
+        if (data.testimonials && data.testimonials.length > 0) {
           setTestimonials(
-            data.testimonials.map((t: { userName: string; rating: number; content: string; userImage: string | null }) => ({
-              name: t.userName,
-              rating: t.rating,
-              content: t.content,
-              image: t.userImage,
-            }))
+            data.testimonials.map(
+              (t: {
+                userName: string;
+                rating: number;
+                content: string;
+                userImage: string | null;
+              }) => ({
+                name: t.userName,
+                rating: t.rating,
+                content: t.content,
+                image: t.userImage,
+              })
+            )
           );
         }
       })
-      .catch(() => {});
+      .catch(() => { });
 
-    // Fetch packages from API
     fetch("/api/packages")
       .then((r) => r.json())
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {
           setApiPackages(
-            data.map((p: { id: string; name: string; accountSize: number; originalPrice: number; discountedPrice: number | null; discountPercentage: number | null; features: string[]; isPopular: boolean }) => ({
-              id: p.id,
-              name: p.name,
-              accountSize: p.accountSize,
-              originalPrice: p.originalPrice,
-              discountedPrice: p.discountedPrice || p.originalPrice,
-              discountPercentage: p.discountPercentage || 0,
-              profitSplit: "",
-              features: Array.isArray(p.features) ? p.features : [],
-              isPopular: p.isPopular,
-              isActive: true,
-            }))
+            data.map(
+              (p: {
+                id: string;
+                name: string;
+                accountSize: number;
+                originalPrice: number;
+                discountedPrice: number | null;
+                discountPercentage: number | null;
+                description?: string | null;
+                features: string[];
+                isPopular: boolean;
+              }) => ({
+                id: p.id,
+                name: p.name,
+                accountSize: p.accountSize,
+                originalPrice: p.originalPrice,
+                discountedPrice: p.discountedPrice || p.originalPrice,
+                discountPercentage: p.discountPercentage || 0,
+                profitSplit: "",
+                description: p.description,
+                features: Array.isArray(p.features) ? p.features : [],
+                isPopular: p.isPopular,
+                isActive: true,
+              })
+            )
           );
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   const packages = apiPackages || storePackages;
 
-  // Dynamically compute the grid columns based on number of packages
   const gridCols =
     packages.length <= 3
       ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
@@ -215,95 +289,181 @@ export default function HomePage() {
         : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5";
 
   return (
-    <div className="relative">
-      {/* ========== FIXED ANIMATED BACKGROUND ========== */}
-      <div className="fixed inset-0 z-[-1] bg-[#1C1A21]">
-        <Threads
-          amplitude={1}
-          distance={0}
-          enableMouseInteraction={true}
-          color={[0.15, 1.0, 0.37]}
-        />
-      </div>
-
+    <div className="relative bg-[#1C1A21]">
       {/* ========== HERO SECTION ========== */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Decorative blurs */}
-        <div className="absolute top-20 left-1/4 w-96 h-96 rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-20 right-1/4 w-72 h-72 rounded-full bg-accent/5 blur-[100px] pointer-events-none" />
+      <section className="relative pt-28 pb-16 lg:pt-36 lg:pb-20 overflow-hidden">
+        {/* Subtle background gradient — no glowing blobs */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1C1A21] via-[#1C1A21] to-[#232930]/40" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
 
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-32 pb-20 text-center">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left: Content */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="space-y-6"
+            >
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-[#26FF5E]/[0.08] border border-[#26FF5E]/[0.15]">
+                <div className="size-1.5 rounded-full bg-[#26FF5E]" />
+                <span className="text-xs font-semibold text-[#26FF5E] uppercase tracking-wider">
+                  Funded Trading Platform
+                </span>
+              </div>
+
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-[3.25rem] font-bold tracking-tight leading-[1.15] text-white">
+                Get Funded Up to{" "}
+                <span className="text-[#26FF5E]">$200,000</span>
+                <br />
+                <span className="text-white/60">
+                  and Keep Up to 80% of Profits
+                </span>
+              </h1>
+
+              <p className="text-base lg:text-lg text-white/50 leading-relaxed max-w-lg">
+                AlphaFundX is a funded trading challenge platform.
+                Prove your skills on a demo account, pass the evaluation,
+                and trade with real capital. Transparent rules, no time limits,
+                structured payouts.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                <Link href="/register">
+                  <Button className="bg-[#26FF5E] text-[#0a0a0a] hover:bg-[#26FF5E]/90 font-semibold px-7 h-11 text-sm">
+                    Start Your Challenge
+                    <ArrowRight className="ml-2 size-4" />
+                  </Button>
+                </Link>
+                <Link href="/#how-it-works">
+                  <Button
+                    variant="outline"
+                    className="h-11 px-7 text-sm border-white/[0.1] text-white/70 hover:text-white hover:bg-white/[0.04] hover:border-white/[0.15]"
+                  >
+                    How It Works
+                  </Button>
+                </Link>
+              </div>
+
+              {/* Trust Indicators */}
+              <div className="flex items-center gap-6 pt-4 text-xs text-white/40">
+                <div className="flex items-center gap-1.5">
+                  <Shield className="size-3.5 text-[#26FF5E]/60" />
+                  <span>No time limits</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Check className="size-3.5 text-[#26FF5E]/60" />
+                  <span>Transparent rules</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Zap className="size-3.5 text-[#26FF5E]/60" />
+                  <span>24h payouts</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Right: Trust Panel / Dashboard Preview */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
+              className="hidden lg:block"
+            >
+              <div className="rounded-xl border border-white/[0.06] bg-[#232930] overflow-hidden">
+                {/* Panel header */}
+                <div className="px-6 py-4 border-b border-white/[0.06] flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Activity className="size-4 text-[#26FF5E]" />
+                    <span className="text-sm font-semibold text-white/80">Challenge Overview</span>
+                  </div>
+                  <span className="text-xs text-white/30">AlphaFundX Dashboard</span>
+                </div>
+
+                {/* Account summary rows */}
+                <div className="p-6 space-y-5">
+                  {/* Row 1: Account metrics */}
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="p-3 rounded-lg bg-white/[0.03] border border-white/[0.04]">
+                      <p className="text-[11px] text-white/40 uppercase tracking-wide mb-1">Account Size</p>
+                      <p className="text-lg font-bold text-white">$50,000</p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-white/[0.03] border border-white/[0.04]">
+                      <p className="text-[11px] text-white/40 uppercase tracking-wide mb-1">Profit Target</p>
+                      <p className="text-lg font-bold text-[#26FF5E]">8%</p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-white/[0.03] border border-white/[0.04]">
+                      <p className="text-[11px] text-white/40 uppercase tracking-wide mb-1">Max Drawdown</p>
+                      <p className="text-lg font-bold text-white">10%</p>
+                    </div>
+                  </div>
+
+                  {/* Row 2: Progress */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-white/50">Challenge Progress</span>
+                      <span className="text-[#26FF5E] font-semibold">Phase 1 — Active</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-white/[0.06] overflow-hidden">
+                      <div className="h-full w-[62%] rounded-full bg-gradient-to-r from-[#19B226] to-[#26FF5E]" />
+                    </div>
+                    <div className="flex justify-between text-[11px] text-white/30">
+                      <span>Current: +4.8%</span>
+                      <span>Target: 8%</span>
+                    </div>
+                  </div>
+
+                  {/* Row 3: Process steps */}
+                  <div className="flex items-center gap-2 pt-2">
+                    {["Purchase", "Demo Account", "Phase 1", "Phase 2", "Funded"].map((step, i) => (
+                      <div key={step} className="flex items-center gap-2 flex-1">
+                        <div
+                          className={`size-6 rounded-full flex items-center justify-center text-[10px] font-bold ${i < 3
+                              ? "bg-[#26FF5E]/15 text-[#26FF5E] border border-[#26FF5E]/30"
+                              : "bg-white/[0.04] text-white/30 border border-white/[0.06]"
+                            }`}
+                        >
+                          {i < 2 ? <Check className="size-3" /> : i + 1}
+                        </div>
+                        {i < 4 && (
+                          <div
+                            className={`h-px flex-1 ${i < 2 ? "bg-[#26FF5E]/30" : "bg-white/[0.06]"
+                              }`}
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex justify-between text-[10px] text-white/30 px-0.5">
+                    {["Purchase", "Demo", "Phase 1", "Phase 2", "Funded"].map((label) => (
+                      <span key={label}>{label}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========== STATS BAR ========== */}
+      <section className="relative border-y border-white/[0.04] bg-[#232930]/50">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="space-y-8"
-          >
-
-            {/* Heading */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]">
-              Trade Without{" "}
-              <span className="text-gradient-green glow-text">Limits</span>
-              <br />
-              <span className="text-muted-foreground">Get Funded Today</span>
-            </h1>
-
-            {/* Subheading */}
-            <p className="mx-auto max-w-2xl text-lg sm:text-xl text-muted-foreground leading-relaxed">
-              Prove your trading skills and get funded with up to{" "}
-              <span className="text-foreground font-semibold">$200,000</span> in
-              capital. Keep up to{" "}
-              <span className="text-primary font-semibold">80% profit split</span>{" "}
-              with no time limits.
-            </p>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-              <Link href="/register">
-                <Button
-                  size="lg"
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 glow font-semibold px-8 h-12 text-base"
-                >
-                  Get Started Now
-                  <ArrowRight className="ml-2 size-4" />
-                </Button>
-              </Link>
-              <Link href="/#how-it-works">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="h-12 px-8 text-base border-white/10 hover:bg-white/5"
-                >
-                  How It Works
-                </Button>
-              </Link>
-            </div>
-          </motion.div>
-
-          {/* Stats Bar */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
-            className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/[0.04]"
           >
             {stats.map((stat) => (
-              <div
-                key={stat.label}
-                className="flex flex-col items-center gap-3 p-4"
-              >
-                <stat.icon className="size-6 md:size-8 text-primary" />
-                <p className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground leading-tight text-center">
-                  {typeof stat.value === "string" && stat.value.toLowerCase().startsWith("up to ") ? (
-                    <span className="flex flex-col items-center">
-                      <span className="text-xl md:text-2xl text-muted-foreground font-semibold tracking-tight mb-[-4px]">Up to</span>
-                      <span>{stat.value.replace(/up to /i, "")}</span>
-                    </span>
-                  ) : (
-                    stat.value
-                  )}
-                </p>
-                <p className="text-sm md:text-base text-muted-foreground font-medium">{stat.label}</p>
+              <div key={stat.label} className="flex items-center gap-4 px-6 py-6 lg:py-8">
+                <stat.icon className="size-5 text-[#26FF5E] shrink-0" />
+                <div>
+                  <p className="text-xl lg:text-2xl font-bold text-white tracking-tight">
+                    {stat.value}
+                  </p>
+                  <p className="text-xs text-white/40 mt-0.5">{stat.label}</p>
+                </div>
               </div>
             ))}
           </motion.div>
@@ -311,25 +471,25 @@ export default function HomePage() {
       </section>
 
       {/* ========== FEATURES SECTION ========== */}
-      <section id="features" className="py-24 lg:py-32 bg-gradient-section">
+      <section id="features" className="py-16 lg:py-20 bg-zinc-50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
-            {...fadeInUp}
-            transition={{ duration: 0.6 }}
+            {...fadeIn}
+            transition={{ duration: 0.5 }}
             viewport={{ once: true }}
             whileInView="animate"
             initial="initial"
-            className="text-center mb-16"
+            className="mb-12"
           >
-            <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">
-              Why Choose AlphaFundX
-            </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
-              Everything You Need to{" "}
-              <span className="text-gradient-green">Succeed</span>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-zinc-900 tracking-tight mb-2">
+              Platform Capabilities
             </h2>
-            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              We provide the tools, capital, and support you need to become a successful funded trader.
+            <p className="text-lg sm:text-xl font-medium text-[#19B226] tracking-tight">
+              Built for Transparency and Accountability
+            </p>
+            <p className="mt-3 text-sm text-zinc-600 max-w-xl">
+              Every feature is designed to give traders clarity, visibility,
+              and confidence throughout the evaluation and funding process.
             </p>
           </motion.div>
 
@@ -338,23 +498,26 @@ export default function HomePage() {
             initial="initial"
             whileInView="animate"
             viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-zinc-200 rounded-xl overflow-hidden border border-zinc-200"
           >
             {features.map((feature) => (
-              <motion.div key={feature.title} variants={fadeInUp} transition={{ duration: 0.5 }}>
-                <GlowCard className="h-full">
-                  <div className="p-6 lg:p-8 space-y-4">
-                    <div className="flex items-center justify-center size-12 rounded-xl bg-primary/10">
-                      <feature.icon className="size-6 text-primary" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-foreground">
-                      {feature.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {feature.description}
-                    </p>
+              <motion.div
+                key={feature.title}
+                variants={fadeIn}
+                transition={{ duration: 0.4 }}
+                className="bg-white p-6 lg:p-8 hover:bg-zinc-50 transition-colors duration-200"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="flex items-center justify-center size-9 rounded-lg bg-[#19B226]/10 border border-[#19B226]/20">
+                    <feature.icon className="size-4.5 text-[#19B226]" />
                   </div>
-                </GlowCard>
+                  <h3 className="text-sm font-semibold text-zinc-900">
+                    {feature.title}
+                  </h3>
+                </div>
+                <p className="text-sm text-zinc-600 leading-relaxed">
+                  {feature.description}
+                </p>
               </motion.div>
             ))}
           </motion.div>
@@ -362,27 +525,26 @@ export default function HomePage() {
       </section>
 
       {/* ========== PACKAGES SECTION ========== */}
-      <section id="packages" className="py-24 lg:py-32 relative">
-        <div className="absolute inset-0 bg-grid opacity-50" />
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section id="packages" className="py-16 lg:py-20 bg-[#1C1A21]">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
-            {...fadeInUp}
-            transition={{ duration: 0.6 }}
+            {...fadeIn}
+            transition={{ duration: 0.5 }}
             viewport={{ once: true }}
             whileInView="animate"
             initial="initial"
-            className="text-center mb-16"
+            className="mb-12"
           >
-            <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-2">
               Funding Packages
-            </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
-              Start With <span className="text-gradient-green">$49</span>
-              <br />
-              <span className="text-muted-foreground text-2xl sm:text-3xl">
-                Choose the plan that fits your goals
-              </span>
             </h2>
+            <p className="text-lg sm:text-xl font-medium text-[#26FF5E] tracking-tight">
+              Choose Your Account Size
+            </p>
+            <p className="mt-3 text-sm text-white/45 max-w-xl">
+              Select a plan that matches your trading experience and capital requirements.
+              All packages include the same transparent rules and evaluation process.
+            </p>
           </motion.div>
 
           <motion.div
@@ -390,84 +552,92 @@ export default function HomePage() {
             initial="initial"
             whileInView="animate"
             viewport={{ once: true }}
-            className={`grid ${gridCols} gap-5`}
+            className={`grid ${gridCols} gap-4`}
           >
             {packages.map((pkg) => (
-              <motion.div key={pkg.name} variants={fadeInUp} transition={{ duration: 0.5 }} className="h-full">
-                <BorderGlow
-                  edgeSensitivity={30}
-                  glowColor="135 100 57"
-                  backgroundColor="#232930"
-                  borderRadius={12}
-                  glowRadius={40}
-                  glowIntensity={1}
-                  coneSpread={25}
-                  animated={false}
-                  colors={['#26FF5E', '#19B226', '#34D399']}
-                  className="h-full"
+              <motion.div
+                key={pkg.name}
+                variants={fadeIn}
+                transition={{ duration: 0.4 }}
+                className="h-full"
+              >
+                <div
+                  className={`relative rounded-xl border bg-[#232930] h-full flex flex-col transition-colors duration-200 ${pkg.isPopular
+                      ? "border-[#26FF5E]/30 ring-1 ring-[#26FF5E]/10"
+                      : "border-white/[0.06] hover:border-white/[0.1]"
+                    }`}
                 >
-                  <div
-                    className={`relative p-6 transition-all duration-300 h-full flex flex-col ${pkg.isPopular
-                      ? "shadow-lg shadow-primary/10"
-                      : ""
-                      }`}
-                  >
-                    {/* Popular badge */}
-                    {pkg.isPopular && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-green text-xs font-bold text-primary-foreground uppercase">
-                        Most Popular
-                      </div>
-                    )}
+                  {/* Popular badge */}
+                  {pkg.isPopular && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-[#26FF5E] text-[10px] font-bold text-[#0a0a0a] uppercase tracking-wider">
+                      Most Popular
+                    </div>
+                  )}
 
-                    <div className="space-y-4 flex-1">
-                      <div>
-                        <h3 className="text-lg font-bold text-foreground">{pkg.name}</h3>
-                        <p className="text-2xl font-bold text-primary mt-1">
-                          ${pkg.accountSize.toLocaleString()}
-                        </p>
-                      </div>
-
-                      {/* Price */}
-                      <div className="space-y-1">
-                        <div className="flex items-baseline gap-2">
-                          <span className="text-3xl font-bold text-foreground">
-                            ${pkg.discountedPrice}
-                          </span>
-                          <span className="text-sm text-muted-foreground line-through">
-                            ${pkg.originalPrice}
-                          </span>
-                        </div>
-                        <span className="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-primary/10 text-primary">
-                          {pkg.discountPercentage}% OFF
-                        </span>
-                      </div>
-
-                      {/* Features */}
-                      <ul className="space-y-2.5 pt-2">
-                        {pkg.features.map((feature) => (
-                          <li
-                            key={feature}
-                            className="flex items-center gap-2 text-sm text-muted-foreground"
-                          >
-                            <Check className="size-4 text-primary shrink-0" />
-                            {feature}
-                          </li>
-                        ))}
-                      </ul>
+                  <div className="p-5 lg:p-6 flex-1 flex flex-col">
+                    {/* Package name & size */}
+                    <div className="mb-4">
+                      <h3 className="text-base font-semibold text-white">{pkg.name}</h3>
+                      <p className="text-xl font-bold text-[#26FF5E] mt-1">
+                        ${pkg.accountSize.toLocaleString()}
+                        <span className="text-xs font-normal text-white/30 ml-1.5">account</span>
+                      </p>
                     </div>
 
-                    <Link href="/register" className="mt-6 block">
+                    {/* Price */}
+                    <div className="pb-4 mb-4 border-b border-white/[0.06]">
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-2xl font-bold text-white">
+                          ${pkg.discountedPrice}
+                        </span>
+                        {pkg.discountPercentage > 0 && (
+                          <span className="text-xs text-white/30 line-through">
+                            ${pkg.originalPrice}
+                          </span>
+                        )}
+                      </div>
+                      {pkg.discountPercentage > 0 && (
+                        <span className="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-[#26FF5E]/10 text-[#26FF5E]">
+                          {pkg.discountPercentage}% OFF
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Description & Features */}
+                    <div className="flex-1 flex flex-col gap-4">
+                      {pkg.description && (
+                        <p className="text-xs text-white/60 leading-relaxed whitespace-pre-line">
+                          {pkg.description}
+                        </p>
+                      )}
+                      
+                      {pkg.features && pkg.features.length > 0 && (
+                        <ul className="space-y-2">
+                          {pkg.features.map((feature) => (
+                            <li
+                              key={feature}
+                              className="flex items-start gap-2 text-xs text-white/50"
+                            >
+                              <Check className="size-3.5 text-[#26FF5E]/70 shrink-0 mt-0.5" />
+                              <span>{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+
+                    <Link href="/register" className="mt-5 block">
                       <Button
-                        className={`w-full font-semibold ${pkg.isPopular
-                          ? "bg-primary text-primary-foreground hover:bg-primary/90 glow-subtle"
-                          : "bg-white/[0.06] text-foreground hover:bg-white/10"
+                        className={`w-full text-sm font-semibold h-10 ${pkg.isPopular
+                            ? "bg-[#26FF5E] text-[#0a0a0a] hover:bg-[#26FF5E]/90"
+                            : "bg-white/[0.06] text-white hover:bg-white/[0.1]"
                           }`}
                       >
                         Get Started
                       </Button>
                     </Link>
                   </div>
-                </BorderGlow>
+                </div>
               </motion.div>
             ))}
           </motion.div>
@@ -475,61 +645,95 @@ export default function HomePage() {
       </section>
 
       {/* ========== HOW IT WORKS ========== */}
-      <ProcessTimeline />
-
-      {/* ========== TRADING RULES ========== */}
-      <section id="rules" className="py-24 lg:py-32">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+      <section id="how-it-works" className="py-16 lg:py-20 bg-white">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
-            {...fadeInUp}
-            transition={{ duration: 0.6 }}
+            {...fadeIn}
+            transition={{ duration: 0.5 }}
             viewport={{ once: true }}
             whileInView="animate"
             initial="initial"
-            className="text-center mb-16"
+            className="mb-12"
           >
-            <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">
-              Trading Rules
-            </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
-              Clear & <span className="text-gradient-green">Fair Rules</span>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-zinc-900 tracking-tight mb-2">
+              How It Works
             </h2>
-            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              No hidden conditions. Know exactly what you need to achieve.
+            <p className="text-lg sm:text-xl font-medium text-[#19B226] tracking-tight">
+              From Purchase to Payout in Four Steps
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-px bg-zinc-200 rounded-xl overflow-hidden border border-zinc-200">
+            {steps.map((step, i) => (
+              <motion.div
+                key={step.number}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.08 }}
+                className="bg-zinc-50 p-6 lg:p-8 relative"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-2xl font-bold text-[#19B226]">{step.number}</span>
+                  {i < 3 && (
+                    <div className="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 w-4">
+                      <ChevronRight className="size-4 text-zinc-300" />
+                    </div>
+                  )}
+                </div>
+                <h3 className="text-sm font-semibold text-zinc-900 mb-2">{step.title}</h3>
+                <p className="text-xs text-zinc-600 leading-relaxed">{step.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ========== TRADING RULES ========== */}
+      <section id="rules" className="py-16 lg:py-20 bg-[#1C1A21]">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <motion.div
+            {...fadeIn}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+            whileInView="animate"
+            initial="initial"
+            className="mb-10"
+          >
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-2">
+              Challenge Rules
+            </h2>
+            <p className="text-lg sm:text-xl font-medium text-[#26FF5E] tracking-tight">
+              Trading Rules & Requirements
+            </p>
+            <p className="mt-3 text-sm text-white/45 max-w-xl">
+              All rules are applied to account equity and are consistent across all package sizes.
+              No hidden conditions.
             </p>
           </motion.div>
 
           <motion.div
-            {...fadeInUp}
-            transition={{ duration: 0.6 }}
+            {...fadeIn}
+            transition={{ duration: 0.5 }}
             viewport={{ once: true }}
             whileInView="animate"
             initial="initial"
           >
-            <div className="rounded-2xl border border-white/[0.08] bg-card/80 backdrop-blur-sm shadow-2xl shadow-black/20 relative z-10 overflow-hidden">
-              {/* Gradient top border accent */}
-              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
-              
+            <div className="rounded-xl border border-white/[0.06] bg-[#232930] overflow-hidden">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-white/[0.08] bg-gradient-to-r from-primary/[0.04] via-primary/[0.06] to-primary/[0.04]">
-                    <th className="px-6 lg:px-8 py-5 text-left text-sm font-bold text-foreground tracking-wide">
+                  <tr className="border-b border-white/[0.06]">
+                    <th className="px-5 lg:px-6 py-4 text-left text-xs font-semibold text-white/60 uppercase tracking-wider">
                       Rule
                     </th>
-                    <th className="px-6 lg:px-8 py-5 text-center">
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
-                        Phase 1
-                      </span>
+                    <th className="px-5 lg:px-6 py-4 text-center text-xs font-semibold text-white/60 uppercase tracking-wider">
+                      Phase 1
                     </th>
-                    <th className="px-6 lg:px-8 py-5 text-center">
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
-                        Phase 2
-                      </span>
+                    <th className="px-5 lg:px-6 py-4 text-center text-xs font-semibold text-white/60 uppercase tracking-wider">
+                      Phase 2
                     </th>
-                    <th className="px-6 lg:px-8 py-5 text-center">
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/15 text-primary text-xs font-bold uppercase tracking-wider border border-primary/20">
-                        ✦ Funded
-                      </span>
+                    <th className="px-5 lg:px-6 py-4 text-center text-xs font-semibold text-[#26FF5E]/80 uppercase tracking-wider">
+                      Funded
                     </th>
                   </tr>
                 </thead>
@@ -537,50 +741,28 @@ export default function HomePage() {
                   {tradingRules.map((item, i) => (
                     <tr
                       key={item.rule}
-                      className={`border-b border-white/[0.04] transition-colors duration-200 hover:bg-primary/[0.02] ${
-                        i % 2 === 0 ? "" : "bg-white/[0.015]"
-                      }`}
+                      className={`border-b border-white/[0.03] ${i % 2 === 1 ? "bg-white/[0.01]" : ""
+                        }`}
                     >
-                      <td className="px-6 lg:px-8 py-5 text-sm font-semibold text-foreground">
-                        <div className="flex items-center gap-2">
-                          <div className="size-1.5 rounded-full bg-primary/60" />
-                          {item.rule}
-                        </div>
+                      <td className="px-5 lg:px-6 py-4 text-sm font-medium text-white/80">
+                        {item.rule}
                       </td>
-                      <td className="px-6 lg:px-8 py-5 text-center">
-                        <span className={`text-sm font-medium ${
-                          item.phase1 === "—" ? "text-muted-foreground/50" : "text-foreground"
-                        }`}>
-                          {item.phase1}
-                        </span>
+                      <td className="px-5 lg:px-6 py-4 text-center text-sm text-white/60">
+                        {item.phase1}
                       </td>
-                      <td className="px-6 lg:px-8 py-5 text-center">
-                        <span className={`text-sm font-medium ${
-                          item.phase2 === "—" ? "text-muted-foreground/50" : "text-foreground"
-                        }`}>
-                          {item.phase2}
-                        </span>
+                      <td className="px-5 lg:px-6 py-4 text-center text-sm text-white/60">
+                        {item.phase2}
                       </td>
-                      <td className="px-6 lg:px-8 py-5 text-center">
-                        <span className={`text-sm font-medium ${
-                          item.funded === "—"
-                            ? "text-muted-foreground/50"
-                            : item.funded.includes("90%")
-                            ? "text-primary font-bold"
-                            : "text-foreground"
-                        }`}>
-                          {item.funded}
-                        </span>
+                      <td className="px-5 lg:px-6 py-4 text-center text-sm font-medium text-white/80">
+                        {item.funded}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-
-              {/* Bottom gradient accent */}
-              <div className="px-6 lg:px-8 py-4 bg-gradient-to-r from-primary/[0.02] to-transparent border-t border-white/[0.04]">
-                <p className="text-xs text-muted-foreground/70">
-                  ✦ All rules are applied to your account equity, not balance. No hidden conditions.
+              <div className="px-5 lg:px-6 py-3 bg-white/[0.01] border-t border-white/[0.03]">
+                <p className="text-[11px] text-white/30">
+                  All rules apply to account equity. Drawdown limits are calculated from the highest equity point.
                 </p>
               </div>
             </div>
@@ -589,34 +771,125 @@ export default function HomePage() {
       </section>
 
       {/* ========== BENEFITS SECTION ========== */}
-      <BenefitsSection />
+      <section className="py-16 lg:py-20 bg-zinc-50">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+            {/* Left: content */}
+            <motion.div
+              {...fadeIn}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+              whileInView="animate"
+              initial="initial"
+            >
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-zinc-900 tracking-tight mb-2">
+                Why AlphaFundX
+              </h2>
+              <p className="text-lg sm:text-xl font-medium text-[#19B226] tracking-tight mb-4">
+                A Platform Built on Discipline and Transparency
+              </p>
+              <p className="text-sm text-zinc-600 leading-relaxed mb-8">
+                We focus on what matters to serious traders — clear rules,
+                visible progress, fair evaluations, and reliable payouts.
+                No hype, no hidden conditions.
+              </p>
+
+              <div className="space-y-4">
+                {[
+                  { label: "Up to 80% profit split", desc: "One of the highest splits available for funded traders." },
+                  { label: "No time limits", desc: "Complete the challenge at your own pace. No pressure, no deadlines." },
+                  { label: "Real-time account tracking", desc: "Monitor your balance, drawdown, and progress directly in your dashboard." },
+                  { label: "24-hour withdrawal processing", desc: "Submit payout requests anytime. Processed within one business day." },
+                  { label: "Free retry on eligible plans", desc: "If you don't pass on the first attempt, retake the challenge at no cost." },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-start gap-3">
+                    <div className="mt-0.5 flex items-center justify-center size-5 rounded-full bg-[#19B226]/10 border border-[#19B226]/20 shrink-0">
+                      <Check className="size-3 text-[#19B226]" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-zinc-900">{item.label}</p>
+                      <p className="text-xs text-zinc-600 mt-0.5">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Right: Key metrics panel */}
+            <motion.div
+              {...fadeIn}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              viewport={{ once: true }}
+              whileInView="animate"
+              initial="initial"
+              className="space-y-4"
+            >
+              <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
+                <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-4">
+                  Platform Highlights
+                </h3>
+                <div className="grid grid-cols-2 gap-4">
+                  {[
+                    { metric: "Up to 80%", label: "Profit Split" },
+                    { metric: "No Limit", label: "Time to Pass" },
+                    { metric: "$200K", label: "Max Account Size" },
+                    { metric: "24 Hours", label: "Payout Processing" },
+                    { metric: "MT5", label: "Trading Platform" },
+                    { metric: "Free", label: "Retry (Eligible Plans)" },
+                  ].map((item) => (
+                    <div key={item.label} className="p-3 rounded-lg bg-zinc-50 border border-zinc-100">
+                      <p className="text-lg font-bold text-zinc-900">{item.metric}</p>
+                      <p className="text-[11px] text-zinc-500 mt-0.5">{item.label}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
+                <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+                  Supported Instruments
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {["Forex Pairs", "Indices", "Commodities", "Crypto CFDs"].map((instrument) => (
+                    <span
+                      key={instrument}
+                      className="px-3 py-1.5 rounded-md text-xs font-medium bg-zinc-50 border border-zinc-200 text-zinc-700"
+                    >
+                      {instrument}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
 
       {/* ========== TESTIMONIALS ========== */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 lg:py-20 bg-[#1C1A21]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
-            {...fadeInUp}
-            transition={{ duration: 0.6 }}
+            {...fadeIn}
+            transition={{ duration: 0.5 }}
             viewport={{ once: true }}
             whileInView="animate"
             initial="initial"
-            className="text-center mb-16"
+            className="mb-10"
           >
-            <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">
-              Testimonials
-            </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
-              Real Results From{" "}
-              <span className="text-gradient-green">Real Traders</span>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-2">
+              Trader Feedback
             </h2>
-            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Don&apos;t just take our word for it — hear from traders who&apos;ve been funded.
+            <p className="text-lg sm:text-xl font-medium text-[#26FF5E] tracking-tight">
+              From Our Funded Traders
+            </p>
+            <p className="mt-3 text-sm text-white/45 max-w-xl">
+              Real feedback from traders who have completed the evaluation and are trading with funded accounts.
             </p>
           </motion.div>
 
           <motion.div
-            {...fadeInUp}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            {...fadeIn}
+            transition={{ duration: 0.5, delay: 0.1 }}
             viewport={{ once: true }}
             whileInView="animate"
             initial="initial"
@@ -624,53 +897,54 @@ export default function HomePage() {
             {testimonials.length > 0 ? (
               <TestimonialCarousel testimonials={testimonials} />
             ) : (
-              <div className="text-center py-12 text-muted-foreground text-sm">Loading testimonials...</div>
+              <div className="text-center py-8 text-white/30 text-sm">
+                Loading testimonials...
+              </div>
             )}
           </motion.div>
         </div>
       </section>
 
       {/* ========== FAQ ========== */}
-      <section id="faq" className="py-24 lg:py-32 bg-gradient-section">
+      <section id="faq" className="py-16 lg:py-20 bg-white">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <motion.div
-            {...fadeInUp}
-            transition={{ duration: 0.6 }}
+            {...fadeIn}
+            transition={{ duration: 0.5 }}
             viewport={{ once: true }}
             whileInView="animate"
             initial="initial"
-            className="text-center mb-16"
+            className="mb-10"
           >
-            <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-zinc-900 tracking-tight mb-2">
               FAQ
-            </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
-              Frequently Asked{" "}
-              <span className="text-gradient-green">Questions</span>
             </h2>
-            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Everything you need to know before getting started.
+            <p className="text-lg sm:text-xl font-medium text-[#19B226] tracking-tight">
+              Common Questions
+            </p>
+            <p className="mt-3 text-sm text-zinc-600">
+              Clear answers to help you understand how the platform works before you get started.
             </p>
           </motion.div>
 
           <motion.div
-            {...fadeInUp}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            {...fadeIn}
+            transition={{ duration: 0.5, delay: 0.1 }}
             viewport={{ once: true }}
             whileInView="animate"
             initial="initial"
           >
-            <Accordion className="space-y-3">
+            <Accordion className="space-y-2">
               {faqs.map((faq, index) => (
                 <AccordionItem
                   key={faq.question}
-                  value={index}
-                  className="rounded-xl border border-white/[0.06] bg-card overflow-hidden px-6 hover:border-primary/15 transition-colors duration-300"
+                  value={index.toString()}
+                  className="rounded-lg border border-zinc-200 bg-zinc-50 overflow-hidden px-5 hover:border-zinc-300 transition-colors duration-200"
                 >
-                  <AccordionTrigger className="text-foreground font-medium hover:text-primary hover:no-underline transition-colors py-5">
+                  <AccordionTrigger className="text-sm text-zinc-900 font-medium hover:text-zinc-700 hover:no-underline transition-colors py-4">
                     {faq.question}
                   </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground leading-relaxed">
+                  <AccordionContent className="text-sm text-zinc-600 leading-relaxed pb-4">
                     {faq.answer}
                   </AccordionContent>
                 </AccordionItem>
@@ -681,48 +955,42 @@ export default function HomePage() {
       </section>
 
       {/* ========== FINAL CTA ========== */}
-      <section className="py-24 lg:py-32 relative overflow-hidden bg-transparent">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-[150px] pointer-events-none" />
-
-        <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+      <section className="py-16 lg:py-20 border-t border-white/[0.04] bg-[#1C1A21]">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
-            {...fadeInUp}
-            transition={{ duration: 0.6 }}
+            {...fadeIn}
+            transition={{ duration: 0.5 }}
             viewport={{ once: true }}
             whileInView="animate"
             initial="initial"
-            className="space-y-8"
+            className="space-y-5"
           >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
-              Ready to Start Your{" "}
-              <span className="text-gradient-green glow-text">Funded</span>{" "}
-              Trading Journey?
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight">
+              Ready to Begin Your Challenge?
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Join thousands of traders who are already earning with AlphaFundX.
-              Your trading career starts here.
+            <p className="text-sm text-white/45 max-w-lg mx-auto">
+              Select a package, complete the evaluation, and start trading with real capital.
+              Transparent rules, no time pressure, structured payouts.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
               <Link href="/register">
-                <Button
-                  size="lg"
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 glow-strong font-semibold px-10 h-14 text-lg"
-                >
-                  Get Funded Today
-                  <ArrowRight className="ml-2 size-5" />
+                <Button className="bg-[#26FF5E] text-[#0a0a0a] hover:bg-[#26FF5E]/90 font-semibold px-8 h-11 text-sm">
+                  Start Your Challenge
+                  <ArrowRight className="ml-2 size-4" />
                 </Button>
               </Link>
               <Link href="/contact">
                 <Button
-                  size="lg"
                   variant="outline"
-                  className="h-14 px-8 text-lg border-white/10 hover:bg-white/5"
+                  className="h-11 px-7 text-sm border-white/[0.1] text-white/70 hover:text-white hover:bg-white/[0.04] hover:border-white/[0.15]"
                 >
-                  Contact Us
+                  Contact Support
                 </Button>
               </Link>
             </div>
+            <p className="text-[11px] text-white/25 pt-2">
+              Trading involves risk. Past performance is not indicative of future results.
+            </p>
           </motion.div>
         </div>
       </section>

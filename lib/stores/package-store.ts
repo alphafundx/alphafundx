@@ -9,6 +9,7 @@ export interface PackageItem {
   discountedPrice: number;
   discountPercentage: number;
   profitSplit: string;
+  description?: string | null;
   features: string[];
   isPopular: boolean;
   isActive: boolean;
