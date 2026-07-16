@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/api-auth";
 import { updateSiteSettingsSchema } from "@/lib/validations/cms";
@@ -52,6 +53,9 @@ export async function PATCH(request: Request) {
       create: { key, value: parsed.data.value as object },
       update: { value: parsed.data.value as object },
     });
+
+    // Revalidate the entire site so layout changes (like the banner) propagate immediately
+    revalidatePath("/", "layout");
 
     return NextResponse.json(updated);
   } catch (error) {

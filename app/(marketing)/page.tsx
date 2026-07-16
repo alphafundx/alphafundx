@@ -291,7 +291,7 @@ export default function HomePage() {
   return (
     <div className="relative bg-[#1C1A21]">
       {/* ========== HERO SECTION ========== */}
-      <section className="relative pt-28 pb-16 lg:pt-36 lg:pb-20 overflow-hidden">
+      <section className="relative pt-14 pb-16 lg:pt-20 lg:pb-20 overflow-hidden">
         {/* Subtle background gradient — no glowing blobs */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#1C1A21] via-[#1C1A21] to-[#232930]/40" />
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />

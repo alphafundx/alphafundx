@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Save, Globe, Mail, Shield, Palette } from "lucide-react";
+import { Save, Globe, Mail, Shield, Palette, Megaphone, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AdminSettingsPage() {
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [settings, setSettings] = useState({
     siteName: "AlphaFundX",
     siteTagline: "Trade Without Limits — Get Funded Today",
@@ -28,17 +30,124 @@ export default function AdminSettingsPage() {
     secondaryColor: "#19B226",
   });
 
-  const handleSave = () => {
-    toast.success("Settings saved successfully");
+  const [banner, setBanner] = useState({
+    isActive: false,
+    text: "SUMMER SPECIAL ☀️ FLEX CHALLENGE | 30% OFF ALL ACCOUNTS THIS JULY",
+    actionText: "CODE: SUMMER30",
+  });
+
+  useEffect(() => {
+    async function fetchSettings() {
+      try {
+        const res = await fetch("/api/admin/settings?t=" + Date.now(), { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          // Load generic settings
+          if (data.GENERAL_SETTINGS) {
+            setSettings((prev) => ({ ...prev, ...data.GENERAL_SETTINGS }));
+          }
+          // Load announcement banner
+          if (data.ANNOUNCEMENT_BANNER) {
+            setBanner({
+              isActive: data.ANNOUNCEMENT_BANNER.isActive ?? false,
+              text: data.ANNOUNCEMENT_BANNER.text || "",
+              actionText: data.ANNOUNCEMENT_BANNER.actionText || "",
+            });
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load settings", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchSettings();
+  }, []);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      // Save General Settings
+      const res1 = await fetch("/api/admin/settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: "GENERAL_SETTINGS", value: settings }),
+      });
+      if (!res1.ok) throw new Error("Failed to save general settings");
+
+      // Save Announcement Banner
+      const res2 = await fetch("/api/admin/settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: "ANNOUNCEMENT_BANNER", value: banner }),
+      });
+      if (!res2.ok) throw new Error("Failed to save announcement banner");
+
+      toast.success("Settings saved successfully");
+    } catch (err) {
+      toast.error("Failed to save settings");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const update = (key: string, value: string | boolean) => {
     setSettings((prev) => ({ ...prev, [key]: value }));
   };
 
+  const updateBanner = (key: string, value: string | boolean) => {
+    setBanner((prev) => ({ ...prev, [key]: value }));
+  };
+
+  if (loading) {
+    return <div className="p-8 flex justify-center"><Loader2 className="size-8 animate-spin text-muted-foreground" /></div>;
+  }
+
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-4xl pb-12">
       <PageHeader title="Site Settings" description="Configure your platform's global settings." />
+
+      {/* Announcement Banner */}
+      <div className="rounded-xl border border-primary/30 bg-primary/5 overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-primary/20 bg-primary/10">
+          <div className="flex items-center gap-3">
+            <Megaphone className="size-5 text-primary" />
+            <h3 className="text-lg font-semibold text-foreground">Announcement Banner</h3>
+          </div>
+          <button
+            onClick={() => updateBanner("isActive", !banner.isActive)}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+              banner.isActive ? "bg-primary" : "bg-white/[0.1]"
+            }`}
+          >
+            <span
+              className={`inline-block size-4 rounded-full bg-white transition-transform ${
+                banner.isActive ? "translate-x-6" : "translate-x-1"
+              }`}
+            />
+          </button>
+        </div>
+        <div className="p-6 space-y-5">
+          <div className="space-y-2">
+            <Label>Announcement Text</Label>
+            <Input 
+              value={banner.text} 
+              onChange={(e) => updateBanner("text", e.target.value)} 
+              placeholder="e.g. SUMMER SPECIAL ☀️ 30% OFF ALL ACCOUNTS"
+              className="bg-background border-white/10" 
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Action Text / Promo Code (Optional)</Label>
+            <Input 
+              value={banner.actionText} 
+              onChange={(e) => updateBanner("actionText", e.target.value)} 
+              placeholder="e.g. CODE: SUMMER30"
+              className="bg-background border-white/10" 
+            />
+          </div>
+        </div>
+      </div>
 
       {/* General */}
       <div className="rounded-xl border border-white/[0.06] bg-card overflow-hidden">
@@ -178,9 +287,10 @@ export default function AdminSettingsPage() {
       </div>
 
       {/* Save */}
-      <div className="flex justify-end pt-2">
-        <Button onClick={handleSave} className="bg-primary text-primary-foreground hover:bg-primary/90 px-8">
-          <Save className="size-4 mr-2" /> Save All Settings
+      <div className="flex justify-end pt-4 sticky bottom-4 z-10">
+        <Button onClick={handleSave} disabled={saving} className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 shadow-lg shadow-primary/20">
+          {saving ? <Loader2 className="size-4 mr-2 animate-spin" /> : <Save className="size-4 mr-2" />} 
+          {saving ? "Saving..." : "Save All Settings"}
         </Button>
       </div>
     </div>

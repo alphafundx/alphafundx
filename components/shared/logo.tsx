@@ -10,9 +10,9 @@ interface LogoProps {
 
 export function Logo({ className, size = "md", showText = true }: LogoProps) {
   const sizes = {
-    sm: { icon: 32, text: "text-xl" },
-    md: { icon: 48, text: "text-2xl" },
-    lg: { icon: 64, text: "text-3xl" },
+    sm: { icon: 40, text: "text-xl" },
+    md: { icon: 64, text: "text-3xl" },
+    lg: { icon: 80, text: "text-4xl" },
   };
 
   const { icon, text } = sizes[size];
@@ -26,6 +26,8 @@ export function Logo({ className, size = "md", showText = true }: LogoProps) {
           alt="AlphaFundX Logo"
           width={icon}
           height={icon}
+          quality={100}
+          priority
           className="object-contain transition-transform duration-300 group-hover:scale-110"
         />
         {/* Glow behind logo */}
