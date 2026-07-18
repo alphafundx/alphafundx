@@ -25,7 +25,7 @@ const navLinks = [
 ];
 
 export function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
+
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -34,13 +34,7 @@ export function Navbar() {
   const isAuthenticated = status === "authenticated" && !!session?.user;
   const userRole = (session?.user as { role?: string })?.role;
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+
 
   useEffect(() => {
     setIsMobileOpen(false);
@@ -60,15 +54,13 @@ export function Navbar() {
     <header
       className={cn(
         "sticky top-0 z-50 transition-all duration-200",
-        isScrolled
-          ? "bg-[#1C1A21]/95 backdrop-blur-md border-b border-white/[0.05]"
-          : "bg-transparent border-b border-transparent"
+        "bg-[#1C1A21]/40 backdrop-blur-md border-b border-white/[0.05]"
       )}
     >
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-14 items-center justify-between lg:h-16">
+        <div className="flex h-20 items-center justify-between lg:h-24">
           {/* Logo */}
-          <Logo size="md" />
+          <Logo size="lg" className="-ml-2 lg:-ml-6" />
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex lg:items-center lg:gap-1">
@@ -77,7 +69,7 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "relative px-3.5 py-2 text-[13px] font-medium transition-colors duration-150 rounded-md",
+                  "relative px-4 py-2.5 text-base font-medium transition-colors duration-150 rounded-md",
                   "text-white/50 hover:text-white/80",
                   pathname === link.href && "text-white"
                 )}
@@ -109,10 +101,10 @@ export function Navbar() {
                   }}
                   className="flex items-center gap-2 px-2.5 py-1.5 rounded-md hover:bg-white/[0.04] transition-colors"
                 >
-                  <div className="flex items-center justify-center size-7 rounded-full bg-[#26FF5E]/10 border border-[#26FF5E]/20 text-[#26FF5E] font-semibold text-xs">
+                  <div className="flex items-center justify-center size-8 rounded-full bg-[#26FF5E]/10 border border-[#26FF5E]/20 text-[#26FF5E] font-semibold text-sm">
                     {(session.user?.name || "U").charAt(0).toUpperCase()}
                   </div>
-                  <span className="text-[13px] font-medium text-white/70 max-w-[100px] truncate">
+                  <span className="text-base font-medium text-white/70 max-w-[120px] truncate">
                     {session.user?.name || "User"}
                   </span>
                   <ChevronDown
@@ -133,10 +125,10 @@ export function Navbar() {
                       className="absolute right-0 mt-1.5 w-48 rounded-lg border border-white/[0.06] bg-[#232930] shadow-xl shadow-black/40 overflow-hidden"
                     >
                       <div className="px-3.5 py-2.5 border-b border-white/[0.05]">
-                        <p className="text-[13px] font-medium text-white/80 truncate">
+                        <p className="text-sm font-medium text-white/80 truncate">
                           {session.user?.name}
                         </p>
-                        <p className="text-[11px] text-white/30 truncate">
+                        <p className="text-xs text-white/30 truncate">
                           {session.user?.email}
                         </p>
                       </div>
@@ -145,7 +137,7 @@ export function Navbar() {
                           href={
                             userRole === "ADMIN" ? "/admin" : "/dashboard"
                           }
-                          className="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-white/50 hover:text-white hover:bg-white/[0.04] transition-colors"
+                          className="flex items-center gap-2.5 px-3.5 py-2 text-sm text-white/50 hover:text-white hover:bg-white/[0.04] transition-colors"
                         >
                           <LayoutDashboard className="size-3.5" />
                           {userRole === "ADMIN"
@@ -154,7 +146,7 @@ export function Navbar() {
                         </Link>
                         <Link
                           href="/dashboard/profile"
-                          className="flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-white/50 hover:text-white hover:bg-white/[0.04] transition-colors"
+                          className="flex items-center gap-2.5 px-3.5 py-2 text-sm text-white/50 hover:text-white hover:bg-white/[0.04] transition-colors"
                         >
                           <User className="size-3.5" />
                           Profile
@@ -163,7 +155,7 @@ export function Navbar() {
                       <div className="border-t border-white/[0.05] py-1">
                         <button
                           onClick={() => signOut({ callbackUrl: "/" })}
-                          className="flex items-center gap-2.5 w-full px-3.5 py-2 text-[13px] text-white/50 hover:text-red-400 hover:bg-red-500/5 transition-colors"
+                          className="flex items-center gap-2.5 w-full px-3.5 py-2 text-sm text-white/50 hover:text-red-400 hover:bg-red-500/5 transition-colors"
                         >
                           <LogOut className="size-3.5" />
                           Sign Out
@@ -178,16 +170,16 @@ export function Navbar() {
                 <Link href="/login">
                   <Button
                     variant="ghost"
-                    size="sm"
-                    className="text-white/50 hover:text-white text-[13px] h-8 px-3"
+                    size="default"
+                    className="text-white/50 hover:text-white text-base h-10 px-4"
                   >
                     Login
                   </Button>
                 </Link>
                 <Link href="/register">
                   <Button
-                    size="sm"
-                    className="bg-[#26FF5E] text-[#0a0a0a] hover:bg-[#26FF5E]/90 font-semibold text-[13px] h-8 px-5"
+                    size="default"
+                    className="bg-[#26FF5E] text-[#0a0a0a] hover:bg-[#26FF5E]/90 font-semibold text-base h-10 px-6"
                   >
                     Get Started
                   </Button>

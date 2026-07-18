@@ -29,6 +29,7 @@ import {
   Activity,
   ChevronDown,
 } from "lucide-react";
+import BorderGlow from "@/components/BorderGlow";
 import { Button } from "@/components/ui/button";
 import { TestimonialCarousel } from "@/components/marketing/testimonial-carousel";
 import {
@@ -291,13 +292,13 @@ export default function HomePage() {
   return (
     <div className="relative bg-[#1C1A21]">
       {/* ========== HERO SECTION ========== */}
-      <section className="relative pt-14 pb-16 lg:pt-20 lg:pb-20 overflow-hidden">
-        {/* Subtle background gradient — no glowing blobs */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#1C1A21] via-[#1C1A21] to-[#232930]/40" />
+      <section className="relative pt-[136px] pb-16 lg:pt-[176px] lg:pb-20 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 bg-[url('/assets/hero-bg-nolg.webp')] bg-cover bg-center bg-no-repeat" />
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="max-w-3xl py-12 lg:py-24">
             {/* Left: Content */}
             <motion.div
               initial={{ opacity: 0, y: 24 }}
@@ -305,12 +306,6 @@ export default function HomePage() {
               transition={{ duration: 0.6, ease: "easeOut" }}
               className="space-y-6"
             >
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-[#26FF5E]/[0.08] border border-[#26FF5E]/[0.15]">
-                <div className="size-1.5 rounded-full bg-[#26FF5E]" />
-                <span className="text-xs font-semibold text-[#26FF5E] uppercase tracking-wider">
-                  Funded Trading Platform
-                </span>
-              </div>
 
               <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-[3.25rem] font-bold tracking-tight leading-[1.15] text-white">
                 Get Funded Up to{" "}
@@ -321,7 +316,7 @@ export default function HomePage() {
                 </span>
               </h1>
 
-              <p className="text-base lg:text-lg text-white/50 leading-relaxed max-w-lg">
+              <p className="text-xl lg:text-2xl text-white/60 leading-relaxed max-w-lg">
                 AlphaFundX is a funded trading challenge platform.
                 Prove your skills on a demo account, pass the evaluation,
                 and trade with real capital. Transparent rules, no time limits,
@@ -330,15 +325,15 @@ export default function HomePage() {
 
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <Link href="/register">
-                  <Button className="bg-[#26FF5E] text-[#0a0a0a] hover:bg-[#26FF5E]/90 font-semibold px-7 h-11 text-sm">
+                  <Button className="bg-[#26FF5E] text-[#0a0a0a] hover:bg-[#26FF5E]/90 font-semibold px-8 h-14 text-xl">
                     Start Your Challenge
-                    <ArrowRight className="ml-2 size-4" />
+                    <ArrowRight className="ml-2 size-5" />
                   </Button>
                 </Link>
                 <Link href="/#how-it-works">
                   <Button
                     variant="outline"
-                    className="h-11 px-7 text-sm border-white/[0.1] text-white/70 hover:text-white hover:bg-white/[0.04] hover:border-white/[0.15]"
+                    className="h-14 px-8 text-xl border-white/[0.1] text-white/70 hover:text-white hover:bg-white/[0.04] hover:border-white/[0.15]"
                   >
                     How It Works
                   </Button>
@@ -362,85 +357,7 @@ export default function HomePage() {
               </div>
             </motion.div>
 
-            {/* Right: Trust Panel / Dashboard Preview */}
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
-              className="hidden lg:block"
-            >
-              <div className="rounded-xl border border-white/[0.06] bg-[#232930] overflow-hidden">
-                {/* Panel header */}
-                <div className="px-6 py-4 border-b border-white/[0.06] flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Activity className="size-4 text-[#26FF5E]" />
-                    <span className="text-sm font-semibold text-white/80">Challenge Overview</span>
-                  </div>
-                  <span className="text-xs text-white/30">AlphaFundX Dashboard</span>
-                </div>
 
-                {/* Account summary rows */}
-                <div className="p-6 space-y-5">
-                  {/* Row 1: Account metrics */}
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="p-3 rounded-lg bg-white/[0.03] border border-white/[0.04]">
-                      <p className="text-[11px] text-white/40 uppercase tracking-wide mb-1">Account Size</p>
-                      <p className="text-lg font-bold text-white">$50,000</p>
-                    </div>
-                    <div className="p-3 rounded-lg bg-white/[0.03] border border-white/[0.04]">
-                      <p className="text-[11px] text-white/40 uppercase tracking-wide mb-1">Profit Target</p>
-                      <p className="text-lg font-bold text-[#26FF5E]">8%</p>
-                    </div>
-                    <div className="p-3 rounded-lg bg-white/[0.03] border border-white/[0.04]">
-                      <p className="text-[11px] text-white/40 uppercase tracking-wide mb-1">Max Drawdown</p>
-                      <p className="text-lg font-bold text-white">10%</p>
-                    </div>
-                  </div>
-
-                  {/* Row 2: Progress */}
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-white/50">Challenge Progress</span>
-                      <span className="text-[#26FF5E] font-semibold">Phase 1 — Active</span>
-                    </div>
-                    <div className="h-2 rounded-full bg-white/[0.06] overflow-hidden">
-                      <div className="h-full w-[62%] rounded-full bg-gradient-to-r from-[#19B226] to-[#26FF5E]" />
-                    </div>
-                    <div className="flex justify-between text-[11px] text-white/30">
-                      <span>Current: +4.8%</span>
-                      <span>Target: 8%</span>
-                    </div>
-                  </div>
-
-                  {/* Row 3: Process steps */}
-                  <div className="flex items-center gap-2 pt-2">
-                    {["Purchase", "Demo Account", "Phase 1", "Phase 2", "Funded"].map((step, i) => (
-                      <div key={step} className="flex items-center gap-2 flex-1">
-                        <div
-                          className={`size-6 rounded-full flex items-center justify-center text-[10px] font-bold ${i < 3
-                              ? "bg-[#26FF5E]/15 text-[#26FF5E] border border-[#26FF5E]/30"
-                              : "bg-white/[0.04] text-white/30 border border-white/[0.06]"
-                            }`}
-                        >
-                          {i < 2 ? <Check className="size-3" /> : i + 1}
-                        </div>
-                        {i < 4 && (
-                          <div
-                            className={`h-px flex-1 ${i < 2 ? "bg-[#26FF5E]/30" : "bg-white/[0.06]"
-                              }`}
-                          />
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex justify-between text-[10px] text-white/30 px-0.5">
-                    {["Purchase", "Demo", "Phase 1", "Phase 2", "Funded"].map((label) => (
-                      <span key={label}>{label}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
           </div>
         </div>
       </section>
@@ -462,7 +379,7 @@ export default function HomePage() {
                   <p className="text-xl lg:text-2xl font-bold text-white tracking-tight">
                     {stat.value}
                   </p>
-                  <p className="text-xs text-white/40 mt-0.5">{stat.label}</p>
+                  <p className="text-lg text-white/40 mt-1">{stat.label}</p>
                 </div>
               </div>
             ))}
@@ -487,7 +404,7 @@ export default function HomePage() {
             <p className="text-lg sm:text-xl font-medium text-[#19B226] tracking-tight">
               Built for Transparency and Accountability
             </p>
-            <p className="mt-3 text-sm text-zinc-600 max-w-xl">
+            <p className="mt-3 text-xl text-zinc-600 max-w-2xl">
               Every feature is designed to give traders clarity, visibility,
               and confidence throughout the evaluation and funding process.
             </p>
@@ -511,11 +428,11 @@ export default function HomePage() {
                   <div className="flex items-center justify-center size-9 rounded-lg bg-[#19B226]/10 border border-[#19B226]/20">
                     <feature.icon className="size-4.5 text-[#19B226]" />
                   </div>
-                  <h3 className="text-sm font-semibold text-zinc-900">
+                  <h3 className="text-xl font-semibold text-zinc-900">
                     {feature.title}
                   </h3>
                 </div>
-                <p className="text-sm text-zinc-600 leading-relaxed">
+                <p className="text-xl text-zinc-600 leading-relaxed">
                   {feature.description}
                 </p>
               </motion.div>
@@ -541,7 +458,7 @@ export default function HomePage() {
             <p className="text-lg sm:text-xl font-medium text-[#26FF5E] tracking-tight">
               Choose Your Account Size
             </p>
-            <p className="mt-3 text-sm text-white/45 max-w-xl">
+            <p className="mt-3 text-xl text-white/60 max-w-3xl">
               Select a plan that matches your trading experience and capital requirements.
               All packages include the same transparent rules and evaluation process.
             </p>
@@ -561,12 +478,21 @@ export default function HomePage() {
                 transition={{ duration: 0.4 }}
                 className="h-full"
               >
-                <div
-                  className={`relative rounded-xl border bg-[#232930] h-full flex flex-col transition-colors duration-200 ${pkg.isPopular
-                      ? "border-[#26FF5E]/30 ring-1 ring-[#26FF5E]/10"
-                      : "border-white/[0.06] hover:border-white/[0.1]"
+                <BorderGlow
+                  className={`!rounded-xl h-full transition-colors duration-200 ${pkg.isPopular
+                      ? "!border-[#26FF5E]/40 ring-1 ring-[#26FF5E]/20"
+                      : "!border-white/[0.08]"
                     }`}
+                  backgroundColor="#232930"
+                  glowColor={pkg.isPopular ? "135 100 57" : "0 0 100"}
+                  colors={pkg.isPopular ? ["#26FF5E", "#19B226", "#0f3d17"] : ["#ffffff", "#aaaaaa", "#333333"]}
+                  borderRadius={12}
+                  glowRadius={40}
+                  edgeSensitivity={40}
+                  fillOpacity={0.15}
+                  animated={true}
                 >
+                  <div className="relative h-full flex flex-col">
                   {/* Popular badge */}
                   {pkg.isPopular && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-[#26FF5E] text-[10px] font-bold text-[#0a0a0a] uppercase tracking-wider">
@@ -577,7 +503,7 @@ export default function HomePage() {
                   <div className="p-5 lg:p-6 flex-1 flex flex-col">
                     {/* Package name & size */}
                     <div className="mb-4">
-                      <h3 className="text-base font-semibold text-white">{pkg.name}</h3>
+                      <h3 className="text-xl font-semibold text-white">{pkg.name}</h3>
                       <p className="text-xl font-bold text-[#26FF5E] mt-1">
                         ${pkg.accountSize.toLocaleString()}
                         <span className="text-xs font-normal text-white/30 ml-1.5">account</span>
@@ -606,7 +532,7 @@ export default function HomePage() {
                     {/* Description & Features */}
                     <div className="flex-1 flex flex-col gap-4">
                       {pkg.description && (
-                        <p className="text-xs text-white/60 leading-relaxed whitespace-pre-line">
+                        <p className="text-xl text-white/70 leading-relaxed whitespace-pre-line">
                           {pkg.description}
                         </p>
                       )}
@@ -616,7 +542,7 @@ export default function HomePage() {
                           {pkg.features.map((feature) => (
                             <li
                               key={feature}
-                              className="flex items-start gap-2 text-xs text-white/50"
+                              className="flex items-start gap-2 text-xl text-white/60"
                             >
                               <Check className="size-3.5 text-[#26FF5E]/70 shrink-0 mt-0.5" />
                               <span>{feature}</span>
@@ -628,7 +554,7 @@ export default function HomePage() {
 
                     <Link href="/register" className="mt-5 block">
                       <Button
-                        className={`w-full text-sm font-semibold h-10 ${pkg.isPopular
+                        className={`w-full text-xl font-semibold h-14 ${pkg.isPopular
                             ? "bg-[#26FF5E] text-[#0a0a0a] hover:bg-[#26FF5E]/90"
                             : "bg-white/[0.06] text-white hover:bg-white/[0.1]"
                           }`}
@@ -637,7 +563,8 @@ export default function HomePage() {
                       </Button>
                     </Link>
                   </div>
-                </div>
+                  </div>
+                </BorderGlow>
               </motion.div>
             ))}
           </motion.div>
@@ -681,8 +608,8 @@ export default function HomePage() {
                     </div>
                   )}
                 </div>
-                <h3 className="text-sm font-semibold text-zinc-900 mb-2">{step.title}</h3>
-                <p className="text-xs text-zinc-600 leading-relaxed">{step.description}</p>
+                <h3 className="text-xl font-semibold text-zinc-900 mb-2">{step.title}</h3>
+                <p className="text-xl text-zinc-600 leading-relaxed">{step.description}</p>
               </motion.div>
             ))}
           </div>
@@ -706,7 +633,7 @@ export default function HomePage() {
             <p className="text-lg sm:text-xl font-medium text-[#26FF5E] tracking-tight">
               Trading Rules & Requirements
             </p>
-            <p className="mt-3 text-sm text-white/45 max-w-xl">
+            <p className="mt-3 text-xl text-white/60 max-w-3xl">
               All rules are applied to account equity and are consistent across all package sizes.
               No hidden conditions.
             </p>
@@ -723,16 +650,16 @@ export default function HomePage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-white/[0.06]">
-                    <th className="px-5 lg:px-6 py-4 text-left text-xs font-semibold text-white/60 uppercase tracking-wider">
+                    <th className="px-5 lg:px-6 py-4 text-left text-lg font-semibold text-white/60 uppercase tracking-wider">
                       Rule
                     </th>
-                    <th className="px-5 lg:px-6 py-4 text-center text-xs font-semibold text-white/60 uppercase tracking-wider">
+                    <th className="px-5 lg:px-6 py-4 text-center text-lg font-semibold text-white/60 uppercase tracking-wider">
                       Phase 1
                     </th>
-                    <th className="px-5 lg:px-6 py-4 text-center text-xs font-semibold text-white/60 uppercase tracking-wider">
+                    <th className="px-5 lg:px-6 py-4 text-center text-lg font-semibold text-white/60 uppercase tracking-wider">
                       Phase 2
                     </th>
-                    <th className="px-5 lg:px-6 py-4 text-center text-xs font-semibold text-[#26FF5E]/80 uppercase tracking-wider">
+                    <th className="px-5 lg:px-6 py-4 text-center text-lg font-semibold text-[#26FF5E]/80 uppercase tracking-wider">
                       Funded
                     </th>
                   </tr>
@@ -744,16 +671,16 @@ export default function HomePage() {
                       className={`border-b border-white/[0.03] ${i % 2 === 1 ? "bg-white/[0.01]" : ""
                         }`}
                     >
-                      <td className="px-5 lg:px-6 py-4 text-sm font-medium text-white/80">
+                      <td className="px-5 lg:px-6 py-4 text-xl font-medium text-white/80">
                         {item.rule}
                       </td>
-                      <td className="px-5 lg:px-6 py-4 text-center text-sm text-white/60">
+                      <td className="px-5 lg:px-6 py-4 text-center text-xl text-white/60">
                         {item.phase1}
                       </td>
-                      <td className="px-5 lg:px-6 py-4 text-center text-sm text-white/60">
+                      <td className="px-5 lg:px-6 py-4 text-center text-xl text-white/60">
                         {item.phase2}
                       </td>
-                      <td className="px-5 lg:px-6 py-4 text-center text-sm font-medium text-white/80">
+                      <td className="px-5 lg:px-6 py-4 text-center text-xl font-medium text-white/80">
                         {item.funded}
                       </td>
                     </tr>
@@ -761,7 +688,7 @@ export default function HomePage() {
                 </tbody>
               </table>
               <div className="px-5 lg:px-6 py-3 bg-white/[0.01] border-t border-white/[0.03]">
-                <p className="text-[11px] text-white/30">
+                <p className="text-lg text-white/30">
                   All rules apply to account equity. Drawdown limits are calculated from the highest equity point.
                 </p>
               </div>
@@ -788,7 +715,7 @@ export default function HomePage() {
               <p className="text-lg sm:text-xl font-medium text-[#19B226] tracking-tight mb-4">
                 A Platform Built on Discipline and Transparency
               </p>
-              <p className="text-sm text-zinc-600 leading-relaxed mb-8">
+              <p className="text-xl text-zinc-600 leading-relaxed mb-8">
                 We focus on what matters to serious traders — clear rules,
                 visible progress, fair evaluations, and reliable payouts.
                 No hype, no hidden conditions.
@@ -807,8 +734,8 @@ export default function HomePage() {
                       <Check className="size-3 text-[#19B226]" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-zinc-900">{item.label}</p>
-                      <p className="text-xs text-zinc-600 mt-0.5">{item.desc}</p>
+                      <p className="text-xl font-medium text-zinc-900">{item.label}</p>
+                      <p className="text-xl text-zinc-600 mt-1">{item.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -838,8 +765,8 @@ export default function HomePage() {
                     { metric: "Free", label: "Retry (Eligible Plans)" },
                   ].map((item) => (
                     <div key={item.label} className="p-3 rounded-lg bg-zinc-50 border border-zinc-100">
-                      <p className="text-lg font-bold text-zinc-900">{item.metric}</p>
-                      <p className="text-[11px] text-zinc-500 mt-0.5">{item.label}</p>
+                      <p className="text-xl font-bold text-zinc-900">{item.metric}</p>
+                      <p className="text-xl text-zinc-500 mt-1">{item.label}</p>
                     </div>
                   ))}
                 </div>
@@ -853,7 +780,7 @@ export default function HomePage() {
                   {["Forex Pairs", "Indices", "Commodities", "Crypto CFDs"].map((instrument) => (
                     <span
                       key={instrument}
-                      className="px-3 py-1.5 rounded-md text-xs font-medium bg-zinc-50 border border-zinc-200 text-zinc-700"
+                      className="px-3 py-1.5 rounded-md text-xl font-medium bg-zinc-50 border border-zinc-200 text-zinc-700"
                     >
                       {instrument}
                     </span>
@@ -882,7 +809,7 @@ export default function HomePage() {
             <p className="text-lg sm:text-xl font-medium text-[#26FF5E] tracking-tight">
               From Our Funded Traders
             </p>
-            <p className="mt-3 text-sm text-white/45 max-w-xl">
+            <p className="mt-3 text-xl text-white/60 max-w-3xl">
               Real feedback from traders who have completed the evaluation and are trading with funded accounts.
             </p>
           </motion.div>
@@ -922,7 +849,7 @@ export default function HomePage() {
             <p className="text-lg sm:text-xl font-medium text-[#19B226] tracking-tight">
               Common Questions
             </p>
-            <p className="mt-3 text-sm text-zinc-600">
+            <p className="mt-3 text-xl text-zinc-600">
               Clear answers to help you understand how the platform works before you get started.
             </p>
           </motion.div>
@@ -941,10 +868,10 @@ export default function HomePage() {
                   value={index.toString()}
                   className="rounded-lg border border-zinc-200 bg-zinc-50 overflow-hidden px-5 hover:border-zinc-300 transition-colors duration-200"
                 >
-                  <AccordionTrigger className="text-sm text-zinc-900 font-medium hover:text-zinc-700 hover:no-underline transition-colors py-4">
+                  <AccordionTrigger className="text-xl text-zinc-900 font-medium hover:text-zinc-700 hover:no-underline transition-colors py-4">
                     {faq.question}
                   </AccordionTrigger>
-                  <AccordionContent className="text-sm text-zinc-600 leading-relaxed pb-4">
+                  <AccordionContent className="text-xl text-zinc-600 leading-relaxed pb-4">
                     {faq.answer}
                   </AccordionContent>
                 </AccordionItem>
@@ -968,27 +895,27 @@ export default function HomePage() {
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight">
               Ready to Begin Your Challenge?
             </h2>
-            <p className="text-sm text-white/45 max-w-lg mx-auto">
+            <p className="text-xl text-white/45 max-w-lg mx-auto">
               Select a package, complete the evaluation, and start trading with real capital.
               Transparent rules, no time pressure, structured payouts.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
               <Link href="/register">
-                <Button className="bg-[#26FF5E] text-[#0a0a0a] hover:bg-[#26FF5E]/90 font-semibold px-8 h-11 text-sm">
+                <Button className="bg-[#26FF5E] text-[#0a0a0a] hover:bg-[#26FF5E]/90 font-semibold px-10 h-14 text-xl">
                   Start Your Challenge
-                  <ArrowRight className="ml-2 size-4" />
+                  <ArrowRight className="ml-2 size-5" />
                 </Button>
               </Link>
               <Link href="/contact">
                 <Button
                   variant="outline"
-                  className="h-11 px-7 text-sm border-white/[0.1] text-white/70 hover:text-white hover:bg-white/[0.04] hover:border-white/[0.15]"
+                  className="h-14 px-8 text-xl border-white/[0.1] text-white/70 hover:text-white hover:bg-white/[0.04] hover:border-white/[0.15]"
                 >
                   Contact Support
                 </Button>
               </Link>
             </div>
-            <p className="text-[11px] text-white/25 pt-2">
+            <p className="text-lg text-white/25 pt-2">
               Trading involves risk. Past performance is not indicative of future results.
             </p>
           </motion.div>

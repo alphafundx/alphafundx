@@ -12,7 +12,7 @@ export function Logo({ className, size = "md", showText = true }: LogoProps) {
   const sizes = {
     sm: { icon: 40, text: "text-xl" },
     md: { icon: 64, text: "text-3xl" },
-    lg: { icon: 80, text: "text-4xl" },
+    lg: { icon: 105, text: "text-3xl" },
   };
 
   const { icon, text } = sizes[size];

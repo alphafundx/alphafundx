@@ -26,18 +26,20 @@ export default function RegisterPage() {
   const onSubmit = async (data: RegisterInput) => {
     setIsLoading(true);
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { agreeTerms, ...payload } = data;
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(data),
       });
 
       const result = await res.json();
 
       if (!res.ok) {
-        toast.error(result.error || "Registration failed");
+        if (result.details && result.details.length > 0) {
+          toast.error(result.details[0].message);
+        } else {
+          toast.error(result.error || "Registration failed");
+        }
         return;
       }
 
