@@ -177,7 +177,7 @@ export default function AdminDashboardPage() {
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.06)" />
                   <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: "#9CA3AF", fontSize: 12 }} />
                   <YAxis axisLine={false} tickLine={false} tick={{ fill: "#9CA3AF", fontSize: 12 }} />
-                  <Tooltip contentStyle={tooltipStyle} />
+                  <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "rgba(255, 255, 255, 0.05)" }} />
                   <Bar dataKey="count" fill="#26FF5E" radius={[4, 4, 0, 0]} maxBarSize={40} name="Users" />
                 </BarChart>
               </ResponsiveContainer>

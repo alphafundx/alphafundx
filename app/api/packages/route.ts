@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const packages = await prisma.package.findMany({
       where: { isActive: true },
-      orderBy: { displayOrder: "asc" },
+      orderBy: { createdAt: "asc" },
       select: {
         id: true,
         name: true,

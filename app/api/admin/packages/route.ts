@@ -10,7 +10,7 @@ export async function GET() {
 
   try {
     const packages = await prisma.package.findMany({
-      orderBy: { displayOrder: "asc" },
+      orderBy: { createdAt: "asc" },
       include: {
         _count: { select: { orders: true, userPackages: true } },
       },

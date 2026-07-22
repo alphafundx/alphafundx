@@ -191,6 +191,12 @@
   ::-webkit-scrollbar-thumb:hover {
     background: var(--alphafundx-green-secondary);
   }
+
+  /* Fix native select option text visibility in dark mode */
+  select option {
+    background-color: #1C1A21;
+    color: #F0F0F0;
+  }
 }
 
 /* ==========================================

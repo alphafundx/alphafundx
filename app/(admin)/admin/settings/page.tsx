@@ -17,9 +17,13 @@ export default function AdminSettingsPage() {
     contactEmail: "support@alphafundx.com",
     supportPhone: "+1 (555) 123-4567",
     twitterUrl: "https://twitter.com/alphafundx",
+    twitterEnabled: true,
     discordUrl: "https://discord.gg/alphafundx",
+    discordEnabled: true,
     telegramUrl: "https://t.me/alphafundx",
+    telegramEnabled: true,
     instagramUrl: "https://instagram.com/alphafundx",
+    instagramEnabled: true,
     maintenanceMode: false,
     registrationEnabled: true,
     withdrawalsEnabled: true,
@@ -295,22 +299,41 @@ export default function AdminSettingsPage() {
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div className="space-y-2">
-              <Label>Twitter URL</Label>
-              <Input value={settings.twitterUrl} onChange={(e) => update("twitterUrl", e.target.value)} className="bg-white/[0.02]" />
-            </div>
-            <div className="space-y-2">
-              <Label>Discord URL</Label>
-              <Input value={settings.discordUrl} onChange={(e) => update("discordUrl", e.target.value)} className="bg-white/[0.02]" />
-            </div>
-            <div className="space-y-2">
-              <Label>Telegram URL</Label>
-              <Input value={settings.telegramUrl} onChange={(e) => update("telegramUrl", e.target.value)} className="bg-white/[0.02]" />
-            </div>
-            <div className="space-y-2">
-              <Label>Instagram URL</Label>
-              <Input value={settings.instagramUrl} onChange={(e) => update("instagramUrl", e.target.value)} className="bg-white/[0.02]" />
-            </div>
+            {[
+              { key: "twitterUrl", toggleKey: "twitterEnabled", label: "Twitter / X URL" },
+              { key: "discordUrl", toggleKey: "discordEnabled", label: "Discord URL" },
+              { key: "telegramUrl", toggleKey: "telegramEnabled", label: "Telegram URL" },
+              { key: "instagramUrl", toggleKey: "instagramEnabled", label: "Instagram URL" },
+            ].map((item) => (
+              <div key={item.key} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label>{item.label}</Label>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground">
+                      {(settings as Record<string, unknown>)[item.toggleKey] !== false ? "ON" : "OFF"}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => update(item.toggleKey, !(settings as Record<string, unknown>)[item.toggleKey])}
+                      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                        (settings as Record<string, unknown>)[item.toggleKey] !== false ? "bg-primary" : "bg-white/[0.1]"
+                      }`}
+                    >
+                      <span
+                        className={`inline-block size-3 rounded-full bg-white transition-transform ${
+                          (settings as Record<string, unknown>)[item.toggleKey] !== false ? "translate-x-5" : "translate-x-1"
+                        }`}
+                      />
+                    </button>
+                  </div>
+                </div>
+                <Input
+                  value={((settings as Record<string, unknown>)[item.key] as string) || ""}
+                  onChange={(e) => update(item.key, e.target.value)}
+                  className="bg-white/[0.02]"
+                />
+              </div>
+            ))}
           </div>
         </div>
       </div>
