@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAuthSession } from "@/lib/api-auth";
+import { sendTelegramNotification } from "@/lib/telegram";
 
 // POST /api/orders — Create a new order with payment screenshot
 export async function POST(request: Request) {
@@ -63,6 +64,22 @@ export async function POST(request: Request) {
         })),
       });
     }
+
+    // Send Telegram notification to admin
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    await sendTelegramNotification({
+      message: [
+        `🚨 <b>NEW PAYMENT RECEIVED</b>`,
+        ``,
+        `👤 <b>User:</b> ${user!.name || "N/A"} (${user!.email})`,
+        `📦 <b>Package:</b> ${pkg.name} ($${(pkg.accountSize / 1000).toFixed(0)}K)`,
+        `💰 <b>Amount:</b> $${amount.toFixed(2)}`,
+        `💳 <b>Method:</b> ${paymentMethod || "CRYPTO"}`,
+        ``,
+        `🔗 <a href="${appUrl}/admin/orders">Review &amp; Approve in Dashboard</a>`,
+      ].join("\n"),
+      imageUrl: paymentScreenshot,
+    });
 
     return NextResponse.json(order, { status: 201 });
   } catch (error) {

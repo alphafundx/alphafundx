@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatCard } from "@/components/shared/stat-card";
-import { DollarSign, TrendingUp, Package, ArrowDownUp, Bell, ShieldCheck, AlertCircle } from "lucide-react";
+import { DollarSign, TrendingUp, Package, ArrowDownUp, Bell, ShieldCheck, AlertCircle, Send } from "lucide-react";
 import Link from "next/link";
 import {
   Area,
@@ -72,14 +72,23 @@ export default function DashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [telegramGroup, setTelegramGroup] = useState<{ groupLink: string; groupName: string } | null>(null);
 
   useEffect(() => {
     async function fetchDashboard() {
       try {
-        const res = await fetch("/api/users/me/dashboard");
-        if (!res.ok) throw new Error("Failed to fetch dashboard data");
-        const result = await res.json();
+        const [dashRes, tgRes] = await Promise.all([
+          fetch("/api/users/me/dashboard"),
+          fetch("/api/settings/telegram"),
+        ]);
+        if (!dashRes.ok) throw new Error("Failed to fetch dashboard data");
+        const result = await dashRes.json();
         setData(result);
+
+        if (tgRes.ok) {
+          const tgData = await tgRes.json();
+          if (tgData.groupLink) setTelegramGroup(tgData);
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
@@ -156,12 +165,25 @@ export default function DashboardPage() {
                 {activePackage.profitPercentage}% Profit
               </p>
             </div>
-            <Link
-              href="/dashboard/withdrawals"
-              className="px-5 py-2.5 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors shadow-[0_0_15px_rgba(38,255,94,0.3)]"
-            >
-              Request Withdrawal
-            </Link>
+            <div className="flex flex-wrap gap-3">
+              {telegramGroup && (
+                <a
+                  href={telegramGroup.groupLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-500 text-white font-semibold hover:bg-blue-600 transition-colors shadow-[0_0_15px_rgba(59,130,246,0.3)]"
+                >
+                  <Send className="size-4" />
+                  {telegramGroup.groupName}
+                </a>
+              )}
+              <Link
+                href="/dashboard/withdrawals"
+                className="px-5 py-2.5 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors shadow-[0_0_15px_rgba(38,255,94,0.3)]"
+              >
+                Request Withdrawal
+              </Link>
+            </div>
           </div>
         </div>
       ) : (

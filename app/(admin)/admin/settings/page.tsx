@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Save, Globe, Mail, Shield, Palette, Megaphone, Loader2, Wallet } from "lucide-react";
+import { Save, Globe, Mail, Shield, Palette, Megaphone, Loader2, Wallet, Send } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AdminSettingsPage() {
@@ -41,6 +41,11 @@ export default function AdminSettingsPage() {
     networkChain: "USDT (TRC20)",
   });
 
+  const [telegram, setTelegram] = useState({
+    groupLink: "",
+    groupName: "VIP Trading Group",
+  });
+
   useEffect(() => {
     async function fetchSettings() {
       try {
@@ -64,6 +69,13 @@ export default function AdminSettingsPage() {
             setCrypto({
               walletAddress: data.CRYPTO_PAYMENT.walletAddress || "",
               networkChain: data.CRYPTO_PAYMENT.networkChain || "USDT (TRC20)",
+            });
+          }
+          // Load telegram settings
+          if (data.TELEGRAM_GROUP) {
+            setTelegram({
+              groupLink: data.TELEGRAM_GROUP.groupLink || "",
+              groupName: data.TELEGRAM_GROUP.groupName || "VIP Trading Group",
             });
           }
         }
@@ -103,6 +115,14 @@ export default function AdminSettingsPage() {
       });
       if (!res3.ok) throw new Error("Failed to save crypto settings");
 
+      // Save Telegram Group Settings
+      const res4 = await fetch("/api/admin/settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: "TELEGRAM_GROUP", value: telegram }),
+      });
+      if (!res4.ok) throw new Error("Failed to save telegram settings");
+
       toast.success("Settings saved successfully");
     } catch (err) {
       toast.error("Failed to save settings");
@@ -121,6 +141,10 @@ export default function AdminSettingsPage() {
 
   const updateCrypto = (key: string, value: string) => {
     setCrypto((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const updateTelegram = (key: string, value: string) => {
+    setTelegram((prev) => ({ ...prev, [key]: value }));
   };
 
   if (loading) {
@@ -199,6 +223,36 @@ export default function AdminSettingsPage() {
               className="bg-background border-white/10"
             />
             <p className="text-xs text-muted-foreground">The blockchain network displayed as a heading on the checkout page (e.g. USDT TRC20, BTC, ETH ERC20).</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Telegram Group Settings */}
+      <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 overflow-hidden">
+        <div className="flex items-center gap-3 px-6 py-4 border-b border-blue-500/20 bg-blue-500/10">
+          <Send className="size-5 text-blue-400" />
+          <h3 className="text-lg font-semibold text-foreground">Telegram VIP Group</h3>
+        </div>
+        <div className="p-6 space-y-5">
+          <div className="space-y-2">
+            <Label>Group Invite Link</Label>
+            <Input
+              value={telegram.groupLink}
+              onChange={(e) => updateTelegram("groupLink", e.target.value)}
+              placeholder="e.g. https://t.me/+AbCdEfGhIjKlMnOp"
+              className="bg-background border-white/10 font-mono text-sm"
+            />
+            <p className="text-xs text-muted-foreground">This link will be shown to users after their package is activated. Leave empty to hide the button.</p>
+          </div>
+          <div className="space-y-2">
+            <Label>Group Display Name</Label>
+            <Input
+              value={telegram.groupName}
+              onChange={(e) => updateTelegram("groupName", e.target.value)}
+              placeholder="e.g. VIP Trading Group"
+              className="bg-background border-white/10"
+            />
+            <p className="text-xs text-muted-foreground">The name displayed on the button in the user dashboard (e.g. &quot;VIP Trading Group&quot;, &quot;Funded Traders Chat&quot;).</p>
           </div>
         </div>
       </div>
