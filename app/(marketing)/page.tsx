@@ -552,14 +552,14 @@ export default function HomePage() {
                       )}
                     </div>
 
-                    <Link href="/register" className="mt-5 block">
+                    <Link href={`/checkout/${pkg.id}`} className="mt-5 block">
                       <Button
                         className={`w-full text-xl font-semibold h-14 ${pkg.isPopular
                             ? "bg-[#26FF5E] text-[#0a0a0a] hover:bg-[#26FF5E]/90"
                             : "bg-white/[0.06] text-white hover:bg-white/[0.1]"
                           }`}
                       >
-                        Get Started
+                        Buy Challenge
                       </Button>
                     </Link>
                   </div>

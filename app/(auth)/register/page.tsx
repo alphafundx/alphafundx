@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
@@ -13,6 +13,8 @@ import { registerSchema, type RegisterInput } from "@/lib/validations/auth";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -44,7 +46,7 @@ export default function RegisterPage() {
       }
 
       toast.success("Account created successfully! Please sign in.");
-      router.push("/login");
+      router.push(callbackUrl ? `/login?callbackUrl=${encodeURIComponent(callbackUrl)}` : "/login");
     } catch {
       toast.error("Something went wrong. Please try again.");
     } finally {

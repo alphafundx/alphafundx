@@ -125,8 +125,8 @@ export default function DashboardPage() {
   // Build a simple profit chart from package data
   const profitChartData = activePackage
     ? [
-        { label: "Start", value: activePackage.accountSize },
-        { label: "Current", value: activePackage.currentBalance },
+        { label: "Start", value: 0 },
+        { label: "Current", value: activePackage.currentProfit },
       ]
     : [];
 
@@ -247,7 +247,7 @@ export default function DashboardPage() {
                           borderRadius: "8px",
                           color: "#F0F0F0"
                         }}
-                        formatter={(value) => [`$${Number(value).toLocaleString()}`, "Balance"]}
+                        formatter={(value) => [`$${Number(value).toLocaleString()}`, "Profit"]}
                       />
                       <Area
                         type="monotone"

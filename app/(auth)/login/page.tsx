@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, getSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,6 +14,8 @@ import { loginSchema, type LoginInput } from "@/lib/validations/auth";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -37,10 +39,14 @@ export default function LoginPage() {
         toast.error(result.error);
       } else {
         toast.success("Welcome back!");
-        // Check role to redirect to proper dashboard
-        const session = await getSession();
-        const role = (session?.user as { role?: string })?.role;
-        router.push(role === "ADMIN" ? "/admin" : "/dashboard");
+        // Redirect to callbackUrl if present, otherwise role-based dashboard
+        if (callbackUrl) {
+          router.push(callbackUrl);
+        } else {
+          const session = await getSession();
+          const role = (session?.user as { role?: string })?.role;
+          router.push(role === "ADMIN" ? "/admin" : "/dashboard");
+        }
         router.refresh();
       }
     } catch {
@@ -130,7 +136,7 @@ export default function LoginPage() {
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
           Don&apos;t have an account?{" "}
-          <Link href="/register" className="text-primary font-medium hover:underline">
+          <Link href={callbackUrl ? `/register?callbackUrl=${encodeURIComponent(callbackUrl)}` : "/register"} className="text-primary font-medium hover:underline">
             Create account
           </Link>
         </p>

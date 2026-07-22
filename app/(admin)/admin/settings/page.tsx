@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Save, Globe, Mail, Shield, Palette, Megaphone, Loader2 } from "lucide-react";
+import { Save, Globe, Mail, Shield, Palette, Megaphone, Loader2, Wallet } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AdminSettingsPage() {
@@ -36,6 +36,11 @@ export default function AdminSettingsPage() {
     actionText: "CODE: SUMMER30",
   });
 
+  const [crypto, setCrypto] = useState({
+    walletAddress: "",
+    networkChain: "USDT (TRC20)",
+  });
+
   useEffect(() => {
     async function fetchSettings() {
       try {
@@ -52,6 +57,13 @@ export default function AdminSettingsPage() {
               isActive: data.ANNOUNCEMENT_BANNER.isActive ?? false,
               text: data.ANNOUNCEMENT_BANNER.text || "",
               actionText: data.ANNOUNCEMENT_BANNER.actionText || "",
+            });
+          }
+          // Load crypto payment settings
+          if (data.CRYPTO_PAYMENT) {
+            setCrypto({
+              walletAddress: data.CRYPTO_PAYMENT.walletAddress || "",
+              networkChain: data.CRYPTO_PAYMENT.networkChain || "USDT (TRC20)",
             });
           }
         }
@@ -83,6 +95,14 @@ export default function AdminSettingsPage() {
       });
       if (!res2.ok) throw new Error("Failed to save announcement banner");
 
+      // Save Crypto Payment Settings
+      const res3 = await fetch("/api/admin/settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: "CRYPTO_PAYMENT", value: crypto }),
+      });
+      if (!res3.ok) throw new Error("Failed to save crypto settings");
+
       toast.success("Settings saved successfully");
     } catch (err) {
       toast.error("Failed to save settings");
@@ -97,6 +117,10 @@ export default function AdminSettingsPage() {
 
   const updateBanner = (key: string, value: string | boolean) => {
     setBanner((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const updateCrypto = (key: string, value: string) => {
+    setCrypto((prev) => ({ ...prev, [key]: value }));
   };
 
   if (loading) {
@@ -145,6 +169,36 @@ export default function AdminSettingsPage() {
               placeholder="e.g. CODE: SUMMER30"
               className="bg-background border-white/10" 
             />
+          </div>
+        </div>
+      </div>
+
+      {/* Crypto Payment Settings */}
+      <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/5 overflow-hidden">
+        <div className="flex items-center gap-3 px-6 py-4 border-b border-yellow-500/20 bg-yellow-500/10">
+          <Wallet className="size-5 text-yellow-400" />
+          <h3 className="text-lg font-semibold text-foreground">Crypto Payment Settings</h3>
+        </div>
+        <div className="p-6 space-y-5">
+          <div className="space-y-2">
+            <Label>Wallet Address</Label>
+            <Input
+              value={crypto.walletAddress}
+              onChange={(e) => updateCrypto("walletAddress", e.target.value)}
+              placeholder="e.g. T9yD14Nj9j7xAB4dbGeiX9h8unkKz..."
+              className="bg-background border-white/10 font-mono text-sm"
+            />
+            <p className="text-xs text-muted-foreground">This wallet address will be displayed to users on the checkout page.</p>
+          </div>
+          <div className="space-y-2">
+            <Label>Network / Chain</Label>
+            <Input
+              value={crypto.networkChain}
+              onChange={(e) => updateCrypto("networkChain", e.target.value)}
+              placeholder="e.g. USDT (TRC20)"
+              className="bg-background border-white/10"
+            />
+            <p className="text-xs text-muted-foreground">The blockchain network displayed as a heading on the checkout page (e.g. USDT TRC20, BTC, ETH ERC20).</p>
           </div>
         </div>
       </div>

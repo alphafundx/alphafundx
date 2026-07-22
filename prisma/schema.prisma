@@ -153,15 +153,16 @@ model Package {
 }
 
 model Order {
-  id               String      @id @default(cuid())
-  userId           String
-  packageId        String
-  amount           Float
-  status           OrderStatus @default(PENDING)
-  paymentMethod    String?
-  paymentReference String?
-  stripeSessionId  String?     @unique
-  stripePaymentId  String?
+  id                String      @id @default(cuid())
+  userId            String
+  packageId         String
+  amount            Float
+  status            OrderStatus @default(PENDING)
+  paymentMethod     String?
+  paymentReference  String?
+  paymentScreenshot String?
+  stripeSessionId   String?     @unique
+  stripePaymentId   String?
 
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   package     Package      @relation(fields: [packageId], references: [id])
