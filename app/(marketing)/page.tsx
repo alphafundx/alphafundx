@@ -647,19 +647,20 @@ export default function HomePage() {
             initial="initial"
           >
             <div className="rounded-xl border border-white/[0.06] bg-[#232930] overflow-hidden">
-              <table className="w-full">
+              <div className="overflow-x-auto">
+              <table className="w-full min-w-[500px]">
                 <thead>
                   <tr className="border-b border-white/[0.06]">
-                    <th className="px-5 lg:px-6 py-4 text-left text-lg font-semibold text-white/60 uppercase tracking-wider">
+                    <th className="px-4 sm:px-5 lg:px-6 py-4 text-left text-sm sm:text-lg font-semibold text-white/60 uppercase tracking-wider">
                       Rule
                     </th>
-                    <th className="px-5 lg:px-6 py-4 text-center text-lg font-semibold text-white/60 uppercase tracking-wider">
+                    <th className="px-4 sm:px-5 lg:px-6 py-4 text-center text-sm sm:text-lg font-semibold text-white/60 uppercase tracking-wider">
                       Phase 1
                     </th>
-                    <th className="px-5 lg:px-6 py-4 text-center text-lg font-semibold text-white/60 uppercase tracking-wider">
+                    <th className="px-4 sm:px-5 lg:px-6 py-4 text-center text-sm sm:text-lg font-semibold text-white/60 uppercase tracking-wider">
                       Phase 2
                     </th>
-                    <th className="px-5 lg:px-6 py-4 text-center text-lg font-semibold text-[#26FF5E]/80 uppercase tracking-wider">
+                    <th className="px-4 sm:px-5 lg:px-6 py-4 text-center text-sm sm:text-lg font-semibold text-[#26FF5E]/80 uppercase tracking-wider">
                       Funded
                     </th>
                   </tr>
@@ -671,24 +672,25 @@ export default function HomePage() {
                       className={`border-b border-white/[0.03] ${i % 2 === 1 ? "bg-white/[0.01]" : ""
                         }`}
                     >
-                      <td className="px-5 lg:px-6 py-4 text-xl font-medium text-white/80">
+                      <td className="px-4 sm:px-5 lg:px-6 py-4 text-base sm:text-xl font-medium text-white/80">
                         {item.rule}
                       </td>
-                      <td className="px-5 lg:px-6 py-4 text-center text-xl text-white/60">
+                      <td className="px-4 sm:px-5 lg:px-6 py-4 text-center text-base sm:text-xl text-white/60">
                         {item.phase1}
                       </td>
-                      <td className="px-5 lg:px-6 py-4 text-center text-xl text-white/60">
+                      <td className="px-4 sm:px-5 lg:px-6 py-4 text-center text-base sm:text-xl text-white/60">
                         {item.phase2}
                       </td>
-                      <td className="px-5 lg:px-6 py-4 text-center text-xl font-medium text-white/80">
+                      <td className="px-4 sm:px-5 lg:px-6 py-4 text-center text-base sm:text-xl font-medium text-white/80">
                         {item.funded}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-              <div className="px-5 lg:px-6 py-3 bg-white/[0.01] border-t border-white/[0.03]">
-                <p className="text-lg text-white/30">
+              </div>
+              <div className="px-4 sm:px-5 lg:px-6 py-3 bg-white/[0.01] border-t border-white/[0.03]">
+                <p className="text-sm sm:text-lg text-white/30">
                   All rules apply to account equity. Drawdown limits are calculated from the highest equity point.
                 </p>
               </div>
