@@ -218,10 +218,10 @@ export default function HomePage() {
       .then((data) => {
         if (data.stats) {
           setStats([
-            { label: "Funded Traders", value: data.stats.fundedTraders, icon: Users },
-            { label: "Capital Funded", value: data.stats.capitalFunded, icon: DollarSign },
-            { label: "Profit Split", value: data.stats.profitSplit, icon: TrendingUp },
-            { label: "Countries", value: data.stats.countries, icon: Globe },
+            { label: data.stats.fundedTradersLabel || "Funded Traders", value: data.stats.fundedTraders, icon: Users },
+            { label: data.stats.capitalFundedLabel || "Capital Funded", value: data.stats.capitalFunded, icon: DollarSign },
+            { label: data.stats.profitSplitLabel || "Profit Split", value: data.stats.profitSplit, icon: TrendingUp },
+            { label: data.stats.countriesLabel || "Countries", value: data.stats.countries, icon: Globe },
           ]);
         }
         if (data.testimonials && data.testimonials.length > 0) {

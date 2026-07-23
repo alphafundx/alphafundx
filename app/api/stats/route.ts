@@ -4,21 +4,7 @@ import { prisma } from "@/lib/prisma";
 // GET /api/stats — Public homepage statistics
 export async function GET() {
   try {
-    const [
-      totalUsers,
-      totalPaidOut,
-      totalRevenue,
-      activeTestimonials,
-    ] = await Promise.all([
-      prisma.user.count({ where: { role: "USER" } }),
-      prisma.withdrawal.aggregate({
-        where: { status: "PAID" },
-        _sum: { amount: true },
-      }),
-      prisma.order.aggregate({
-        where: { status: "COMPLETED" },
-        _sum: { amount: true },
-      }),
+    const [activeTestimonials, cmsStats] = await Promise.all([
       prisma.testimonial.findMany({
         where: { isActive: true },
         orderBy: { createdAt: "desc" },
@@ -30,21 +16,24 @@ export async function GET() {
           content: true,
         },
       }),
+      prisma.cmsContent.findUnique({
+        where: { key: "stats" },
+      }),
     ]);
-
-    // Try to get CMS stats override (admin can customize displayed stats)
-    const cmsStats = await prisma.cmsContent.findUnique({
-      where: { key: "stats" },
-    });
 
     const statsContent = cmsStats?.content as Record<string, string> | null;
 
+    // Use CMS values directly — the admin controls exactly what appears
     return NextResponse.json({
       stats: {
-        fundedTraders: statsContent?.funded_traders || `${totalUsers}+`,
-        capitalFunded: statsContent?.capital_funded || `$${Math.round((totalRevenue._sum.amount || 0) / 1000)}K+`,
-        profitSplit: statsContent?.profit_split || "Up to 80%",
-        countries: statsContent?.countries || "150+",
+        fundedTraders: statsContent?.stat1 || "10,000+",
+        fundedTradersLabel: statsContent?.stat1_label || "Funded Traders",
+        capitalFunded: statsContent?.stat2 || "$5M+",
+        capitalFundedLabel: statsContent?.stat2_label || "Capital Funded",
+        profitSplit: statsContent?.stat3 || "Up to 90%",
+        profitSplitLabel: statsContent?.stat3_label || "Profit Split",
+        countries: statsContent?.stat4 || "150+",
+        countriesLabel: statsContent?.stat4_label || "Countries",
       },
       testimonials: activeTestimonials,
     });

@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Save, FileText } from "lucide-react";
+import { Save, FileText, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 type Section = "hero" | "about" | "features" | "faq" | "rules" | "stats" | "contact" | "footer";
@@ -73,8 +73,48 @@ const initialSections: CMSSection[] = [
 export default function AdminCMSPage() {
   const [sections, setSections] = useState(initialSections);
   const [activeTab, setActiveTab] = useState<Section>("hero");
+  const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const activeSection = sections.find((s) => s.id === activeTab)!;
+
+  // Load saved CMS data from database on mount
+  const loadCmsData = useCallback(async () => {
+    try {
+      const res = await fetch("/api/admin/cms");
+      if (!res.ok) return;
+      const data = await res.json();
+
+      if (Array.isArray(data) && data.length > 0) {
+        setSections((prev) =>
+          prev.map((section) => {
+            // Find matching DB record for this section
+            const dbRecord = data.find(
+              (d: { key: string; content: Record<string, string> }) => d.key === section.id
+            );
+            if (!dbRecord || !dbRecord.content) return section;
+
+            const content = dbRecord.content as Record<string, string>;
+            return {
+              ...section,
+              fields: section.fields.map((field) => ({
+                ...field,
+                value: content[field.key] !== undefined ? content[field.key] : field.value,
+              })),
+            };
+          })
+        );
+      }
+    } catch {
+      // Silently fall back to defaults
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadCmsData();
+  }, [loadCmsData]);
 
   const updateField = (key: string, value: string) => {
     setSections((prev) =>
@@ -86,8 +126,36 @@ export default function AdminCMSPage() {
     );
   };
 
-  const handleSave = () => {
-    toast.success(`${activeSection.label} content saved`);
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      // Build content object from all fields in the active section
+      const content: Record<string, string> = {};
+      activeSection.fields.forEach((field) => {
+        content[field.key] = field.value;
+      });
+
+      const res = await fetch("/api/admin/cms", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          key: activeSection.id,
+          title: activeSection.label,
+          content,
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || "Failed to save");
+      }
+
+      toast.success(`${activeSection.label} content saved`);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to save changes");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -119,30 +187,37 @@ export default function AdminCMSPage() {
         <div className="lg:col-span-3 rounded-xl border border-white/[0.06] bg-card overflow-hidden">
           <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
             <h3 className="text-lg font-semibold text-foreground">{activeSection.label}</h3>
-            <Button onClick={handleSave} className="bg-primary text-primary-foreground hover:bg-primary/90">
-              <Save className="size-4 mr-2" /> Save Changes
+            <Button onClick={handleSave} disabled={saving || loading} className="bg-primary text-primary-foreground hover:bg-primary/90">
+              {saving ? <Loader2 className="size-4 mr-2 animate-spin" /> : <Save className="size-4 mr-2" />}
+              {saving ? "Saving..." : "Save Changes"}
             </Button>
           </div>
           <div className="p-6 space-y-5">
-            {activeSection.fields.map((field) => (
-              <div key={field.key} className="space-y-2">
-                <Label>{field.label}</Label>
-                {field.type === "text" ? (
-                  <Input
-                    value={field.value}
-                    onChange={(e) => updateField(field.key, e.target.value)}
-                    className="bg-white/[0.02]"
-                  />
-                ) : (
-                  <textarea
-                    rows={4}
-                    value={field.value}
-                    onChange={(e) => updateField(field.key, e.target.value)}
-                    className="w-full bg-white/[0.02] border border-white/[0.06] rounded-lg px-4 py-3 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 resize-none text-sm"
-                  />
-                )}
+            {loading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="size-6 animate-spin text-muted-foreground" />
               </div>
-            ))}
+            ) : (
+              activeSection.fields.map((field) => (
+                <div key={field.key} className="space-y-2">
+                  <Label>{field.label}</Label>
+                  {field.type === "text" ? (
+                    <Input
+                      value={field.value}
+                      onChange={(e) => updateField(field.key, e.target.value)}
+                      className="bg-white/[0.02]"
+                    />
+                  ) : (
+                    <textarea
+                      rows={4}
+                      value={field.value}
+                      onChange={(e) => updateField(field.key, e.target.value)}
+                      className="w-full bg-white/[0.02] border border-white/[0.06] rounded-lg px-4 py-3 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 resize-none text-sm"
+                    />
+                  )}
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
