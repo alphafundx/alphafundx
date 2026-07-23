@@ -186,30 +186,9 @@ const faqs = [
 export default function HomePage() {
   const storePackages = usePackageStore((s) => s.packages).filter((p) => p.isActive);
   const [stats, setStats] = useState(defaultStats);
-  const defaultTestimonials = [
-    {
-      name: "Marcus T.",
-      rating: 5,
-      content: "AlphaFundX provided the capital I needed to scale my trading strategy. The dashboard is intuitive, and payouts are always processed within 24 hours without fail.",
-      image: null,
-    },
-    {
-      name: "Sarah L.",
-      rating: 5,
-      content: "The transparency is what sets them apart. No hidden rules or gotchas. You hit the target, respect the drawdown, and you get funded. It's that simple.",
-      image: null,
-    },
-    {
-      name: "David K.",
-      rating: 4,
-      content: "I've tried multiple prop firms, but the structured evaluation here feels the most professional. Support is highly responsive when you need them.",
-      image: null,
-    },
-  ];
-
   const [testimonials, setTestimonials] = useState<
     { name: string; rating: number; content: string; image: string | null }[]
-  >(defaultTestimonials);
+  >([]);
   const [apiPackages, setApiPackages] = useState<typeof storePackages | null>(null);
 
   useEffect(() => {
@@ -224,7 +203,7 @@ export default function HomePage() {
             { label: data.stats.countriesLabel || "Countries", value: data.stats.countries, icon: Globe },
           ]);
         }
-        if (data.testimonials && data.testimonials.length > 0) {
+        if (data.testimonials) {
           setTestimonials(
             data.testimonials.map(
               (t: {
@@ -480,8 +459,8 @@ export default function HomePage() {
               >
                 <BorderGlow
                   className={`!rounded-xl h-full transition-colors duration-200 ${pkg.isPopular
-                      ? "!border-[#26FF5E]/40 ring-1 ring-[#26FF5E]/20"
-                      : "!border-white/[0.08]"
+                    ? "!border-[#26FF5E]/40 ring-1 ring-[#26FF5E]/20"
+                    : "!border-white/[0.08]"
                     }`}
                   backgroundColor="#232930"
                   glowColor={pkg.isPopular ? "135 100 57" : "0 0 100"}
@@ -493,76 +472,76 @@ export default function HomePage() {
                   animated={true}
                 >
                   <div className="relative h-full flex flex-col">
-                  {/* Popular badge */}
-                  {pkg.isPopular && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-[#26FF5E] text-[10px] font-bold text-[#0a0a0a] uppercase tracking-wider">
-                      Most Popular
-                    </div>
-                  )}
+                    {/* Popular badge */}
+                    {pkg.isPopular && (
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-[#26FF5E] text-[10px] font-bold text-[#0a0a0a] uppercase tracking-wider">
+                        Most Popular
+                      </div>
+                    )}
 
-                  <div className="p-5 lg:p-6 flex-1 flex flex-col">
-                    {/* Package name & size */}
-                    <div className="mb-4">
-                      <h3 className="text-xl font-semibold text-white">{pkg.name}</h3>
-                      <p className="text-xl font-bold text-[#26FF5E] mt-1">
-                        ${pkg.accountSize.toLocaleString()}
-                        <span className="text-xs font-normal text-white/30 ml-1.5">account</span>
-                      </p>
-                    </div>
+                    <div className="p-5 lg:p-6 flex-1 flex flex-col">
+                      {/* Package name & size */}
+                      <div className="mb-4">
+                        <h3 className="text-xl font-semibold text-white">{pkg.name}</h3>
+                        <p className="text-xl font-bold text-[#26FF5E] mt-1">
+                          ${pkg.accountSize.toLocaleString()}
+                          <span className="text-xs font-normal text-white/30 ml-1.5">account</span>
+                        </p>
+                      </div>
 
-                    {/* Price */}
-                    <div className="pb-4 mb-4 border-b border-white/[0.06]">
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-2xl font-bold text-white">
-                          ${pkg.discountedPrice}
-                        </span>
+                      {/* Price */}
+                      <div className="pb-4 mb-4 border-b border-white/[0.06]">
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-2xl font-bold text-white">
+                            ${pkg.discountedPrice}
+                          </span>
+                          {pkg.discountPercentage > 0 && (
+                            <span className="text-xs text-white/30 line-through">
+                              ${pkg.originalPrice}
+                            </span>
+                          )}
+                        </div>
                         {pkg.discountPercentage > 0 && (
-                          <span className="text-xs text-white/30 line-through">
-                            ${pkg.originalPrice}
+                          <span className="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-[#26FF5E]/10 text-[#26FF5E]">
+                            {pkg.discountPercentage}% OFF
                           </span>
                         )}
                       </div>
-                      {pkg.discountPercentage > 0 && (
-                        <span className="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-[#26FF5E]/10 text-[#26FF5E]">
-                          {pkg.discountPercentage}% OFF
-                        </span>
-                      )}
-                    </div>
 
-                    {/* Description & Features */}
-                    <div className="flex-1 flex flex-col gap-4">
-                      {pkg.description && (
-                        <p className="text-xl text-white/70 leading-relaxed whitespace-pre-line">
-                          {pkg.description}
-                        </p>
-                      )}
-                      
-                      {pkg.features && pkg.features.length > 0 && (
-                        <ul className="space-y-2">
-                          {pkg.features.map((feature) => (
-                            <li
-                              key={feature}
-                              className="flex items-start gap-2 text-xl text-white/60"
-                            >
-                              <Check className="size-3.5 text-[#26FF5E]/70 shrink-0 mt-0.5" />
-                              <span>{feature}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
+                      {/* Description & Features */}
+                      <div className="flex-1 flex flex-col gap-4">
+                        {pkg.description && (
+                          <p className="text-xl text-white/70 leading-relaxed whitespace-pre-line">
+                            {pkg.description}
+                          </p>
+                        )}
 
-                    <Link href={`/checkout/${pkg.id}`} className="mt-5 block">
-                      <Button
-                        className={`w-full text-xl font-semibold h-14 ${pkg.isPopular
+                        {pkg.features && pkg.features.length > 0 && (
+                          <ul className="space-y-2">
+                            {pkg.features.map((feature) => (
+                              <li
+                                key={feature}
+                                className="flex items-start gap-2 text-xl text-white/60"
+                              >
+                                <Check className="size-3.5 text-[#26FF5E]/70 shrink-0 mt-0.5" />
+                                <span>{feature}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+
+                      <Link href={`/checkout/${pkg.id}`} className="mt-5 block">
+                        <Button
+                          className={`w-full text-xl font-semibold h-14 ${pkg.isPopular
                             ? "bg-[#26FF5E] text-[#0a0a0a] hover:bg-[#26FF5E]/90"
                             : "bg-white/[0.06] text-white hover:bg-white/[0.1]"
-                          }`}
-                      >
-                        Buy Challenge
-                      </Button>
-                    </Link>
-                  </div>
+                            }`}
+                        >
+                          Buy Challenge
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
                 </BorderGlow>
               </motion.div>
@@ -648,46 +627,46 @@ export default function HomePage() {
           >
             <div className="rounded-xl border border-white/[0.06] bg-[#232930] overflow-hidden">
               <div className="overflow-x-auto">
-              <table className="w-full min-w-[500px]">
-                <thead>
-                  <tr className="border-b border-white/[0.06]">
-                    <th className="px-4 sm:px-5 lg:px-6 py-4 text-left text-sm sm:text-lg font-semibold text-white/60 uppercase tracking-wider">
-                      Rule
-                    </th>
-                    <th className="px-4 sm:px-5 lg:px-6 py-4 text-center text-sm sm:text-lg font-semibold text-white/60 uppercase tracking-wider">
-                      Phase 1
-                    </th>
-                    <th className="px-4 sm:px-5 lg:px-6 py-4 text-center text-sm sm:text-lg font-semibold text-white/60 uppercase tracking-wider">
-                      Phase 2
-                    </th>
-                    <th className="px-4 sm:px-5 lg:px-6 py-4 text-center text-sm sm:text-lg font-semibold text-[#26FF5E]/80 uppercase tracking-wider">
-                      Funded
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {tradingRules.map((item, i) => (
-                    <tr
-                      key={item.rule}
-                      className={`border-b border-white/[0.03] ${i % 2 === 1 ? "bg-white/[0.01]" : ""
-                        }`}
-                    >
-                      <td className="px-4 sm:px-5 lg:px-6 py-4 text-base sm:text-xl font-medium text-white/80">
-                        {item.rule}
-                      </td>
-                      <td className="px-4 sm:px-5 lg:px-6 py-4 text-center text-base sm:text-xl text-white/60">
-                        {item.phase1}
-                      </td>
-                      <td className="px-4 sm:px-5 lg:px-6 py-4 text-center text-base sm:text-xl text-white/60">
-                        {item.phase2}
-                      </td>
-                      <td className="px-4 sm:px-5 lg:px-6 py-4 text-center text-base sm:text-xl font-medium text-white/80">
-                        {item.funded}
-                      </td>
+                <table className="w-full min-w-[500px]">
+                  <thead>
+                    <tr className="border-b border-white/[0.06]">
+                      <th className="px-4 sm:px-5 lg:px-6 py-4 text-left text-sm sm:text-lg font-semibold text-white/60 uppercase tracking-wider">
+                        Rule
+                      </th>
+                      <th className="px-4 sm:px-5 lg:px-6 py-4 text-center text-sm sm:text-lg font-semibold text-white/60 uppercase tracking-wider">
+                        Phase 1
+                      </th>
+                      <th className="px-4 sm:px-5 lg:px-6 py-4 text-center text-sm sm:text-lg font-semibold text-white/60 uppercase tracking-wider">
+                        Phase 2
+                      </th>
+                      <th className="px-4 sm:px-5 lg:px-6 py-4 text-center text-sm sm:text-lg font-semibold text-[#26FF5E]/80 uppercase tracking-wider">
+                        Funded
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {tradingRules.map((item, i) => (
+                      <tr
+                        key={item.rule}
+                        className={`border-b border-white/[0.03] ${i % 2 === 1 ? "bg-white/[0.01]" : ""
+                          }`}
+                      >
+                        <td className="px-4 sm:px-5 lg:px-6 py-4 text-base sm:text-xl font-medium text-white/80">
+                          {item.rule}
+                        </td>
+                        <td className="px-4 sm:px-5 lg:px-6 py-4 text-center text-base sm:text-xl text-white/60">
+                          {item.phase1}
+                        </td>
+                        <td className="px-4 sm:px-5 lg:px-6 py-4 text-center text-base sm:text-xl text-white/60">
+                          {item.phase2}
+                        </td>
+                        <td className="px-4 sm:px-5 lg:px-6 py-4 text-center text-base sm:text-xl font-medium text-white/80">
+                          {item.funded}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
               <div className="px-4 sm:px-5 lg:px-6 py-3 bg-white/[0.01] border-t border-white/[0.03]">
                 <p className="text-sm sm:text-lg text-white/30">
@@ -795,44 +774,40 @@ export default function HomePage() {
       </section>
 
       {/* ========== TESTIMONIALS ========== */}
-      <section className="py-16 lg:py-20 bg-[#1C1A21]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
-            {...fadeIn}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true }}
-            whileInView="animate"
-            initial="initial"
-            className="mb-10"
-          >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-2">
-              Trader Feedback
-            </h2>
-            <p className="text-lg sm:text-xl font-medium text-[#26FF5E] tracking-tight">
-              From Our Funded Traders
-            </p>
-            <p className="mt-3 text-xl text-white/60 max-w-3xl">
-              Real feedback from traders who have completed the evaluation and are trading with funded accounts.
-            </p>
-          </motion.div>
+      {testimonials.length > 0 && (
+        <section id="testimonials" className="py-16 lg:py-20 bg-[#141217]">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <motion.div
+              {...fadeIn}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+              whileInView="animate"
+              initial="initial"
+              className="mb-10 text-center"
+            >
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-2">
+                Trusted by Thousands
+              </h2>
+              <p className="text-lg sm:text-xl font-medium text-[#26FF5E] tracking-tight">
+                From Our Funded Traders
+              </p>
+              <p className="mt-3 text-xl text-white/60 max-w-3xl mx-auto">
+                Real feedback from traders who have completed the evaluation and are trading with funded accounts.
+              </p>
+            </motion.div>
 
-          <motion.div
-            {...fadeIn}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            viewport={{ once: true }}
-            whileInView="animate"
-            initial="initial"
-          >
-            {testimonials.length > 0 ? (
+            <motion.div
+              {...fadeIn}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              viewport={{ once: true }}
+              whileInView="animate"
+              initial="initial"
+            >
               <TestimonialCarousel testimonials={testimonials} />
-            ) : (
-              <div className="text-center py-8 text-white/30 text-sm">
-                Loading testimonials...
-              </div>
-            )}
-          </motion.div>
-        </div>
-      </section>
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       {/* ========== FAQ ========== */}
       <section id="faq" className="py-16 lg:py-20 bg-white">

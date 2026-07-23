@@ -22,11 +22,13 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
   const [isPaused, setIsPaused] = useState(false);
 
   const getVisibleCount = useCallback(() => {
-    if (typeof window === "undefined") return 3;
-    if (window.innerWidth >= 1024) return 3;
-    if (window.innerWidth >= 768) return 2;
-    return 1;
-  }, []);
+    let count = 1;
+    if (typeof window !== "undefined") {
+      if (window.innerWidth >= 1024) count = 3;
+      else if (window.innerWidth >= 768) count = 2;
+    }
+    return Math.min(count, Math.max(1, testimonials.length));
+  }, [testimonials.length]);
 
   const [visibleCount, setVisibleCount] = useState(3);
 
@@ -69,7 +71,8 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
     currentIndex + visibleCount
   );
 
-  if (visibleTestimonials.length < visibleCount) {
+  // Only wrap around if we actually have enough testimonials to scroll through
+  if (visibleTestimonials.length < visibleCount && testimonials.length > visibleCount) {
     const remaining = visibleCount - visibleTestimonials.length;
     visibleTestimonials.push(...testimonials.slice(0, remaining));
   }

@@ -71,7 +71,10 @@ export default function AdminTestimonialsPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ testimonialId: editingId, ...form }),
         });
-        if (!res.ok) throw new Error("Failed to update");
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.details?.[0]?.message || errorData.error || "Failed to update");
+        }
         toast.success("Testimonial updated");
       } else {
         const res = await fetch("/api/admin/testimonials", {
@@ -79,13 +82,16 @@ export default function AdminTestimonialsPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(form),
         });
-        if (!res.ok) throw new Error("Failed to create");
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.details?.[0]?.message || errorData.error || "Failed to create");
+        }
         toast.success("Testimonial created");
       }
       setModalOpen(false);
       fetchTestimonials();
-    } catch {
-      toast.error("Failed to save testimonial");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to save testimonial");
     } finally {
       setSaving(false);
     }
