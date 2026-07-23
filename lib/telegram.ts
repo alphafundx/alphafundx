@@ -1,6 +1,6 @@
 /**
  * Send a notification to Telegram with optional image attachment.
- * Gracefully no-ops if env vars are missing.
+ * Supports standard HTTP URLs and Base64 Data URLs.
  */
 export async function sendTelegramNotification({
   message,
@@ -21,38 +21,61 @@ export async function sendTelegramNotification({
     const baseUrl = `https://api.telegram.org/bot${botToken}`;
 
     if (imageUrl) {
-      // Build absolute image URL if relative
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-      const fullImageUrl = imageUrl.startsWith("http") ? imageUrl : `${appUrl}${imageUrl}`;
+      // Case 1: Base64 Data URL
+      if (imageUrl.startsWith("data:image/")) {
+        const matches = imageUrl.match(/^data:(image\/\w+);base64,(.+)$/);
+        if (matches) {
+          const mimeType = matches[1];
+          const base64Data = matches[2];
+          const buffer = Buffer.from(base64Data, "base64");
+          const blob = new Blob([buffer], { type: mimeType });
 
-      // Try sending as photo with caption
-      const photoRes = await fetch(`${baseUrl}/sendPhoto`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: chatId,
-          photo: fullImageUrl,
-          caption: message,
-          parse_mode: "HTML",
-        }),
-      });
+          const formData = new FormData();
+          formData.append("chat_id", chatId);
+          formData.append("photo", blob, `screenshot.${mimeType.split("/")[1] || "png"}`);
+          formData.append("caption", message);
+          formData.append("parse_mode", "HTML");
 
-      const photoData = await photoRes.json();
+          const photoRes = await fetch(`${baseUrl}/sendPhoto`, {
+            method: "POST",
+            body: formData,
+          });
 
-      // If photo failed (e.g. localhost URL), fallback to text with link
-      if (!photoData.ok) {
-        console.warn("Telegram sendPhoto failed, falling back to text:", photoData.description);
-        await fetch(`${baseUrl}/sendMessage`, {
+          const photoData = await photoRes.json();
+          if (photoData.ok) return;
+          console.warn("Telegram sendPhoto (base64) failed:", photoData.description);
+        }
+      } else {
+        // Case 2: Standard HTTP URL
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+        const fullImageUrl = imageUrl.startsWith("http") ? imageUrl : `${appUrl}${imageUrl}`;
+
+        const photoRes = await fetch(`${baseUrl}/sendPhoto`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             chat_id: chatId,
-            text: `${message}\n\n📷 <a href="${fullImageUrl}">View Screenshot</a>`,
+            photo: fullImageUrl,
+            caption: message,
             parse_mode: "HTML",
-            disable_web_page_preview: false,
           }),
         });
+
+        const photoData = await photoRes.json();
+        if (photoData.ok) return;
+        console.warn("Telegram sendPhoto (URL) failed:", photoData.description);
       }
+
+      // Fallback: Send text message if photo failed
+      await fetch(`${baseUrl}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message,
+          parse_mode: "HTML",
+        }),
+      });
     } else {
       // Text-only message
       await fetch(`${baseUrl}/sendMessage`, {
@@ -66,7 +89,6 @@ export async function sendTelegramNotification({
       });
     }
   } catch (error) {
-    // Never let Telegram failures break the main flow
     console.error("Failed to send Telegram notification:", error);
   }
 }

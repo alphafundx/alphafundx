@@ -275,11 +275,9 @@ export default function AdminOrdersPage() {
               </button>
             </div>
             <div className="p-4 flex items-center justify-center">
-              <Image
+              <img
                 src={screenshotModal}
                 alt="Payment screenshot"
-                width={800}
-                height={600}
                 className="w-full h-auto max-h-[65vh] object-contain rounded-lg"
               />
             </div>

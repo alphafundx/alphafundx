@@ -1,10 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAuthSession } from "@/lib/api-auth";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
-import { randomUUID } from "crypto";
 
-// POST /api/upload — Upload a file (screenshot)
+// POST /api/upload — Convert screenshot to Base64 Data URL (Bulletproof for Vercel/Serverless)
 export async function POST(request: Request) {
   const { response } = await getAuthSession();
   if (response) return response;
@@ -35,23 +32,13 @@ export async function POST(request: Request) {
       );
     }
 
-    // Generate unique filename
-    const ext = file.name.split(".").pop() || "png";
-    const filename = `${randomUUID()}.${ext}`;
-
-    // Ensure upload directory exists
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
-    await mkdir(uploadDir, { recursive: true });
-
-    // Write file
+    // Convert file buffer to base64 Data URL
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    const filePath = path.join(uploadDir, filename);
-    await writeFile(filePath, buffer);
+    const base64 = buffer.toString("base64");
+    const dataUrl = `data:${file.type};base64,${base64}`;
 
-    // Return the public URL
-    const url = `/uploads/${filename}`;
-    return NextResponse.json({ url });
+    return NextResponse.json({ url: dataUrl });
   } catch (error) {
     console.error("POST /api/upload error:", error);
     return NextResponse.json({ error: "Upload failed" }, { status: 500 });
