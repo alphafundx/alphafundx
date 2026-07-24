@@ -40,14 +40,13 @@ export default function LoginPage() {
       } else {
         toast.success("Welcome back!");
         // Redirect to callbackUrl if present, otherwise role-based dashboard
-        if (callbackUrl) {
-          router.push(callbackUrl);
+        if (callbackUrl && callbackUrl !== "/") {
+          window.location.href = callbackUrl;
         } else {
           const session = await getSession();
           const role = (session?.user as { role?: string })?.role;
-          router.push(role === "ADMIN" ? "/admin" : "/dashboard");
+          window.location.href = role === "ADMIN" ? "/admin" : "/dashboard";
         }
-        router.refresh();
       }
     } catch {
       toast.error("Something went wrong. Please try again.");
