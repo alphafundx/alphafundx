@@ -35,8 +35,19 @@ interface DashboardNotification {
   createdAt: string;
 }
 
+interface DashboardOrder {
+  id: string;
+  packageName: string;
+  accountSize: number;
+  amount: number;
+  status: string;
+  paymentMethod: string;
+  createdAt: string;
+}
+
 interface DashboardData {
   packages: DashboardPackage[];
+  orders: DashboardOrder[];
   stats: {
     totalBalance: number;
     totalProfit: number;
