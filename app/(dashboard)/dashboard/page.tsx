@@ -365,6 +365,53 @@ export default function DashboardPage() {
           </Link>
         </div>
       </div>
+
+      {/* Payment History / Orders */}
+      <div className="rounded-xl border border-white/[0.06] bg-card overflow-hidden mt-8">
+        <div className="border-b border-white/[0.06] px-6 py-4">
+          <h3 className="text-lg font-semibold text-foreground">Payment History</h3>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="text-xs text-muted-foreground uppercase bg-white/[0.02] border-b border-white/[0.06]">
+              <tr>
+                <th className="px-6 py-4 font-semibold">Package</th>
+                <th className="px-6 py-4 font-semibold">Amount</th>
+                <th className="px-6 py-4 font-semibold">Payment Method</th>
+                <th className="px-6 py-4 font-semibold">Date</th>
+                <th className="px-6 py-4 font-semibold text-right">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.orders && data.orders.length > 0 ? (
+                data.orders.map((order) => (
+                  <tr key={order.id} className="border-b border-white/[0.04] hover:bg-white/[0.01]">
+                    <td className="px-6 py-4 font-medium text-foreground">{order.packageName} (${order.accountSize.toLocaleString()})</td>
+                    <td className="px-6 py-4 text-muted-foreground">${order.amount.toLocaleString()}</td>
+                    <td className="px-6 py-4 text-muted-foreground capitalize">{order.paymentMethod.replace("_", " ").toLowerCase()}</td>
+                    <td className="px-6 py-4 text-muted-foreground">{new Date(order.createdAt).toLocaleDateString()}</td>
+                    <td className="px-6 py-4 text-right">
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
+                        order.status === "COMPLETED" || order.status === "APPROVED" ? "bg-green-500/10 text-green-500" :
+                        order.status === "REJECTED" ? "bg-red-500/10 text-red-500" :
+                        "bg-yellow-500/10 text-yellow-500"
+                      }`}>
+                        {order.status === "PENDING" ? "Processing" : order.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">
+                    No payment history found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Shield,
@@ -10,6 +11,7 @@ import {
   Heart,
   Target,
   Zap,
+  DollarSign,
 } from "lucide-react";
 import { GlowCard } from "@/components/shared/glow-card";
 
@@ -62,14 +64,32 @@ const milestones = [
   { year: "2025", title: "$5M+ Funded", description: "Over $5 million in funded capital with a 95% payout rate." },
 ];
 
-const stats = [
+const defaultStats = [
   { value: "10,000+", label: "Funded Traders", icon: Users },
-  { value: "$5M+", label: "Capital Funded", icon: TrendingUp },
+  { value: "$5M+", label: "Capital Funded", icon: DollarSign },
   { value: "150+", label: "Countries", icon: Globe },
   { value: "95%", label: "Payout Rate", icon: Award },
 ];
 
 export default function AboutPage() {
+  const [stats, setStats] = useState(defaultStats);
+
+  useEffect(() => {
+    fetch("/api/stats")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.stats) {
+          setStats([
+            { label: data.stats.fundedTradersLabel || "Funded Traders", value: data.stats.fundedTraders, icon: Users },
+            { label: data.stats.capitalFundedLabel || "Capital Funded", value: data.stats.capitalFunded, icon: DollarSign },
+            { label: data.stats.profitSplitLabel || "Profit Split", value: data.stats.profitSplit, icon: TrendingUp },
+            { label: data.stats.countriesLabel || "Countries", value: data.stats.countries, icon: Globe },
+          ]);
+        }
+      })
+      .catch((err) => console.error("Failed to fetch stats:", err));
+  }, []);
+
   return (
     <div className="relative min-h-screen">
       {/* ========== HERO ========== */}

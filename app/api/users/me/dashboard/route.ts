@@ -68,6 +68,17 @@ export async function GET() {
           activePackages.length
         : 0;
 
+    // Get recent orders (payment history)
+    const orders = await prisma.order.findMany({
+      where: { userId: user!.id },
+      orderBy: { createdAt: "desc" },
+      include: {
+        package: {
+          select: { name: true, accountSize: true },
+        },
+      },
+    });
+
     return NextResponse.json({
       packages: userPackages.map((up) => ({
         id: up.id,
@@ -80,6 +91,15 @@ export async function GET() {
         activatedAt: up.activatedAt,
         features: up.package.features,
         rules: up.package.rules,
+      })),
+      orders: orders.map((o) => ({
+        id: o.id,
+        packageName: o.package.name,
+        accountSize: o.package.accountSize,
+        amount: o.amount,
+        status: o.status,
+        paymentMethod: o.paymentMethod,
+        createdAt: o.createdAt,
       })),
       stats: {
         totalBalance,
