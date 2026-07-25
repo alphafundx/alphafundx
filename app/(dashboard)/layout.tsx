@@ -3,7 +3,8 @@
 import { Sidebar } from "@/components/shared/sidebar";
 import { TopBar } from "@/components/shared/top-bar";
 import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { PageLoading } from "@/components/shared/loading-spinner";
 import { PageTransition } from "@/components/shared/page-transition";
 
@@ -13,8 +14,17 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { data: session, status } = useSession();
+  const router = useRouter();
 
-  if (status === "loading") {
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.replace("/login");
+    } else if (status === "authenticated" && (session?.user as { role?: string })?.role === "ADMIN") {
+      router.replace("/admin");
+    }
+  }, [status, session, router]);
+
+  if (status === "loading" || status === "unauthenticated") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <PageLoading message="Loading dashboard..." />
@@ -22,12 +32,12 @@ export default function DashboardLayout({
     );
   }
 
-  if (!session) {
-    redirect("/login");
-  }
-
-  if ((session.user as { role?: string })?.role === "ADMIN") {
-    redirect("/admin");
+  if ((session?.user as { role?: string })?.role === "ADMIN") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <PageLoading message="Redirecting..." />
+      </div>
+    );
   }
 
   return (
