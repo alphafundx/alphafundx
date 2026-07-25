@@ -40,7 +40,7 @@ export default function LoginPage() {
       } else {
         toast.success("Welcome back!");
         // Redirect to callbackUrl if present, otherwise role-based dashboard
-        if (callbackUrl && callbackUrl !== "/") {
+        if (callbackUrl && !callbackUrl.includes("/login") && callbackUrl !== "/") {
           window.location.href = callbackUrl;
         } else {
           const session = await getSession();
