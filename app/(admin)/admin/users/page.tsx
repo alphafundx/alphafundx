@@ -492,6 +492,24 @@ function UserPackageCard({
   const [profit, setProfit] = useState(up.currentProfit.toString());
   const [profitPct, setProfitPct] = useState(up.profitPercentage.toString());
 
+  const autoCalcPct = (bal: string, prof: string) => {
+    const b = parseFloat(bal);
+    const p = parseFloat(prof);
+    if (b > 0 && !isNaN(p)) {
+      setProfitPct(((p / b) * 100).toFixed(2));
+    }
+  };
+
+  const handleBalanceChange = (val: string) => {
+    setBalance(val);
+    autoCalcPct(val, profit);
+  };
+
+  const handleProfitChange = (val: string) => {
+    setProfit(val);
+    autoCalcPct(balance, val);
+  };
+
   const handleSave = async () => {
     setSaving(true);
     try {
@@ -517,11 +535,11 @@ function UserPackageCard({
 
   return (
     <div className="p-4 rounded-lg border border-white/[0.06] bg-white/[0.01]">
-      <div className="flex justify-between items-center mb-3">
-        <p className="text-sm font-medium text-foreground">
+      <div className="flex justify-between items-start gap-2 mb-3">
+        <p className="text-sm font-medium text-foreground min-w-0 break-words">
           {up.package.name} (${up.package.accountSize.toLocaleString()})
         </p>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <span
             className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
               up.status === "ACTIVE"
@@ -531,15 +549,6 @@ function UserPackageCard({
           >
             {up.status}
           </span>
-          {up.status === "ACTIVE" && !isEditing && (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="p-1 rounded hover:bg-white/[0.06] text-muted-foreground hover:text-foreground transition-colors"
-              title="Edit balance & profit"
-            >
-              <Edit className="size-3.5" />
-            </button>
-          )}
         </div>
       </div>
 
@@ -552,7 +561,7 @@ function UserPackageCard({
                 type="number"
                 step="0.01"
                 value={balance}
-                onChange={(e) => setBalance(e.target.value)}
+                onChange={(e) => handleBalanceChange(e.target.value)}
                 className="h-8 text-xs"
               />
             </div>
@@ -562,7 +571,7 @@ function UserPackageCard({
                 type="number"
                 step="0.01"
                 value={profit}
-                onChange={(e) => setProfit(e.target.value)}
+                onChange={(e) => handleProfitChange(e.target.value)}
                 className="h-8 text-xs"
               />
             </div>
@@ -602,26 +611,37 @@ function UserPackageCard({
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-4 text-xs">
-          <div>
-            <p className="text-muted-foreground">Balance</p>
-            <p className="font-semibold text-foreground">
-              ${up.currentBalance.toLocaleString()}
-            </p>
+        <>
+          <div className="grid grid-cols-3 gap-4 text-xs">
+            <div>
+              <p className="text-muted-foreground">Balance</p>
+              <p className="font-semibold text-foreground">
+                ${up.currentBalance.toLocaleString()}
+              </p>
+            </div>
+            <div>
+              <p className="text-muted-foreground">Profit</p>
+              <p className="font-semibold text-primary">
+                ${up.currentProfit.toLocaleString()}
+              </p>
+            </div>
+            <div>
+              <p className="text-muted-foreground">Profit %</p>
+              <p className="font-semibold text-foreground">
+                {up.profitPercentage}%
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="text-muted-foreground">Profit</p>
-            <p className="font-semibold text-primary">
-              ${up.currentProfit.toLocaleString()}
-            </p>
-          </div>
-          <div>
-            <p className="text-muted-foreground">Profit %</p>
-            <p className="font-semibold text-foreground">
-              {up.profitPercentage}%
-            </p>
-          </div>
-        </div>
+          {up.status === "ACTIVE" && (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="mt-3 w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.08] bg-white/[0.02] text-xs text-muted-foreground hover:text-foreground hover:bg-white/[0.06] transition-colors"
+            >
+              <Edit className="size-3" />
+              Edit Balance & Profit
+            </button>
+          )}
+        </>
       )}
     </div>
   );
