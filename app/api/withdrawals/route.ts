@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAuthSession } from "@/lib/api-auth";
 import { createWithdrawalSchema } from "@/lib/validations/withdrawal";
+import { sendTelegramNotification } from "@/lib/telegram";
 
 // GET /api/withdrawals — User's own withdrawals
 export async function GET() {
@@ -51,6 +52,9 @@ export async function POST(request: Request) {
     // Verify the user package belongs to this user
     const userPkg = await prisma.userPackage.findFirst({
       where: { id: userPackageId, userId: user!.id, status: "ACTIVE" },
+      include: {
+        package: { select: { name: true, accountSize: true } },
+      },
     });
 
     if (!userPkg) {
@@ -87,6 +91,31 @@ export async function POST(request: Request) {
         status: "PENDING",
       },
     });
+
+    // Get user details for the notification
+    const userData = await prisma.user.findUnique({
+      where: { id: user!.id },
+      select: { name: true, email: true },
+    });
+
+    // Send Telegram notification to admin
+    const detailsStr = paymentDetails
+      ? Object.entries(paymentDetails as Record<string, string>)
+          .map(([k, v]) => `${k}: ${v}`)
+          .join("\n")
+      : "N/A";
+
+    sendTelegramNotification({
+      message:
+        `💸 <b>New Withdrawal Request</b>\n\n` +
+        `👤 <b>User:</b> ${userData?.name || "Unknown"}\n` +
+        `📧 <b>Email:</b> ${userData?.email || "N/A"}\n` +
+        `📦 <b>Package:</b> ${userPkg.package.name} ($${userPkg.package.accountSize.toLocaleString()})\n` +
+        `💰 <b>Amount:</b> $${amount.toFixed(2)}\n` +
+        `🏦 <b>Method:</b> ${paymentMethod}\n` +
+        `📋 <b>Payout Details:</b>\n${detailsStr}\n\n` +
+        `⏳ Status: PENDING`,
+    }).catch(() => {}); // Fire and forget
 
     return NextResponse.json(withdrawal, { status: 201 });
   } catch (error) {
