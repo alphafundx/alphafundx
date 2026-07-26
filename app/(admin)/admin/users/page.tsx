@@ -430,30 +430,12 @@ export default function AdminUsersPage() {
                     <h3 className="text-sm font-semibold text-foreground mb-3">Active Packages</h3>
                     <div className="space-y-3">
                       {selectedUser.userPackages.map((up) => (
-                        <div key={up.id} className="p-4 rounded-lg border border-white/[0.06] bg-white/[0.01]">
-                          <div className="flex justify-between items-center mb-2">
-                            <p className="text-sm font-medium text-foreground">{up.package.name} (${up.package.accountSize.toLocaleString()})</p>
-                            <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                              up.status === "ACTIVE" ? "bg-green-500/10 text-green-500" : "bg-yellow-500/10 text-yellow-500"
-                            }`}>
-                              {up.status}
-                            </span>
-                          </div>
-                          <div className="grid grid-cols-3 gap-4 text-xs">
-                            <div>
-                              <p className="text-muted-foreground">Balance</p>
-                              <p className="font-semibold text-foreground">${up.currentBalance.toLocaleString()}</p>
-                            </div>
-                            <div>
-                              <p className="text-muted-foreground">Profit</p>
-                              <p className="font-semibold text-primary">${up.currentProfit.toLocaleString()}</p>
-                            </div>
-                            <div>
-                              <p className="text-muted-foreground">Profit %</p>
-                              <p className="font-semibold text-foreground">{up.profitPercentage}%</p>
-                            </div>
-                          </div>
-                        </div>
+                        <UserPackageCard
+                          key={up.id}
+                          userId={selectedUser.id}
+                          userPackage={up}
+                          onUpdated={() => fetchUserDetail(selectedUser.id)}
+                        />
                       ))}
                     </div>
                   </div>
@@ -487,6 +469,157 @@ export default function AdminUsersPage() {
                 </div>
               </div>
             ) : null}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Editable Package Card ───────────────────────────────────────
+function UserPackageCard({
+  userId,
+  userPackage: up,
+  onUpdated,
+}: {
+  userId: string;
+  userPackage: UserDetail["userPackages"][number];
+  onUpdated: () => void;
+}) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [balance, setBalance] = useState(up.currentBalance.toString());
+  const [profit, setProfit] = useState(up.currentProfit.toString());
+  const [profitPct, setProfitPct] = useState(up.profitPercentage.toString());
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/admin/users/${userId}/balance`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentBalance: parseFloat(balance) || 0,
+          currentProfit: parseFloat(profit) || 0,
+          profitPercentage: parseFloat(profitPct) || 0,
+        }),
+      });
+      if (!res.ok) throw new Error("Failed to update");
+      toast.success("Balance & profit updated!");
+      setIsEditing(false);
+      onUpdated();
+    } catch {
+      toast.error("Failed to update balance");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="p-4 rounded-lg border border-white/[0.06] bg-white/[0.01]">
+      <div className="flex justify-between items-center mb-3">
+        <p className="text-sm font-medium text-foreground">
+          {up.package.name} (${up.package.accountSize.toLocaleString()})
+        </p>
+        <div className="flex items-center gap-2">
+          <span
+            className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
+              up.status === "ACTIVE"
+                ? "bg-green-500/10 text-green-500"
+                : "bg-yellow-500/10 text-yellow-500"
+            }`}
+          >
+            {up.status}
+          </span>
+          {up.status === "ACTIVE" && !isEditing && (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="p-1 rounded hover:bg-white/[0.06] text-muted-foreground hover:text-foreground transition-colors"
+              title="Edit balance & profit"
+            >
+              <Edit className="size-3.5" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {isEditing ? (
+        <div className="space-y-3">
+          <div className="grid grid-cols-3 gap-3">
+            <div className="space-y-1">
+              <Label className="text-xs">Balance ($)</Label>
+              <Input
+                type="number"
+                step="0.01"
+                value={balance}
+                onChange={(e) => setBalance(e.target.value)}
+                className="h-8 text-xs"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">Profit ($)</Label>
+              <Input
+                type="number"
+                step="0.01"
+                value={profit}
+                onChange={(e) => setProfit(e.target.value)}
+                className="h-8 text-xs"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">Profit %</Label>
+              <Input
+                type="number"
+                step="0.1"
+                value={profitPct}
+                onChange={(e) => setProfitPct(e.target.value)}
+                className="h-8 text-xs"
+              />
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              onClick={handleSave}
+              disabled={saving}
+              className="bg-primary text-primary-foreground hover:bg-primary/90 h-7 text-xs px-3"
+            >
+              {saving ? "Saving..." : "Update"}
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                setIsEditing(false);
+                setBalance(up.currentBalance.toString());
+                setProfit(up.currentProfit.toString());
+                setProfitPct(up.profitPercentage.toString());
+              }}
+              className="h-7 text-xs px-3"
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-3 gap-4 text-xs">
+          <div>
+            <p className="text-muted-foreground">Balance</p>
+            <p className="font-semibold text-foreground">
+              ${up.currentBalance.toLocaleString()}
+            </p>
+          </div>
+          <div>
+            <p className="text-muted-foreground">Profit</p>
+            <p className="font-semibold text-primary">
+              ${up.currentProfit.toLocaleString()}
+            </p>
+          </div>
+          <div>
+            <p className="text-muted-foreground">Profit %</p>
+            <p className="font-semibold text-foreground">
+              {up.profitPercentage}%
+            </p>
           </div>
         </div>
       )}
