@@ -21,6 +21,7 @@ import {
   BarChart3,
   Globe,
   ShoppingCart,
+  Tag,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
@@ -39,6 +40,7 @@ const adminSidebarItems: SidebarItem[] = [
   { title: "Users", href: "/admin/users", icon: Users },
   { title: "Manage Packages", href: "/admin/packages", icon: Package },
   { title: "Orders", href: "/admin/orders", icon: ShoppingCart },
+  { title: "Discount Codes", href: "/admin/discount-codes", icon: Tag },
   { title: "Withdrawals", href: "/admin/withdrawals", icon: ArrowDownUp },
   { title: "Testimonials", href: "/admin/testimonials", icon: MessageSquareQuote },
   { title: "CMS", href: "/admin/cms", icon: FileText },

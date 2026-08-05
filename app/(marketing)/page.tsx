@@ -190,6 +190,11 @@ export default function HomePage() {
     { name: string; rating: number; content: string; image: string | null }[]
   >([]);
   const [apiPackages, setApiPackages] = useState<typeof storePackages | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     fetch("/api/stats")
@@ -259,7 +264,8 @@ export default function HomePage() {
       .catch(() => { });
   }, []);
 
-  const packages = apiPackages || storePackages;
+  // Use API packages if available, otherwise fall back to store (only after mount to avoid hydration mismatch)
+  const packages = apiPackages || (mounted ? storePackages : []);
 
   const gridCols =
     packages.length <= 3
@@ -446,13 +452,12 @@ export default function HomePage() {
           <motion.div
             variants={staggerContainer}
             initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
+            animate={packages.length > 0 ? "animate" : "initial"}
             className={`grid ${gridCols} gap-4`}
           >
             {packages.map((pkg) => (
               <motion.div
-                key={pkg.name}
+                key={pkg.id}
                 variants={fadeIn}
                 transition={{ duration: 0.4 }}
                 className="h-full"

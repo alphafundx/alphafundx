@@ -16,6 +16,8 @@ import {
   Clock,
   ImageIcon,
   X,
+  Tag,
+  XCircle,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -36,6 +38,14 @@ interface CryptoSettings {
   networkChain: string;
 }
 
+interface AppliedDiscount {
+  id: string;
+  code: string;
+  type: "PERCENTAGE" | "FIXED";
+  value: number;
+  discountAmount: number;
+}
+
 export default function CheckoutPage() {
   const params = useParams();
   const router = useRouter();
@@ -51,6 +61,12 @@ export default function CheckoutPage() {
   const [uploading, setUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState("");
   const [copied, setCopied] = useState(false);
+
+  // Discount code state
+  const [discountInput, setDiscountInput] = useState("");
+  const [discountLoading, setDiscountLoading] = useState(false);
+  const [appliedDiscount, setAppliedDiscount] = useState<AppliedDiscount | null>(null);
+  const [discountError, setDiscountError] = useState("");
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -93,6 +109,62 @@ export default function CheckoutPage() {
       fetchData();
     }
   }, [sessionStatus, fetchData]);
+
+  // Base price before discount code
+  const basePrice = pkg?.discountedPrice ?? pkg?.originalPrice ?? 0;
+
+  // Final price after discount code
+  const finalPrice = appliedDiscount
+    ? Math.max(0, Math.round((basePrice - appliedDiscount.discountAmount) * 100) / 100)
+    : basePrice;
+
+  // Apply discount code
+  const applyDiscountCode = async () => {
+    const code = discountInput.trim();
+    if (!code) {
+      setDiscountError("Please enter a discount code");
+      return;
+    }
+
+    setDiscountLoading(true);
+    setDiscountError("");
+
+    try {
+      const res = await fetch("/api/discount-codes/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code, orderAmount: basePrice, packageId }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setDiscountError(data.error || "Invalid discount code");
+        setAppliedDiscount(null);
+        return;
+      }
+
+      setAppliedDiscount({
+        id: data.id,
+        code: data.code,
+        type: data.type,
+        value: data.value,
+        discountAmount: data.discountAmount,
+      });
+      setDiscountError("");
+      toast.success(`Discount code "${data.code}" applied!`);
+    } catch {
+      setDiscountError("Failed to validate code. Please try again.");
+    } finally {
+      setDiscountLoading(false);
+    }
+  };
+
+  const removeDiscount = () => {
+    setAppliedDiscount(null);
+    setDiscountInput("");
+    setDiscountError("");
+  };
 
   // Handle file upload
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -170,6 +242,8 @@ export default function CheckoutPage() {
           packageId,
           paymentMethod: "CRYPTO",
           paymentScreenshot: screenshotUrl,
+          discountCodeId: appliedDiscount?.id || null,
+          discountAmount: appliedDiscount?.discountAmount || 0,
         }),
       });
 
@@ -219,9 +293,18 @@ export default function CheckoutPage() {
             <div className="flex justify-between text-sm">
               <span className="text-white/40">Amount</span>
               <span className="text-[#26FF5E] font-semibold">
-                ${(pkg?.discountedPrice ?? pkg?.originalPrice ?? 0).toFixed(2)}
+                ${finalPrice.toFixed(2)}
               </span>
             </div>
+            {appliedDiscount && (
+              <div className="flex justify-between text-sm">
+                <span className="text-white/40">Discount</span>
+                <span className="text-[#26FF5E] font-semibold">
+                  -{appliedDiscount.type === "PERCENTAGE" ? `${appliedDiscount.value}%` : `$${appliedDiscount.discountAmount.toFixed(2)}`}
+                  {" "}({appliedDiscount.code})
+                </span>
+              </div>
+            )}
             <div className="flex justify-between text-sm">
               <span className="text-white/40">Status</span>
               <span className="text-yellow-400 font-semibold">Pending Verification</span>
@@ -246,8 +329,6 @@ export default function CheckoutPage() {
       </div>
     );
   }
-
-  const price = pkg?.discountedPrice ?? pkg?.originalPrice ?? 0;
 
   return (
     <div className="min-h-screen bg-[#0e0d11] relative">
@@ -306,10 +387,90 @@ export default function CheckoutPage() {
               )}
             </div>
           </div>
+
+          {/* Discount Code Applied */}
+          {appliedDiscount && (
+            <div className="flex items-center justify-between py-2 border-t border-white/[0.06]">
+              <span className="text-white/50 text-sm flex items-center gap-1.5">
+                <Tag className="size-3.5 text-[#26FF5E]" />
+                Discount ({appliedDiscount.code})
+              </span>
+              <span className="text-[#26FF5E] font-medium text-sm">
+                −${appliedDiscount.discountAmount.toFixed(2)}
+              </span>
+            </div>
+          )}
+
           <div className="border-t border-white/[0.06] pt-3 flex justify-between">
             <span className="text-white/50 font-medium">Total</span>
-            <span className="text-xl font-bold text-white">${price.toFixed(2)}</span>
+            <span className="text-xl font-bold text-white">${finalPrice.toFixed(2)}</span>
           </div>
+        </div>
+
+        {/* Discount Code Input */}
+        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Tag className="size-4 text-[#26FF5E]" />
+            <h2 className="text-base font-bold text-white">
+              Have a Discount Code?
+            </h2>
+          </div>
+
+          {appliedDiscount ? (
+            <div className="flex items-center justify-between p-3 rounded-lg bg-[#26FF5E]/5 border border-[#26FF5E]/20">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="size-4 text-[#26FF5E]" />
+                <span className="text-sm font-semibold text-[#26FF5E]">
+                  {appliedDiscount.code}
+                </span>
+                <span className="text-xs text-white/40">
+                  ({appliedDiscount.type === "PERCENTAGE"
+                    ? `${appliedDiscount.value}% off`
+                    : `$${appliedDiscount.value.toFixed(2)} off`})
+                </span>
+              </div>
+              <button
+                onClick={removeDiscount}
+                className="p-1 rounded hover:bg-white/[0.08] text-white/40 hover:text-white transition-colors"
+                title="Remove discount"
+              >
+                <XCircle className="size-4" />
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={discountInput}
+                  onChange={(e) => {
+                    setDiscountInput(e.target.value.toUpperCase());
+                    setDiscountError("");
+                  }}
+                  onKeyDown={(e) => e.key === "Enter" && applyDiscountCode()}
+                  placeholder="Enter code"
+                  className="flex-1 h-10 rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#26FF5E]/40 font-mono uppercase tracking-wider"
+                />
+                <Button
+                  onClick={applyDiscountCode}
+                  disabled={discountLoading || !discountInput.trim()}
+                  className="bg-white/[0.06] text-white hover:bg-white/[0.1] border border-white/[0.08] h-10 px-5 text-sm shrink-0"
+                >
+                  {discountLoading ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    "Apply"
+                  )}
+                </Button>
+              </div>
+              {discountError && (
+                <p className="text-xs text-red-400 flex items-center gap-1">
+                  <XCircle className="size-3" />
+                  {discountError}
+                </p>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Payment Method */}
@@ -369,7 +530,7 @@ export default function CheckoutPage() {
           <div className="rounded-lg bg-white/[0.04] border border-white/[0.08] p-4 flex items-center justify-between">
             <span className="text-white/50 text-sm">Amount to Send</span>
             <span className="text-xl font-bold text-white">
-              ${price.toFixed(2)}
+              ${finalPrice.toFixed(2)}
             </span>
           </div>
         </div>
@@ -481,7 +642,7 @@ export default function CheckoutPage() {
           ) : (
             <>
               <Upload className="size-5 mr-2" />
-              Submit Payment — ${price.toFixed(2)}
+              Submit Payment — ${finalPrice.toFixed(2)}
             </>
           )}
         </Button>

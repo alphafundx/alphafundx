@@ -29,6 +29,11 @@ enum OrderStatus {
   CANCELLED
 }
 
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
 enum PackageStatus {
   ACTIVE
   BREACHED
@@ -163,10 +168,13 @@ model Order {
   paymentScreenshot String?
   stripeSessionId   String?     @unique
   stripePaymentId   String?
+  discountCodeId    String?
+  discountAmount    Float?      @default(0)
 
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  package     Package      @relation(fields: [packageId], references: [id])
-  userPackage UserPackage?
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  package      Package       @relation(fields: [packageId], references: [id])
+  userPackage  UserPackage?
+  discountCode DiscountCode? @relation(fields: [discountCodeId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -175,6 +183,7 @@ model Order {
   @@index([packageId])
   @@index([status])
   @@index([stripeSessionId])
+  @@index([discountCodeId])
 }
 
 model UserPackage {
@@ -280,4 +289,29 @@ model Notification {
   @@index([userId])
   @@index([isRead])
   @@index([type])
+}
+
+// ==========================================
+// Discount Codes
+// ==========================================
+
+model DiscountCode {
+  id                   String       @id @default(cuid())
+  code                 String       @unique
+  type                 DiscountType @default(PERCENTAGE)
+  value                Float        // percentage (0-100) or fixed dollar amount
+  maxUses              Int?         // null = unlimited
+  currentUses          Int          @default(0)
+  minOrderAmount       Float?       // minimum order amount to use this code
+  expiresAt            DateTime?    // null = never expires
+  isActive             Boolean      @default(true)
+  applicablePackageIds Json         @default("[]") // string[] of Package IDs, empty = all packages
+
+  orders Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([code])
+  @@index([isActive])
 }
