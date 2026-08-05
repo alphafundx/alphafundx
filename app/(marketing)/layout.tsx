@@ -2,6 +2,8 @@ import { Navbar } from "@/components/shared/navbar";
 import { Footer } from "@/components/shared/footer";
 import { AnnouncementBanner } from "@/components/shared/announcement-banner";
 
+export const dynamic = "force-dynamic";
+
 export default function MarketingLayout({
   children,
 }: {

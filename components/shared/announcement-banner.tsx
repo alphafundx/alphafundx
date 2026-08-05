@@ -18,10 +18,15 @@ function extractCode(text: string): string {
 }
 
 export async function AnnouncementBanner() {
-  // Fetch from database
-  const setting = await prisma.siteSettings.findUnique({
-    where: { key: "ANNOUNCEMENT_BANNER" },
-  });
+  let setting;
+  try {
+    setting = await prisma.siteSettings.findUnique({
+      where: { key: "ANNOUNCEMENT_BANNER" },
+    });
+  } catch {
+    // Gracefully handle DB errors during prerender/build
+    return null;
+  }
 
   if (!setting || !setting.value) return null;
 
